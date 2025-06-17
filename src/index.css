@@ -1,0 +1,129 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Dark Theme Color Palette with Primary: #E2DCD5 */
+
+@layer base {
+  :root {
+    /* Dark Theme Variables */
+    --background: 18 18 18; /* #121212 - Dark Base */
+    --foreground: 245 245 245; /* #F5F5F5 - Primary Text */
+
+    --card: 30 30 30; /* #1E1E1E - Elevated BG */
+    --card-foreground: 245 245 245; /* #F5F5F5 - Primary Text */
+
+    --popover: 30 30 30; /* #1E1E1E - Elevated BG */
+    --popover-foreground: 245 245 245; /* #F5F5F5 - Primary Text */
+
+    --primary: 226 220 213; /* #E2DCD5 - Cream Beige */
+    --primary-foreground: 18 18 18; /* #121212 - Dark Base */
+
+    --secondary: 30 30 30; /* #1E1E1E - Elevated BG */
+    --secondary-foreground: 226 220 213; /* #E2DCD5 - Cream Beige */
+
+    --muted: 37 37 37; /* #252525 - Section BG */
+    --muted-foreground: 176 176 176; /* #B0B0B0 - Secondary Text */
+
+    --accent: 37 37 37; /* #252525 - Section BG */
+    --accent-foreground: 226 220 213; /* #E2DCD5 - Cream Beige */
+
+    --destructive: 217 83 79; /* #D9534F - Danger */
+    --destructive-foreground: 255 255 255; /* #FFFFFF */
+
+    --border: 47 47 47; /* #2F2F2F - Divider */
+    --input: 37 37 37; /* #252525 - Input BG */
+    --ring: 226 220 213; /* #E2DCD5 - Focus Outline */
+
+    --radius: 0.75rem;
+
+    /* Custom theme colors */
+    --cream-primary: 226 220 213; /* #E2DCD5 */
+    --cream-hover: 214 208 200; /* #D6D0C8 */
+    --dark-base: 18 18 18; /* #121212 */
+    --elevated-bg: 30 30 30; /* #1E1E1E */
+    --section-bg: 37 37 37; /* #252525 */
+    --primary-text: 245 245 245; /* #F5F5F5 */
+    --secondary-text: 176 176 176; /* #B0B0B0 */
+    --disabled-text: 112 112 112; /* #707070 */
+    --input-border: 58 58 58; /* #3A3A3A */
+    --success: 76 175 80; /* #4CAF50 */
+    --success-hover: 67 160 71; /* #43A047 */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-inter;
+    background: hsl(var(--dark-base));
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .glow-effect {
+    box-shadow: 0 0 20px rgba(226, 220, 213, 0.3);
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .glow-effect:hover {
+    box-shadow: 0 0 40px rgba(226, 220, 213, 0.6);
+  }
+  
+  .gradient-text {
+    background: linear-gradient(135deg, #E2DCD5 0%, #D6D0C8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .card-glass {
+    background: rgba(30, 30, 30, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(226, 220, 213, 0.2);
+  }
+
+  /* Theme-specific components */
+  .theme-primary-button {
+    background: hsl(var(--cream-primary));
+    color: hsl(var(--dark-base));
+    border: 1px solid hsl(var(--cream-primary));
+  }
+
+  .theme-primary-button:hover {
+    background: hsl(var(--cream-hover));
+    border-color: hsl(var(--cream-hover));
+  }
+
+  .theme-secondary-button {
+    background: hsl(var(--elevated-bg));
+    color: hsl(var(--cream-primary));
+    border: 1px solid hsl(var(--input-border));
+  }
+
+  .theme-secondary-button:hover {
+    background: hsl(var(--section-bg));
+  }
+
+  .theme-card {
+    background: hsl(var(--elevated-bg));
+    border: 1px solid hsl(var(--border));
+  }
+
+  .theme-input {
+    background: hsl(var(--section-bg));
+    border: 1px solid hsl(var(--input-border));
+    color: hsl(var(--primary-text));
+  }
+
+  .theme-input:focus {
+    border-color: hsl(var(--cream-primary));
+    box-shadow: 0 0 0 2px rgba(226, 220, 213, 0.2);
+  }
+}
