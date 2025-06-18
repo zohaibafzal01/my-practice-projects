@@ -62,37 +62,38 @@ const AgentTestimonials = () => {
 
   return (
     <div className="text-center">
-      <h2 className="text-4xl font-bold mb-4 gradient-text">What Our Agents Say</h2>
-      <p className="text-xl text-gray-400 mb-12 max-w-3xl mx-auto">
-        Join thousands of successful insurance agents who trust InsuranceElite
-      </p>
-
       <div className="relative max-w-4xl mx-auto">
         <div className="overflow-hidden">
-          <div 
+          <div
             className="flex transition-transform duration-500 ease-in-out"
             style={{ transform: `translateX(-${currentIndex * 100}%)` }}
           >
             {testimonials.map((testimonial) => (
               <div key={testimonial.id} className="w-full flex-shrink-0 px-4">
-                <Card className="card-glass max-w-3xl mx-auto">
+                <Card className="card-glass max-w-3xl mx-auto bg-[#14181F] border border-[#00D4FF33]">
                   <CardContent className="p-8">
                     <div className="mb-6">
                       {renderStars(testimonial.rating)}
                     </div>
-                    
-                    <blockquote className="text-lg md:text-xl text-gray-300 mb-6 leading-relaxed">
+
+                    <blockquote className="text-lg md:text-[20px] text-[#D1D5DB] mb-6 leading-relaxed">
                       "{testimonial.text}"
                     </blockquote>
-                    
+
                     <div className="flex items-center justify-center space-x-4">
-                      <div className="w-16 h-16 bg-gradient-to-r from-electric-blue to-electric-teal rounded-full flex items-center justify-center font-bold text-dark-bg text-xl">
+                      <div className="w-16 h-16 bg-gradient-to-r from-electric-blue to-electric-teal rounded-full flex text-white items-center justify-center font-bold text-dark-bg text-xl">
                         {testimonial.image}
                       </div>
                       <div className="text-left">
-                        <div className="font-semibold text-white text-lg">{testimonial.name}</div>
-                        <div className="text-electric-blue font-medium">{testimonial.role}</div>
-                        <div className="text-gray-400 text-sm">{testimonial.company}</div>
+                        <div className="font-semibold text-white text-[20px]">
+                          {testimonial.name}
+                        </div>
+                        <div className="text-[#F5F5DC] font-medium">
+                          {testimonial.role}
+                        </div>
+                        <div className="text-[#9CA3AF] text-[14px]">
+                          {testimonial.company}
+                        </div>
                       </div>
                     </div>
                   </CardContent>
@@ -108,7 +109,7 @@ const AgentTestimonials = () => {
             <button
               key={index}
               className={`w-3 h-3 rounded-full transition-colors ${
-                index === currentIndex ? 'bg-electric-blue' : 'bg-gray-600'
+                index === currentIndex ? "bg-[#F5F5DC]" : "bg-[#4B5563]"
               }`}
               onClick={() => setCurrentIndex(index)}
             />

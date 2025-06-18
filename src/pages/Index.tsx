@@ -1,35 +1,68 @@
-
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Link } from 'react-router-dom';
-import HeroSection from '@/components/HeroSection';
-import LiveScoreboard from '@/components/LiveScoreboard';
-import AgentTestimonials from '@/components/AgentTestimonials';
-import StatePerformanceChart from '@/components/StatePerformanceChart';
-import USHeatMap from '@/components/USHeatMap';
-import PricingSection from '@/components/PricingSection';
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
+import HeroSection from "@/components/HeroSection";
+import LiveScoreboard from "@/components/LiveScoreboard";
+import AgentTestimonials from "@/components/AgentTestimonials";
+import StatePerformanceChart from "@/components/StatePerformanceChart";
+import USHeatMap from "@/components/USHeatMap";
+import PricingSection from "@/components/PricingSection";
+import leadslogo from "@/../public/leadslogo.svg";
+import LiveAgentActivity from "@/components/LiveAgentActivity";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+    <div className="min-h-screen bg-[#0A0A0FE5]">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-black/30 backdrop-blur-md border-b border-cyan-400/30">
+      <nav className="fixed top-0 w-full z-50 bg-black/30 backdrop-blur-md ">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">InsuranceElite</div>
+            <div>
+              <img src={leadslogo} alt="Londen Leads" />
+            </div>
             <div className="hidden md:flex space-x-8">
-              <Link to="/dashboard" className="text-cyan-300 hover:text-cyan-100 transition-colors">Dashboard</Link>
-              <a href="#features" className="text-cyan-300 hover:text-cyan-100 transition-colors">Features</a>
-              <a href="#testimonials" className="text-cyan-300 hover:text-cyan-100 transition-colors">Testimonials</a>
-              <a href="#pricing" className="text-cyan-300 hover:text-cyan-100 transition-colors">Pricing</a>
-              <Link to="/about-neon" className="text-cyan-300 hover:text-cyan-100 transition-colors">About Us</Link>
-              <Link to="/contact-neon" className="text-cyan-300 hover:text-cyan-100 transition-colors">Contact Us</Link>
+              <Link
+                to="/dashboard"
+                className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
+              >
+                Dashboard
+              </Link>
+              <a
+                href="#features"
+                className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
+              >
+                Features
+              </a>
+              <a
+                href="#testimonials"
+                className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
+              >
+                Testimonials
+              </a>
+              <a
+                href="#pricing"
+                className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
+              >
+                Pricing
+              </a>
+              <Link
+                to="/about-neon"
+                className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
+              >
+                About Us
+              </Link>
+              <Link
+                to="/contact-neon"
+                className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
+              >
+                Contact Us
+              </Link>
             </div>
             <Link to="/auth">
-              <Button className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 text-white font-semibold shadow-lg shadow-cyan-500/25">
-                Get Started
+              <Button className="bg-[#E2DCD5] hover:bg-[#E2DCD5] text-[#0A0A0F] text-[14px] font-semibold ">
+                Login / Signup
               </Button>
             </Link>
           </div>
@@ -37,21 +70,26 @@ const Index = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-16">
+      <section className="pt-32 pb-16 bg-[#000000]">
         <div className="container mx-auto px-6 text-center">
-          <h1 className="text-6xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400">
-            InsuranceElite
+          <h1 className="text-[72px] font-bold mb-6 text-[#E2DCD5] leading-[72px]">
+            Take your insurance <br /> Agency to the next level
           </h1>
-          <p className="text-xl text-cyan-100/80 max-w-3xl mx-auto mb-8">
-            Empowering insurance agents with premium leads and real-time insights. Join thousands of successful agents maximizing their potential.
+          <p className="text-[24px] text-[#D1D5DB] max-w-4xl mx-auto mb-8">
+            Access high-quality leads, real-time market insights, and join a
+            community of top-performing insurance agents across the United
+            States
           </p>
           <div className="flex justify-center space-x-4">
             <Link to="/dashboard">
-              <Button className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 text-white font-semibold px-8 py-3 text-lg shadow-lg shadow-cyan-500/25">
-                View Dashboard
+              <Button className="bg-transparent hover:bg-transparent text-[#F5F5DC] font-semibold px-8 py-3 text-lg shadow-xl shadow-[#F5F5DC4D]/15">
+                Start Free Trial
               </Button>
             </Link>
-            <Button variant="outline" className="border-cyan-400/50 text-cyan-200 hover:bg-cyan-400/10 px-8 py-3 text-lg">
+            <Button
+              variant="outline"
+              className="border-[#141414]/50 text-[#F5F5DC] hover:text-[#F5F5DC] !bg-[#F5F5DC33] hover:bg-[#333333]/10 px-8 py-3 text-lg"
+            >
               Watch Demo
             </Button>
           </div>
@@ -59,60 +97,61 @@ const Index = () => {
       </section>
 
       {/* Live Scoreboard */}
-      <section className="py-16 bg-black/20">
+      <section className="pb-16 bg-[#000000]">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
-              Live Performance Dashboard
-            </h2>
-            <p className="text-cyan-100/70 max-w-2xl mx-auto">
-              Real-time metrics from our active agent network
-            </p>
-          </div>
-          <div className="grid md:grid-cols-4 gap-6">
-            <Card className="bg-black/40 backdrop-blur-md border border-cyan-400/30 shadow-xl shadow-cyan-500/10 text-center">
+          <div className="grid md:grid-cols-3 gap-6">
+            <Card className="bg-black/40 backdrop-blur-md border border-[#F5F5DC33]  text-center">
               <CardContent className="p-6">
-                <div className="text-3xl font-bold text-cyan-300 mb-2">10,247</div>
-                <div className="text-cyan-100/70">Active Agents</div>
+                <div className="text-[30px] font-bold text-[#FFFDD0] mb-2">
+                  50K+
+                </div>
+                <div className="text-[#9CA3AF]">Active Agents</div>
               </CardContent>
             </Card>
-            <Card className="bg-black/40 backdrop-blur-md border border-cyan-400/30 shadow-xl shadow-cyan-500/10 text-center">
+            <Card className="bg-black/40 backdrop-blur-md border border-[#F5F5DC33]  text-center">
               <CardContent className="p-6">
-                <div className="text-3xl font-bold text-cyan-300 mb-2">$2.4M</div>
-                <div className="text-cyan-100/70">Monthly Commissions</div>
+                <div className="text-[30px] font-bold text-[#FFFDD0] mb-2">
+                  $2.8B+
+                </div>
+                <div className="text-[#9CA3AF]">Policies Closed</div>
               </CardContent>
             </Card>
-            <Card className="bg-black/40 backdrop-blur-md border border-cyan-400/30 shadow-xl shadow-cyan-500/10 text-center">
+            <Card className="bg-black/40 backdrop-blur-md border border-[#F5F5DC33]  text-center">
               <CardContent className="p-6">
-                <div className="text-3xl font-bold text-cyan-300 mb-2">98.2%</div>
-                <div className="text-cyan-100/70">Lead Quality Score</div>
-              </CardContent>
-            </Card>
-            <Card className="bg-black/40 backdrop-blur-md border border-cyan-400/30 shadow-xl shadow-cyan-500/10 text-center">
-              <CardContent className="p-6">
-                <div className="text-3xl font-bold text-cyan-300 mb-2">24hr</div>
-                <div className="text-cyan-100/70">Average Response</div>
+                <div className="text-[30px] font-bold text-[#FFFDD0] mb-2">
+                  98.7%
+                </div>
+                <div className="text-[#9CA3AF]">Lead Quality</div>
               </CardContent>
             </Card>
           </div>
         </div>
       </section>
 
+      <section className="py-20 bg-[#16213E4D]">
+        <div className="container mx-auto px-6">
+          <LiveAgentActivity />
+        </div>
+      </section>
+
       {/* Performance Analytics */}
-      <section id="features" className="py-20">
+      <section id="features" className="py-20 bg-[#000000]">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400">Real-Time Performance Analytics</h2>
-            <p className="text-xl text-cyan-100/70 max-w-3xl mx-auto">
-              Track live market data, agent performance, and lead opportunities across all 50 states
+            <h2 className="text-4xl font-bold mb-4 text-[#F5F5DC]">
+              Real-Time Performance Analytics
+            </h2>
+            <p className="text-xl text-[#9CA3AF] max-w-3xl mx-auto">
+              Track live market data, agent performance, and lead opportunities
+              across all 50 states
             </p>
           </div>
-          
+
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="bg-black/40 backdrop-blur-md border border-cyan-400/30 shadow-xl shadow-cyan-500/10 rounded-lg p-6">
+            <div>
               <StatePerformanceChart />
             </div>
-            <div className="bg-black/40 backdrop-blur-md border border-cyan-400/30 shadow-xl shadow-cyan-500/10 rounded-lg p-6">
+            <div>
               <USHeatMap />
             </div>
           </div>
@@ -120,50 +159,59 @@ const Index = () => {
       </section>
 
       {/* Agent Testimonials */}
-      <section id="testimonials" className="py-20 bg-black/20">
+      <section id="testimonials" className="py-20 bg-[#16213E4D]">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400">
-              Success Stories
+            <h2 className="text-[36px] font-bold mb-4 text-[#F5F5DC]">
+              What Our Agents Say
             </h2>
-            <p className="text-xl text-cyan-100/70 max-w-3xl mx-auto">
-              Hear from top-performing agents who've transformed their business with InsuranceElite
+            <p className="!text-[20px] text-[#9CA3AF] max-w-3xl mx-auto">
+              Join thousands of successful insurance agents who trust
+              InsuranceElite
             </p>
           </div>
-          <div className="bg-black/40 backdrop-blur-md border border-cyan-400/30 shadow-xl shadow-cyan-500/10 rounded-lg p-6">
+          <div>
             <AgentTestimonials />
           </div>
         </div>
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400">
-              Choose Your Plan
-            </h2>
-            <p className="text-xl text-cyan-100/70 max-w-3xl mx-auto">
-              Flexible pricing options designed to scale with your business
-            </p>
-          </div>
-          <div className="bg-black/40 backdrop-blur-md border border-cyan-400/30 shadow-xl shadow-cyan-500/10 rounded-lg p-6">
-            <PricingSection />
-          </div>
+      <section id="pricing" className="py-20 bg-[#000000]">
+        <div>
+          <PricingSection />
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 border-t border-cyan-400/30">
+      <footer className="py-12 border-t border-[#1F2937] bg-[#000000]">
         <div className="container mx-auto px-6 text-center">
-          <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400 mb-4">
-            InsuranceElite
+          <div className=" mb-4 flex justify-center">
+            <img src={leadslogo} alt="Londen Leads" />
           </div>
-          <p className="text-cyan-100/70 mb-6">Empowering insurance agents with premium leads and real-time insights</p>
+          <p className="text-[#9CA3AF] mb-6">
+            Empowering insurance agents with premium leads and real-time
+            insights
+          </p>
           <div className="flex justify-center space-x-6">
-            <a href="#" className="text-cyan-300/70 hover:text-cyan-200 transition-colors">Privacy Policy</a>
-            <a href="#" className="text-cyan-300/70 hover:text-cyan-200 transition-colors">Terms of Service</a>
-            <Link to="/contact-neon" className="text-cyan-300/70 hover:text-cyan-200 transition-colors">Contact</Link>
+            <a
+              href="#"
+              className="text-[#9CA3AF] hover:text-[#9CA3AF] transition-colors"
+            >
+              Privacy Policy
+            </a>
+            <a
+              href="#"
+              className="text-[#9CA3AF] hover:text-[#9CA3AF] transition-colors"
+            >
+              Terms of Service
+            </a>
+            <Link
+              to="/contact-neon"
+              className="text-[#9CA3AF] hover:text-[#9CA3AF] transition-colors"
+            >
+              Contact
+            </Link>
           </div>
         </div>
       </footer>
