@@ -87,7 +87,7 @@ const Index = () => {
               </Button>
             </Link>
             <Button
-              variant="outline"
+              // variant="outline"
               className="border-[#141414]/50 text-[#F5F5DC] hover:text-[#F5F5DC] !bg-[#F5F5DC33] hover:bg-[#333333]/10 px-8 py-3 text-lg"
             >
               Watch Demo
