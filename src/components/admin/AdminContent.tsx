@@ -1,3 +1,5 @@
+import React, { useState, useRef, useEffect } from "react";
+import { User, LogOut, ChevronDown } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminOverview } from "./sections/AdminOverview";
 import { UserManagement } from "./sections/UserManagement";
@@ -7,10 +9,107 @@ import { PerformanceAnalytics } from "./sections/PerformanceAnalytics";
 import { SalesReporting } from "./sections/SalesReporting";
 import { SubscriptionManagement } from "./sections/SubscriptionManagement";
 import { NotificationCenter } from "./sections/NotificationCenter";
+import CreateProfilePage from "./sections/ProfilePage";
 
 interface AdminContentProps {
   activeSection: string;
 }
+
+interface UserActionMenuProps {
+  userName?: string;
+}
+
+const UserActionMenu: React.FC<UserActionMenuProps> = ({
+  userName = "Admin User",
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleProfile = () => {
+    console.log("Navigate to profile");
+    setIsOpen(false);
+  };
+
+  const handleLogout = () => {
+    console.log("Logout user");
+    setIsOpen(false);
+  };
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      {/* User Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-elevated-bg border border-input-border hover:bg-cream-primary/10 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cream-primary/50"
+      >
+        <div className="w-8 h-8 rounded-full bg-cream-primary/20 flex items-center justify-center">
+          <User className="w-4 h-4 text-cream-primary" />
+        </div>
+        <span className="text-sm font-medium text-primary-text hidden md:block">
+          {userName}
+        </span>
+        <ChevronDown
+          className={`w-4 h-4 text-secondary-text transition-transform duration-200 ${
+            isOpen ? "rotate-180" : ""
+          }`}
+        />
+      </button>
+
+      {/* Dropdown Menu */}
+      {isOpen && (
+        <>
+          {/* Backdrop for mobile */}
+          <div
+            className="fixed inset-0 z-40 md:hidden"
+            onClick={() => setIsOpen(false)}
+          />
+
+          <div className="absolute right-0 mt-2 w-40 bg-elevated-bg border border-input-border rounded-lg shadow-lg z-50 animate-in fade-in-0 zoom-in-95">         
+
+            {/* Menu Options */}
+            <div className="py-2">
+              {/* Profile Option */}
+              <button
+                onClick={handleProfile}
+                className="w-full flex items-center px-4 py-2 text-sm text-primary-text hover:bg-cream-primary/10 transition-colors duration-200 focus:outline-none focus:bg-cream-primary/10"
+              >
+                <User className="w-4 h-4 mr-3 text-cream-primary" />
+                <span>View Profile</span>
+              </button>
+
+              {/* Divider */}
+              <div className="border-t border-input-border my-1"></div>
+
+              {/* Logout Option */}
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors duration-200 focus:outline-none focus:bg-red-500/10"
+              >
+                <LogOut className="w-4 h-4 mr-3" />
+                <span>Sign Out</span>
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
 
 export function AdminContent({ activeSection }: AdminContentProps) {
   const renderContent = () => {
@@ -29,6 +128,8 @@ export function AdminContent({ activeSection }: AdminContentProps) {
         return <SalesReporting />;
       case "subscriptions":
         return <SubscriptionManagement />;
+      case "profile":
+        return <CreateProfilePage />;
       case "notifications":
         return <NotificationCenter />;
       default:
@@ -57,6 +158,8 @@ export function AdminContent({ activeSection }: AdminContentProps) {
             <div className="text-xs bg-cream-primary/20 text-cream-primary px-3 py-1 rounded border border-cream-primary/50">
               ADMIN ACCESS
             </div>
+            {/* User Action Menu */}
+            <UserActionMenu userName="John Doe" />
           </div>
         </div>
       </header>

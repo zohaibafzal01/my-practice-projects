@@ -22,11 +22,37 @@ const Leads = () => {
               InsuranceElite Leads
             </div>
             <div className="hidden md:flex space-x-8">
-              <Link to="/" className="text-cyan-300 hover:text-cyan-100 transition-colors">Home</Link>
-              <Link to="/dashboard" className="text-cyan-300 hover:text-cyan-100 transition-colors">Dashboard</Link>
-              <Link to="/about-neon" className="text-cyan-300 hover:text-cyan-100 transition-colors">About Us</Link>
-              <Link to="/contact-neon" className="text-cyan-300 hover:text-cyan-100 transition-colors">Contact</Link>
-              <Link to="/auth" className="text-cyan-300 hover:text-cyan-100 transition-colors">Login</Link>
+              <Link
+                to="/"
+                className="text-cyan-300 hover:text-cyan-100 transition-colors"
+              >
+                Home
+              </Link>
+              <Link
+                to="/dashboard"
+                className="text-cyan-300 hover:text-cyan-100 transition-colors"
+              >
+                Dashboard
+              </Link>
+              <Link
+                to="/about
+                "
+                className="text-cyan-300 hover:text-cyan-100 transition-colors"
+              >
+                About Us
+              </Link>
+              <Link
+                to="/contact"
+                className="text-cyan-300 hover:text-cyan-100 transition-colors"
+              >
+                Contact
+              </Link>
+              <Link
+                to="/auth"
+                className="text-cyan-300 hover:text-cyan-100 transition-colors"
+              >
+                Login
+              </Link>
             </div>
           </div>
         </div>
@@ -37,19 +63,31 @@ const Leads = () => {
         <div className="container mx-auto px-6">
           <Tabs defaultValue="queue" className="mt-8">
             <TabsList className="grid w-full grid-cols-3 bg-black/40 backdrop-blur-md border border-cyan-400/30">
-              <TabsTrigger value="queue" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-100">
+              <TabsTrigger
+                value="queue"
+                className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-100"
+              >
                 Lead Queue
               </TabsTrigger>
-              <TabsTrigger value="details" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-100">
+              <TabsTrigger
+                value="details"
+                className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-100"
+              >
                 Lead Details
               </TabsTrigger>
-              <TabsTrigger value="actions" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-100">
+              <TabsTrigger
+                value="actions"
+                className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-100"
+              >
                 Actions
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="queue" className="space-y-8">
-              <LeadQueue onSelectLead={setSelectedLeadId} selectedLeadId={selectedLeadId} />
+              <LeadQueue
+                onSelectLead={setSelectedLeadId}
+                selectedLeadId={selectedLeadId}
+              />
             </TabsContent>
 
             <TabsContent value="details" className="space-y-8">
