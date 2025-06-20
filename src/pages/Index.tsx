@@ -19,15 +19,21 @@ const Index = () => {
       <nav className="fixed top-0 w-full z-50 bg-black/30 backdrop-blur-md ">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div>
+            <Link to="/">
               <img src={leadslogo} alt="Londen Leads" />
-            </div>
+            </Link>
             <div className="hidden md:flex space-x-8">
-              <Link
+              {/* <Link
                 to="/dashboard"
                 className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
               >
                 Dashboard
+              </Link> */}
+              <Link
+                to="/"
+                className="text-[#E2DCD5] hover:text-cyan-100 transition-colors"
+              >
+                Home
               </Link>
               <a
                 href="#features"
@@ -48,13 +54,13 @@ const Index = () => {
                 Pricing
               </a>
               <Link
-                to="/about-neon"
+                to="/about"
                 className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
               >
                 About Us
               </Link>
               <Link
-                to="/contact-neon"
+                to="/contact"
                 className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
               >
                 Contact Us
@@ -187,7 +193,9 @@ const Index = () => {
       <footer className="py-12 border-t border-[#1F2937] bg-[#000000]">
         <div className="container mx-auto px-6 text-center">
           <div className=" mb-4 flex justify-center">
-            <img src={leadslogo} alt="Londen Leads" />
+            <Link to="/">
+              <img src={leadslogo} alt="Londen Leads" />
+            </Link>
           </div>
           <p className="text-[#9CA3AF] mb-6">
             Empowering insurance agents with premium leads and real-time
@@ -207,7 +215,7 @@ const Index = () => {
               Terms of Service
             </a>
             <Link
-              to="/contact-neon"
+              to="/contact"
               className="text-[#9CA3AF] hover:text-[#9CA3AF] transition-colors"
             >
               Contact

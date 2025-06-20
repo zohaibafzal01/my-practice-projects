@@ -45,13 +45,13 @@ export function AdminOverview() {
       icon: TrendingUp,
       color: "text-cream-primary",
     },
-    {
-      title: "System Alerts",
-      value: "3",
-      change: "Requires attention",
-      icon: AlertTriangle,
-      color: "text-theme-danger",
-    },
+    // {
+    //   title: "System Alerts",
+    //   value: "3",
+    //   change: "Requires attention",
+    //   icon: AlertTriangle,
+    //   color: "text-theme-danger",
+    // },
   ];
 
   return (
@@ -87,7 +87,7 @@ export function AdminOverview() {
         ))}
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-8">
+      {/* <div className="grid lg:grid-cols-2 gap-8">
         <Card className="bg-elevated-bg border border-input-border shadow-xl">
           <CardHeader>
             <CardTitle className="text-xl font-bold text-cream-primary">
@@ -165,7 +165,7 @@ export function AdminOverview() {
             </button>
           </CardContent>
         </Card>
-      </div>
+      </div> */}
     </div>
   );
 }

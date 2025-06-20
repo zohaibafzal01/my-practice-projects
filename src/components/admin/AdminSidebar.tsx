@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard,
   Users,
+  User,
   UserCheck,
   RotateCcw,
   BarChart3,
@@ -50,21 +51,26 @@ const adminMenuItems = [
     icon: BarChart3,
     id: "analytics",
   },
-  {
-    title: "Sales Reporting",
-    icon: DollarSign,
-    id: "sales",
-  },
+  // {
+  //   title: "Sales Reporting",
+  //   icon: DollarSign,
+  //   id: "sales",
+  // },
   {
     title: "Subscriptions",
     icon: CreditCard,
     id: "subscriptions",
   },
   {
-    title: "Notifications",
-    icon: Bell,
-    id: "notifications",
+    title: "profile",
+    icon: User,
+    id: "profile",
   },
+  // {
+  //   title: "Notifications",
+  //   icon: Bell,
+  //   id: "notifications",
+  // },
 ];
 
 interface AdminSidebarProps {

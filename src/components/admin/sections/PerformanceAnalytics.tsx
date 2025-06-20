@@ -234,7 +234,7 @@ export function PerformanceAnalytics() {
         </Card>
 
         {/* Monthly Trends */}
-        <Card className="bg-elevated-bg border-input-border lg:col-span-2">
+        {/* <Card className="bg-elevated-bg border-input-border lg:col-span-2">
           <CardHeader>
             <CardTitle className="text-cream-primary">
               Monthly Performance Trends
@@ -278,7 +278,7 @@ export function PerformanceAnalytics() {
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
 
       {/* Performance Insights */}
