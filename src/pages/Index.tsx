@@ -66,11 +66,18 @@ const Index = () => {
                 Contact Us
               </Link>
             </div>
-            <Link to="/auth">
-              <Button className="bg-[#E2DCD5] hover:bg-[#E2DCD5] text-[#0A0A0F] text-[14px] font-semibold ">
-                Login / Signup
-              </Button>
-            </Link>
+            <div className="flex items-center space-x-4">
+              <Link to="/auth">
+                <Button className="bg-[#E2DCD5] hover:bg-[#E2DCD5] text-[#0A0A0F] text-[14px] font-semibold ">
+                  Login / Signup
+                </Button>
+              </Link>
+              <Link to="/lead-capture">
+                <Button className="bg-[#E2DCD5] hover:bg-[#E2DCD5] text-[#0A0A0F] text-[14px] font-semibold ">
+                  Submit Lead
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </nav>
@@ -203,13 +210,13 @@ const Index = () => {
           </p>
           <div className="flex justify-center space-x-6">
             <a
-              href="#"
+              href="/privacy-policy"
               className="text-[#9CA3AF] hover:text-[#9CA3AF] transition-colors"
             >
               Privacy Policy
             </a>
             <a
-              href="#"
+              href="/terms-of-service"
               className="text-[#9CA3AF] hover:text-[#9CA3AF] transition-colors"
             >
               Terms of Service
