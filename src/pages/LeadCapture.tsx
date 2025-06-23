@@ -118,6 +118,10 @@ const LeadForm = () => {
 
   return (
     <div className="min-h-screen bg-[#000000]">
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-0 left-0 w-80 h-80 bg-[#06B6D433] rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-0 w-80 h-80 bg-[#A855F733] rounded-full blur-3xl"></div>
+      </div>
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 bg-black/30 backdrop-blur-md ">
         <div className="container mx-auto px-6 py-4">
