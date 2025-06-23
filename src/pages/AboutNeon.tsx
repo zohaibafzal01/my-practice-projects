@@ -59,11 +59,18 @@ const AboutNeon = () => {
                 Contact Us
               </Link>
             </div>
-            <Link to="/auth">
-              <Button className="bg-[#E2DCD5] hover:bg-[#E2DCD5] text-[#0A0A0F] text-[14px] font-semibold ">
-                Login / Signup
-              </Button>
-            </Link>
+            <div className="flex items-center space-x-4">
+              <Link to="/auth">
+                <Button className="bg-[#E2DCD5] hover:bg-[#E2DCD5] text-[#0A0A0F] text-[14px] font-semibold ">
+                  Login / Signup
+                </Button>
+              </Link>
+              <Link to="/lead-capture">
+                <Button className="bg-[#E2DCD5] hover:bg-[#E2DCD5] text-[#0A0A0F] text-[14px] font-semibold ">
+                  Submit Lead
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </nav>
@@ -72,7 +79,7 @@ const AboutNeon = () => {
       <section className="pt-32 pb-16 bg-[#000000]">
         <div className="container mx-auto px-6 text-center">
           <h1 className="text-5xl font-bold mb-6 text-[#E2DCD5] bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400">
-            About InsuranceElite
+            About Londen Leads
           </h1>
           <p className="text-xl text-[#D1D5DB] max-w-3xl mx-auto mb-8">
             We're revolutionizing the insurance industry by connecting
@@ -260,13 +267,13 @@ const AboutNeon = () => {
           </p>
           <div className="flex justify-center space-x-6">
             <a
-              href="#"
+              href="/privacy-policy"
               className="text-[#9CA3AF] hover:text-[#9CA3AF] transition-colors"
             >
               Privacy Policy
             </a>
             <a
-              href="#"
+              href="/terms-of-service"
               className="text-[#9CA3AF] hover:text-[#9CA3AF] transition-colors"
             >
               Terms of Service

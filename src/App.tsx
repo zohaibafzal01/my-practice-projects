@@ -16,6 +16,9 @@ import OtpVerification from "./pages/OtpVerification";
 import ThankYou from "./pages/ThankYou";
 import NotFound from "./pages/NotFound";
 import Leads from "./pages/Leads";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsService from "./pages/TermsService";
+import LeadForm from "./pages/LeadCapture";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +40,9 @@ const App = () => (
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/otp-verification" element={<OtpVerification />} />
           <Route path="/thank-you" element={<ThankYou />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-service" element={<TermsService />} />
+          <Route path="/lead-capture" element={<LeadForm />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
