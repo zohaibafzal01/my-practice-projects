@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Eye, UserX, UserCheck, Mail, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import AgentApi from "@/api/agent";
 
 interface Agent {
   id: string;
@@ -71,10 +72,13 @@ const mockAgents: Agent[] = [
 ];
 
 export function UserManagement() {
+  const agentapi = new AgentApi();
   const [agents, setAgents] = useState<Agent[]>(mockAgents);
+  const [allagents, setAllAgents] = useState();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const { toast } = useToast();
+  console.log("Agents::::::::::::::::::", allagents);
 
   const filteredAgents = agents.filter((agent) => {
     const matchesSearch =
@@ -100,6 +104,16 @@ export function UserManagement() {
       duration: 3000,
     });
   };
+
+  useEffect(() => {
+    const fetchAgents = async () => {
+      const data = await agentapi.getAllAgents();
+      console.log("Fetched agents:", data);
+
+      setAllAgents(data);
+    };
+    fetchAgents();
+  }, []);
 
   const getStatusColor = (status: Agent["status"]) => {
     switch (status) {
