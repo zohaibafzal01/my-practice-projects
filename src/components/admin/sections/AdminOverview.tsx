@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { selectUserInfo } from "@/redux/selectors/userSelectors";
 import { RootState } from "@/redux/store";
 import {
   Users,
@@ -11,9 +12,7 @@ import {
 import { useSelector } from "react-redux";
 
 export function AdminOverview() {
-   const userInfo = useSelector(
-      (state: RootState) => state.user_store.user_info
-    );
+   const userInfo  = useSelector(selectUserInfo);
   
     console.log("Logged in user role::::::::::::::::::::::", userInfo);
   const stats = [
