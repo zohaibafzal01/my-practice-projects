@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { RootState } from "@/redux/store";
 import {
   Users,
   UserCheck,
@@ -7,8 +8,14 @@ import {
   DollarSign,
   AlertTriangle,
 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 export function AdminOverview() {
+   const userInfo = useSelector(
+      (state: RootState) => state.user_store.user_info
+    );
+  
+    console.log("Logged in user role::::::::::::::::::::::", userInfo);
   const stats = [
     {
       title: "Active Agents",
