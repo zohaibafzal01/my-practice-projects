@@ -1,3 +1,3 @@
 import { RootState } from "@/redux/store";
 
-export const selectUserInfo = (state: RootState) => state.user_info;
+export const selectUserInfo = (state: RootState) => state?.user?.user_info;

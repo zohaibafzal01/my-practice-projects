@@ -12,9 +12,7 @@ import {
 import { useSelector } from "react-redux";
 
 export function AdminOverview() {
-   const userInfo  = useSelector(selectUserInfo);
-  
-    console.log("Logged in user role::::::::::::::::::::::", userInfo);
+   
   const stats = [
     {
       title: "Active Agents",
