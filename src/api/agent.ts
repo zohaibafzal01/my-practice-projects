@@ -1,3 +1,4 @@
+// @/api/agent.ts
 import BaseApi from "./baseapi";
 
 export default class AgentApi extends BaseApi {
@@ -7,8 +8,11 @@ export default class AgentApi extends BaseApi {
     super();
   }
 
-  async getAllAgents() {
-    const data = await this.get(`${this.baseUrl}agents`,);
-    return data;
+  async getAllAgents(token: string) {
+    return await this.get(`${this.baseUrl}agents`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   }
 }

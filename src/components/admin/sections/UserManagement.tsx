@@ -14,6 +14,8 @@ import { Input } from "@/components/ui/input";
 import { Eye, UserX, UserCheck, Mail, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AgentApi from "@/api/agent";
+import { useSelector } from "react-redux";
+import { selectUserInfo } from "@/redux/selectors/userSelectors";
 
 interface Agent {
   id: string;
@@ -72,6 +74,9 @@ const mockAgents: Agent[] = [
 ];
 
 export function UserManagement() {
+  const userInfo = useSelector(selectUserInfo);
+
+  console.log("Logged in user role::::::::::::::::::::::", userInfo);
   const agentapi = new AgentApi();
   const [agents, setAgents] = useState<Agent[]>(mockAgents);
   const [allagents, setAllAgents] = useState();
@@ -107,13 +112,26 @@ export function UserManagement() {
 
   useEffect(() => {
     const fetchAgents = async () => {
-      const data = await agentapi.getAllAgents();
-      console.log("Fetched agents:", data);
+      try {
+        if (!userInfo?.token) {
+          console.error("No token found");
+          return;
+        }
 
-      setAllAgents(data);
+        const data = await agentapi.getAllAgents(userInfo.token);
+        setAllAgents(data);
+      } catch (error: any) {
+        console.error("Fetch agents failed:", error);
+        toast({
+          title: "Failed to fetch agents",
+          description: error?.response?.data?.message || error.message,
+        });
+      }
     };
+
     fetchAgents();
-  }, []);
+  }, [userInfo]);
+  
 
   const getStatusColor = (status: Agent["status"]) => {
     switch (status) {

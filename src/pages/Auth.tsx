@@ -1,24 +1,27 @@
-
-import { useState } from "react";
+import AuthApi from "@/api/auth";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link, useNavigate } from "react-router-dom";
+import { login } from "@/redux/slices/userSlice";
 import {
-  Mail,
-  Lock,
-  User,
   Eye,
   EyeOff,
-  Shield,
-  UserCheck,
   Loader2,
+  Lock,
+  Mail,
+  Shield,
+  User,
+  UserCheck,
 } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import AuthApi from "@/api/auth";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 
 const Auth = () => {
+  const dispatch = useDispatch();
+
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [loginType, setLoginType] = useState<"admin" | "agent">("agent");
@@ -30,6 +33,7 @@ const Auth = () => {
     fullName: "",
     confirmPassword: "",
   });
+
   const navigate = useNavigate();
   const authApi = new AuthApi();
 
@@ -44,7 +48,6 @@ const Auth = () => {
 
     if (loginType === "agent") {
       if (isDevelopment) {
-        // Direct navigation for agent in development
         navigate("/dashboard", { state: { role: "agent" } });
       } else {
         setError("Agent login not available");
@@ -52,7 +55,6 @@ const Auth = () => {
       return;
     }
 
-    // Admin login
     if (!formData.email || !formData.password) {
       setError("Please enter email and password");
       return;
@@ -62,14 +64,18 @@ const Auth = () => {
     try {
       const response = await authApi.login(formData.email, formData.password);
 
-      if (response.token || response.access_token) {
-        const token = response.token || response.access_token;
+      const token = response?.data?.accessToken;
+      const userData = response?.data?.user;
+
+      if (token && userData) {
         localStorage.setItem("authToken", token);
         localStorage.setItem("userRole", "admin");
         localStorage.setItem(
-          "userData",
-          JSON.stringify(response.user || response.data)
+          "user_info",
+          JSON.stringify({ ...userData, token })
         );
+
+        dispatch(login({ ...userData, token }));
       }
 
       navigate("/admin/overview", { state: { role: "admin" } });
@@ -94,7 +100,6 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen bg-black via-blue-900 to-indigo-900 flex items-center justify-center p-6">
-      {/* Background effects */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-0 left-0 w-80 h-80 bg-[#06B6D433] rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 right-0 w-80 h-80 bg-[#A855F733] rounded-full blur-3xl"></div>
@@ -106,7 +111,6 @@ const Auth = () => {
             <CardTitle className="text-3xl font-bold mb-2 flex justify-center">
               <img src="/logo.png" alt="Logo" className="h-10 w-auto" />
             </CardTitle>
-
             <p className="text-cyan-100/70">
               {isLogin
                 ? "Join thousands of successful agents"
@@ -277,11 +281,7 @@ const Auth = () => {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full font-semibold py-3 shadow-lg ${
-                  loginType === "admin" && isLogin
-                    ? "bg-[#E2DCD5] hover:bg-[#E2DCD5]"
-                    : "bg-[#E2DCD5]  hover:bg-[#E2DCD5] "
-                } text-black disabled:opacity-50`}
+                className="w-full font-semibold py-3 shadow-lg bg-[#E2DCD5] text-black disabled:opacity-50"
               >
                 {isLoading ? (
                   <>
