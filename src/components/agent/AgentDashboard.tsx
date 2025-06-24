@@ -7,6 +7,7 @@ import { AgentSubscriptionBilling } from "./sections/AgentSubscriptionBilling";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CreateProfilePage from "../admin/sections/ProfilePage";
+import { useNavigate } from "react-router-dom";
 
 interface UserActionMenuProps {
   userName?: string;
@@ -17,6 +18,7 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -39,8 +41,10 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
   };
 
   const handleLogout = () => {
+    localStorage.clear();
     console.log("Logout user");
     setIsOpen(false);
+    navigate("/auth");
   };
 
   return (

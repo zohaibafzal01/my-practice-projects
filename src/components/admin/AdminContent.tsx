@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { User, LogOut, ChevronDown } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminOverview } from "./sections/AdminOverview";
@@ -11,10 +12,6 @@ import { SubscriptionManagement } from "./sections/SubscriptionManagement";
 import { NotificationCenter } from "./sections/NotificationCenter";
 import CreateProfilePage from "./sections/ProfilePage";
 
-interface AdminContentProps {
-  activeSection: string;
-}
-
 interface UserActionMenuProps {
   userName?: string;
 }
@@ -24,6 +21,7 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -46,8 +44,10 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
   };
 
   const handleLogout = () => {
+    localStorage.clear();
     console.log("Logout user");
     setIsOpen(false);
+    navigate("/auth");
   };
 
   return (
@@ -79,8 +79,7 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
             onClick={() => setIsOpen(false)}
           />
 
-          <div className="absolute right-0 mt-2 w-40 bg-elevated-bg border border-input-border rounded-lg shadow-lg z-50 animate-in fade-in-0 zoom-in-95">         
-
+          <div className="absolute right-0 mt-2 w-40 bg-elevated-bg border border-input-border rounded-lg shadow-lg z-50 animate-in fade-in-0 zoom-in-95">
             {/* Menu Options */}
             <div className="py-2">
               {/* Profile Option */}
@@ -111,7 +110,11 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
   );
 };
 
-export function AdminContent({ activeSection }: AdminContentProps) {
+export function AdminContent() {
+  // Get the current route and extract the section
+  const location = useLocation();
+  const activeSection = location.pathname.split("/").pop() || "overview";
+
   const renderContent = () => {
     switch (activeSection) {
       case "overview":
@@ -137,6 +140,21 @@ export function AdminContent({ activeSection }: AdminContentProps) {
     }
   };
 
+  const getSectionTitle = (section: string) => {
+    const titles: { [key: string]: string } = {
+      overview: "Overview",
+      users: "User Management",
+      leads: "Lead Management",
+      replacements: "Replacement Requests",
+      analytics: "Performance Analytics",
+      sales: "Sales Reporting",
+      subscriptions: "Subscriptions",
+      profile: "Profile",
+      notifications: "Notifications",
+    };
+    return titles[section] || "Overview";
+  };
+
   return (
     <div className="flex-1 flex flex-col">
       {/* Header */}
@@ -149,8 +167,7 @@ export function AdminContent({ activeSection }: AdminContentProps) {
                 Admin Dashboard
               </h1>
               <p className="text-secondary-text text-sm">
-                {activeSection.charAt(0).toUpperCase() +
-                  activeSection.slice(1).replace(/([A-Z])/g, " $1")}
+                {getSectionTitle(activeSection)}
               </p>
             </div>
           </div>

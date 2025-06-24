@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -30,58 +30,63 @@ const adminMenuItems = [
     title: "Overview",
     icon: LayoutDashboard,
     id: "overview",
+    route: "/admin/overview",
   },
   {
     title: "User Management",
     icon: Users,
     id: "users",
+    route: "/admin/users",
   },
   {
     title: "Lead Management",
     icon: UserCheck,
     id: "leads",
+    route: "/admin/leads",
   },
   {
     title: "Replacement Requests",
     icon: RotateCcw,
     id: "replacements",
+    route: "/admin/replacements",
   },
   {
     title: "Performance Analytics",
     icon: BarChart3,
     id: "analytics",
+    route: "/admin/analytics",
   },
   // {
   //   title: "Sales Reporting",
   //   icon: DollarSign,
   //   id: "sales",
+  //   route: "/admin/sales",
   // },
   {
     title: "Subscriptions",
     icon: CreditCard,
     id: "subscriptions",
+    route: "/admin/subscriptions",
   },
   {
-    title: "profile",
+    title: "Profile",
     icon: User,
     id: "profile",
+    route: "/admin/profile",
   },
   // {
   //   title: "Notifications",
   //   icon: Bell,
   //   id: "notifications",
+  //   route: "/admin/notifications",
   // },
 ];
 
-interface AdminSidebarProps {
-  onSectionSelect?: (sectionId: string) => void;
-  activeSection?: string;
-}
+export function AdminSidebar() {
+  // Get active section from current route
+  const location = useLocation();
+  const activeSection = location.pathname.split("/").pop() || "overview";
 
-export function AdminSidebar({
-  onSectionSelect,
-  activeSection = "overview",
-}: AdminSidebarProps) {
   return (
     <Sidebar className="border-r border-input-border bg-elevated-bg/40 backdrop-blur-md">
       <SidebarHeader className="border-b border-input-border p-6">
@@ -108,12 +113,14 @@ export function AdminSidebar({
               {adminMenuItems.map((item) => (
                 <SidebarMenuItem key={item.id}>
                   <SidebarMenuButton
-                    onClick={() => onSectionSelect?.(item.id)}
+                    asChild
                     isActive={activeSection === item.id}
                     className="text-primary-text hover:bg-cream-primary/20 hover:text-cream-primary data-[active=true]:bg-cream-primary/30 data-[active=true]:text-cream-primary"
                   >
-                    <item.icon className="h-4 w-4" />
-                    <span>{item.title}</span>
+                    <Link to={item.route}>
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
