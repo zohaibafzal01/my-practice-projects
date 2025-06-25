@@ -65,11 +65,11 @@ const AboutNeon = () => {
                   Login / Signup
                 </Button>
               </Link>
-              <Link to="/lead-capture">
+              {/* <Link to="/lead-capture">
                 <Button className="bg-[#E2DCD5] hover:bg-[#E2DCD5] text-[#0A0A0F] text-[14px] font-semibold ">
                   Submit Lead
                 </Button>
-              </Link>
+              </Link> */}
             </div>
           </div>
         </div>
