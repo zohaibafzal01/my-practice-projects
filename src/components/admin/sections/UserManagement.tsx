@@ -31,59 +31,14 @@ interface Agent {
   totalSales: number;
 }
 
-const mockAgents: Agent[] = [
-  {
-    id: "1",
-    name: "John Smith",
-    email: "john.smith@email.com",
-    phone: "(555) 123-4567",
-    plan: "Pro",
-    assignedLeads: 15,
-    maxLeads: 20,
-    status: "active",
-    joinDate: "2024-01-15",
-    lastActive: "2024-01-16",
-    totalSales: 25,
-  },
-  {
-    id: "2",
-    name: "Sarah Johnson",
-    email: "sarah.j@email.com",
-    phone: "(555) 987-6543",
-    plan: "Enterprise",
-    assignedLeads: 28,
-    maxLeads: 30,
-    status: "active",
-    joinDate: "2024-01-10",
-    lastActive: "2024-01-16",
-    totalSales: 42,
-  },
-  {
-    id: "3",
-    name: "Mike Davis",
-    email: "mike.davis@email.com",
-    phone: "(555) 456-7890",
-    plan: "Basic",
-    assignedLeads: 8,
-    maxLeads: 10,
-    status: "suspended",
-    joinDate: "2024-01-08",
-    lastActive: "2024-01-14",
-    totalSales: 12,
-  },
-];
-
 export function UserManagement() {
   const userInfo = useSelector(selectUserInfo);
 
-  console.log("Logged in user role::::::::::::::::::::::", userInfo);
   const agentapi = new AgentApi();
-  const [agents, setAgents] = useState<Agent[]>(mockAgents);
-  const [allagents, setAllAgents] = useState();
+  const [agents, setAgents] = useState<Agent[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const { toast } = useToast();
-  console.log("Agents::::::::::::::::::", allagents);
 
   const filteredAgents = agents.filter((agent) => {
     const matchesSearch =
@@ -118,8 +73,25 @@ export function UserManagement() {
           return;
         }
 
-        const data = await agentapi.getAllAgents(userInfo.token);
-        setAllAgents(data);
+        const response = await agentapi.getAllAgents(userInfo?.token);
+        const fetchedAgents = response.items.map(
+          (agent: any): Agent => ({
+            id: agent?._id,
+            name: `${agent?.firstName} ${agent?.lastName}`,
+            email: agent.email,
+            phone: agent.phoneNumber,
+            plan: "Pro",
+            assignedLeads: agent?.totalLeadsAssigned || 0,
+            maxLeads: agent?.totalLeadsPurchased || 10,
+            status: agent?.status?.toLowerCase() as Agent["status"],
+            joinDate: agent?.createdAt,
+            lastActive:
+              agent?.lastLoginAt || agent?.updatedAt || agent?.createdAt,
+            totalSales: 0,
+          })
+        );
+
+        setAgents(fetchedAgents);
       } catch (error: any) {
         console.error("Fetch agents failed:", error);
         toast({
@@ -131,7 +103,6 @@ export function UserManagement() {
 
     fetchAgents();
   }, [userInfo]);
-  
 
   const getStatusColor = (status: Agent["status"]) => {
     switch (status) {

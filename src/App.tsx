@@ -47,7 +47,7 @@ const App = () => (
             <Route path="/thank-you" element={<ThankYou />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsService />} />
-            <Route path="/lead-capture" element={<LeadForm />} />
+            {/* <Route path="/lead-capture" element={<LeadForm />} /> */}
 
             {/* Admin Routes */}
             <Route path="/admin/overview" element={<AdminPage />} />
