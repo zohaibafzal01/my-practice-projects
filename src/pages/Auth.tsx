@@ -46,39 +46,43 @@ const Auth = () => {
     e.preventDefault();
     setError("");
 
-    if (loginType === "agent") {
-      if (isDevelopment) {
-        navigate("/dashboard", { state: { role: "agent" } });
-      } else {
-        setError("Agent login not available");
-      }
-      return;
-    }
-
     if (!formData.email || !formData.password) {
       setError("Please enter email and password");
       return;
     }
 
     setIsLoading(true);
+
     try {
       const response = await authApi.login(formData.email, formData.password);
 
       const token = response?.data?.accessToken;
       const userData = response?.data?.user;
 
-      if (token && userData) {
-        localStorage.setItem("authToken", token);
-        localStorage.setItem("userRole", "admin");
-        localStorage.setItem(
-          "user_info",
-          JSON.stringify({ ...userData, token })
-        );
-
-        dispatch(login({ ...userData, token }));
+      if (!token || !userData) {
+        setError("Invalid response from server");
+        return;
       }
 
-      navigate("/admin/overview", { state: { role: "admin" } });
+      const role = userData.userType?.toLowerCase();
+      const selected = loginType?.toLowerCase();
+
+      if (role !== selected) {
+        setError(
+          `This account is registered as "${role}", but you're trying to log in as "${selected}".`
+        );
+        return;
+      }
+
+      localStorage.setItem("authToken", token);
+      localStorage.setItem("userRole", role);
+      localStorage.setItem("user_info", JSON.stringify({ ...userData, token }));
+
+      dispatch(login({ ...userData, token }));
+
+      navigate(role === "admin" ? "/admin/overview" : "/dashboard", {
+        state: { role },
+      });
     } catch (error: any) {
       if (error.response?.status === 401) {
         setError("Invalid credentials");
@@ -219,7 +223,7 @@ const Auth = () => {
                     placeholder="Enter your email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="pl-10 bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545] "
+                    className="pl-10 bg-black/30 border-[#E2DCD5] !text-[#E2DCD5] placeholder:text-[#E2DCD545] "
                     required={loginType === "admin"}
                     disabled={isLoading}
                   />
@@ -239,7 +243,7 @@ const Auth = () => {
                     placeholder="Enter your password"
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="pl-10 pr-10 bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545] "
+                    className="pl-10 pr-10 bg-black/30 border-[#E2DCD5] !text-[#E2DCD5] placeholder:text-[#E2DCD545] "
                     required={loginType === "admin"}
                     disabled={isLoading}
                   />
@@ -281,7 +285,7 @@ const Auth = () => {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="w-full font-semibold py-3 shadow-lg bg-[#E2DCD5] text-black disabled:opacity-50"
+                className="w-full font-semibold py-3 shadow-lg bg-[#E2DCD5] hover:bg-[#E2DCD5] text-black disabled:opacity-50"
               >
                 {isLoading ? (
                   <>

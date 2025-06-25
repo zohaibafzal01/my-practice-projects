@@ -1,5 +1,4 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -15,46 +14,44 @@
     --card: 30 30 30; /* #1E1E1E - Elevated BG */
     --card-foreground: 245 245 245; /* #F5F5F5 - Primary Text */
 
-    --popover: 30 30 30; /* #1E1E1E - Elevated BG */
-    --popover-foreground: 245 245 245; /* #F5F5F5 - Primary Text */
+    --popover: 30 30 30;
+    --popover-foreground: 245 245 245;
 
-    --primary: 226 220 213; /* #E2DCD5 - Cream Beige */
-    --primary-foreground: 18 18 18; /* #121212 - Dark Base */
+    --primary: 226 220 213; /* #E2DCD5 */
+    --primary-foreground: 18 18 18;
 
-    --secondary: 30 30 30; /* #1E1E1E - Elevated BG */
-    --secondary-foreground: 226 220 213; /* #E2DCD5 - Cream Beige */
+    --secondary: 30 30 30;
+    --secondary-foreground: 226 220 213;
 
-    --muted: 37 37 37; /* #252525 - Section BG */
-    --muted-foreground: 176 176 176; /* #B0B0B0 - Secondary Text */
+    --muted: 37 37 37;
+    --muted-foreground: 176 176 176;
 
-    --accent: 37 37 37; /* #252525 - Section BG */
-    --accent-foreground: 226 220 213; /* #E2DCD5 - Cream Beige */
+    --accent: 37 37 37;
+    --accent-foreground: 226 220 213;
 
-    --destructive: 217 83 79; /* #D9534F - Danger */
-    --destructive-foreground: 255 255 255; /* #FFFFFF */
+    --destructive: 217 83 79;
+    --destructive-foreground: 255 255 255;
 
-    --border: 47 47 47; /* #2F2F2F - Divider */
-    --input: 37 37 37; /* #252525 - Input BG */
-    --ring: 226 220 213; /* #E2DCD5 - Focus Outline */
+    --border: 47 47 47;
+    --input: 37 37 37;
+    --ring: 226 220 213;
 
     --radius: 0.75rem;
 
     /* Custom theme colors */
-    --cream-primary: 226 220 213; /* #E2DCD5 */
-    --cream-hover: 214 208 200; /* #D6D0C8 */
-    --dark-base: 18 18 18; /* #121212 */
-    --elevated-bg: 30 30 30; /* #1E1E1E */
-    --section-bg: 37 37 37; /* #252525 */
-    --primary-text: 245 245 245; /* #F5F5F5 */
-    --secondary-text: 176 176 176; /* #B0B0B0 */
-    --disabled-text: 112 112 112; /* #707070 */
-    --input-border: 58 58 58; /* #3A3A3A */
-    --success: 76 175 80; /* #4CAF50 */
-    --success-hover: 67 160 71; /* #43A047 */
+    --cream-primary: 226 220 213;
+    --cream-hover: 214 208 200;
+    --dark-base: 18 18 18;
+    --elevated-bg: 30 30 30;
+    --section-bg: 37 37 37;
+    --primary-text: 245 245 245;
+    --secondary-text: 176 176 176;
+    --disabled-text: 112 112 112;
+    --input-border: 58 58 58;
+    --success: 76 175 80;
+    --success-hover: 67 160 71;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
@@ -71,25 +68,24 @@
     box-shadow: 0 0 20px rgba(226, 220, 213, 0.3);
     transition: box-shadow 0.3s ease;
   }
-  
+
   .glow-effect:hover {
     box-shadow: 0 0 40px rgba(226, 220, 213, 0.6);
   }
-  
+
   .gradient-text {
-    background: linear-gradient(135deg, #E2DCD5 0%, #D6D0C8 100%);
+    background: linear-gradient(135deg, #e2dcd5 0%, #d6d0c8 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-  
+
   .card-glass {
     background: rgba(30, 30, 30, 0.8);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(226, 220, 213, 0.2);
   }
 
-  /* Theme-specific components */
   .theme-primary-button {
     background: hsl(var(--cream-primary));
     color: hsl(var(--dark-base));
@@ -126,4 +122,14 @@
     border-color: hsl(var(--cream-primary));
     box-shadow: 0 0 0 2px rgba(226, 220, 213, 0.2);
   }
+}
+
+/* ✅ Autofill fix for dark themes (Chrome/Edge) */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: #E2DCD5 !important; 
+  caret-color: #e2dcd5;
+  transition: background-color 5000s ease-in-out 0s;
 }
