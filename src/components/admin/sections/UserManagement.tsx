@@ -49,20 +49,49 @@ export function UserManagement() {
     return matchesSearch && matchesStatus;
   });
 
-  const handleStatusChange = (agentId: string, newStatus: Agent["status"]) => {
-    setAgents((prev) =>
-      prev.map((agent) =>
-        agent.id === agentId ? { ...agent, status: newStatus } : agent
-      )
-    );
+  const handleStatusChange = async (
+    agentId: string,
+    newStatus: Agent["status"]
+  ) => {
+    if (!userInfo?.token) {
+      toast({
+        title: "Unauthorized",
+        description: "Token not found. Please login again.",
+        variant: "destructive",
+      });
+      return;
+    }
 
-    const statusAction =
-      newStatus === "suspended" ? "suspended" : "reactivated";
-    toast({
-      title: `Agent ${statusAction}`,
-      description: `The agent has been successfully ${statusAction}.`,
-      duration: 3000,
-    });
+    try {
+      if (newStatus === "suspended") {
+        await agentapi.agentSuspend(agentId, userInfo.token);
+      } else if (newStatus === "active") {
+        await agentapi.agentReactivate(agentId, userInfo.token);
+      }
+
+      setAgents((prev) =>
+        prev.map((agent) =>
+          agent.id === agentId ? { ...agent, status: newStatus } : agent
+        )
+      );
+
+      toast({
+        title: `Agent ${
+          newStatus === "suspended" ? "suspended" : "reactivated"
+        }`,
+        description: `The agent has been successfully ${
+          newStatus === "suspended" ? "suspended" : "reactivated"
+        }.`,
+        duration: 3000,
+      });
+    } catch (error: any) {
+      console.error("Agent status update failed:", error);
+      toast({
+        title: "Error",
+        description: error?.response?.data?.message || error.message,
+        variant: "destructive",
+      });
+    }
   };
 
   useEffect(() => {

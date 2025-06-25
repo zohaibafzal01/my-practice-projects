@@ -15,4 +15,28 @@ export default class AgentApi extends BaseApi {
       },
     });
   }
+
+  async agentSuspend(id: string, token: string) {
+    await this.put(
+      `${this.baseUrl}agents/${id}/suspend`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  }
+
+  async agentReactivate(id: string, token: string) {
+    await this.put(
+      `${this.baseUrl}agents/${id}/reactivate`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  }
 }
