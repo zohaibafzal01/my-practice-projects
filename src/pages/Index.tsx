@@ -11,6 +11,7 @@ import USHeatMap from "@/components/USHeatMap";
 import PricingSection from "@/components/PricingSection";
 import leadslogo from "@/../public/leadslogo.svg";
 import LiveAgentActivity from "@/components/LiveAgentActivity";
+import LeadsDifferentiator from "@/components/LeadsDifferentiator";
 
 const Index = () => {
   return (
@@ -118,7 +119,7 @@ const Index = () => {
                 <div className="text-[30px] font-bold text-[#FFFDD0] mb-2">
                   50K+
                 </div>
-                <div className="text-[#9CA3AF]">Active Agents</div>
+                <div className="text-[#9CA3AF]">Average AP per Policy</div>
               </CardContent>
             </Card>
             <Card className="bg-black/40 backdrop-blur-md border border-[#F5F5DC33]  text-center">
@@ -134,7 +135,7 @@ const Index = () => {
                 <div className="text-[30px] font-bold text-[#FFFDD0] mb-2">
                   98.7%
                 </div>
-                <div className="text-[#9CA3AF]">Lead Quality</div>
+                <div className="text-[#9CA3AF]">Number of Leads Generated</div>
               </CardContent>
             </Card>
           </div>
@@ -143,7 +144,8 @@ const Index = () => {
 
       <section className="py-20 bg-[#16213E4D]">
         <div className="container mx-auto px-6">
-          <LiveAgentActivity />
+          {/* <LiveAgentActivity /> */}
+          <LeadsDifferentiator />
         </div>
       </section>
 
@@ -160,10 +162,10 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
+          <div className="grid lg:grid-cols-1 gap-12 items-center">
+            {/* <div>
               <StatePerformanceChart />
-            </div>
+            </div> */}
             <div>
               <USHeatMap />
             </div>
