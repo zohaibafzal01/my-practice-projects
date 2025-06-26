@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { User, LogOut, ChevronDown } from "lucide-react";
 import { AgentOverview } from "./sections/AgentOverview";
 import { AgentLeadsTable } from "./sections/AgentLeadsTable";
@@ -8,6 +8,8 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CreateProfilePage from "../admin/sections/ProfilePage";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectUserInfo } from "@/redux/selectors/userSelectors";
 
 interface UserActionMenuProps {
   userName?: string;
@@ -77,7 +79,6 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
           />
 
           <div className="absolute right-0 mt-2 w-40 bg-elevated-bg border border-input-border rounded-lg shadow-lg z-50 animate-in fade-in-0 zoom-in-95">
-
             {/* Menu Options */}
             <div className="py-2">
               {/* Profile Option */}
@@ -110,7 +111,25 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
 
 export function AgentDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
+  const userInfo = useSelector(selectUserInfo);
+  const userName = useMemo(() => {
+    const agent = userInfo?.agentRef;
+    const admin = userInfo?.adminRef;
 
+    if (agent) {
+      return (
+        [agent.firstName, agent.lastName].filter(Boolean).join(" ") || "Agent"
+      );
+    }
+
+    if (admin) {
+      return (
+        [admin.firstName, admin.lastName].filter(Boolean).join(" ") || "Admin"
+      );
+    }
+
+    return "User";
+  }, [userInfo]);
   return (
     <div className="flex-1 flex flex-col">
       {/* Header */}
@@ -132,7 +151,7 @@ export function AgentDashboard() {
               AGENT ACCESS
             </div>
             {/* User Action Menu */}
-            <UserActionMenu userName="Jane Smith" />
+            <UserActionMenu userName={userName} />
           </div>
         </div>
       </header>

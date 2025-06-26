@@ -1,4 +1,8 @@
-import { useEffect, useState } from "react";
+import { agentApi } from "@/api/agent";
+import { leadsApi } from "@/api/leads";
+import LeadForm from "@/components/leads/LeadForm";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -6,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -15,7 +18,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -24,17 +26,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search, Filter, UserPlus, RotateCcw } from "lucide-react";
 import ViewModal from "@/components/view-modal/ViewModal";
-import LeadForm from "@/components/leads/LeadForm";
-import LeadsApi from "@/api/leads";
-import { useSelector } from "react-redux";
 import { selectUserInfo } from "@/redux/selectors/userSelectors";
-import AgentApi from "@/api/agent";
+import { RotateCcw, Search, UserPlus } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 export function LeadManagement() {
-  const leadsapi = new LeadsApi();
-  const agentApi = new AgentApi();
+
   const [agents, setAgents] = useState<{ id: string; name: string }[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [totalLeads, setTotalLeads] = useState(0);
@@ -72,7 +71,7 @@ export function LeadManagement() {
         setAgents(fetchedAgents);
 
         // Step 2: Fetch all leads
-        const leadResponse = await leadsapi.getAllLeads(token);
+        const leadResponse = await leadsApi.getAllLeads(token);
         const apiLeads = leadResponse?.items || [];
 
         // Step 3: Map agentRef to name
@@ -107,7 +106,7 @@ export function LeadManagement() {
     if (!token) return;
 
     try {
-      const leadResponse = await leadsapi.getAllLeads(token);
+      const leadResponse = await leadsApi.getAllLeads(token);
       const apiLeads = leadResponse?.items || [];
 
       const formattedLeads = apiLeads.map((lead: any) => {
@@ -136,7 +135,7 @@ export function LeadManagement() {
   const handleAssignLead = async (leadId: string, agentId: string) => {
     try {
       if (!token) return;
-      await leadsapi.leadsAssign(leadId, agentId, token);
+      await leadsApi.leadsAssign(leadId, agentId, token);
       await refreshLeads();
     } catch (err) {
       console.error("Failed to assign lead:", err);

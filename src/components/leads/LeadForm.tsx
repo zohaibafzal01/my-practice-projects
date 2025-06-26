@@ -1,4 +1,4 @@
-import LeadsApi from "@/api/leads";
+import { leadsApi } from "@/api/leads";
 import { selectUserInfo } from "@/redux/selectors/userSelectors";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -68,8 +68,7 @@ const LeadForm = ({
     }
 
     try {
-      const leadsapi = new LeadsApi();
-      const response = await leadsapi.createLeads(formData, token);
+      const response = await leadsApi.createLeads(formData, token);
       toast.success("Lead created successfully!");
       setIsOpen(false);
       refreshLeads();
