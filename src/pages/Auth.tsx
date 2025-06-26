@@ -113,7 +113,7 @@ const Auth = () => {
         <Card className="bg-[#14181F] backdrop-blur-md border border-[#E2DCD533] ">
           <CardHeader className="text-center pb-8">
             <CardTitle className="text-3xl font-bold mb-2 flex justify-center">
-              <img src="/logo.png" alt="Logo" className="h-10 w-auto" />
+              <img src="/leadslogo.svg" alt="Logo" className="h-10 w-auto" />
             </CardTitle>
             <p className="text-cyan-100/70">
               {isLogin
