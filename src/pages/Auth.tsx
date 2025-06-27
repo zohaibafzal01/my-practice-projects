@@ -1,4 +1,5 @@
-import AuthApi from "@/api/auth";
+import { agentApi } from "@/api/agent";
+import { authApi } from "@/api/auth";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,6 +12,7 @@ import {
   Loader2,
   Lock,
   Mail,
+  Phone,
   Shield,
   User,
   UserCheck,
@@ -24,27 +26,121 @@ const Auth = () => {
 
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loginType, setLoginType] = useState<"admin" | "agent">("agent");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    fullName: "",
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
     confirmPassword: "",
   });
 
   const navigate = useNavigate();
-  const authApi = new AuthApi();
 
-  const isDevelopment =
-    import.meta.env.MODE === "development" ||
-    import.meta.env.DEV ||
-    window.location.hostname === "localhost";
+  const validateSignupForm = () => {
+    if (!formData.firstName.trim()) {
+      setError("First name is required");
+      return false;
+    }
+    if (!formData.lastName.trim()) {
+      setError("Last name is required");
+      return false;
+    }
+    if (!formData.email.trim()) {
+      setError("Email is required");
+      return false;
+    }
+    if (!formData.phoneNumber.trim()) {
+      setError("Phone number is required");
+      return false;
+    }
+    if (!formData.password) {
+      setError("Password is required");
+      return false;
+    }
+    if (formData.password.length < 8) {
+      setError("Password must be at least 8 characters long");
+      return false;
+    }
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return false;
+    }
+    return true;
+  };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
+
+    if (!validateSignupForm()) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const signupData = {
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        email: formData.email.trim().toLowerCase(),
+        phoneNumber: formData.phoneNumber.trim(),
+        password: formData.password,
+      };
+
+      const response = await agentApi.registerAgent(signupData);
+
+      if (response?.data) {
+        setSuccess(
+          "Agent registered successfully! Your account is pending approval. You will be notified once it's activated."
+        );
+        // Clear the form
+        setFormData({
+          email: "",
+          password: "",
+          firstName: "",
+          lastName: "",
+          phoneNumber: "",
+          confirmPassword: "",
+        });
+        // Switch to login tab after successful registration
+        setTimeout(() => {
+          setIsLogin(true);
+          setSuccess("");
+        }, 3000);
+      }
+    } catch (error: any) {
+      console.error("Signup error:", error);
+
+      if (error.response?.data?.message) {
+        // Handle array of error messages
+        if (Array.isArray(error.response.data.message)) {
+          setError(error.response.data.message.join(", "));
+        } else {
+          setError(error.response.data.message);
+        }
+      } else if (error.response?.status === 400) {
+        setError(
+          "Registration failed. Please check your information and try again."
+        );
+      } else {
+        setError("Registration failed. Please try again later.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
 
     if (!formData.email || !formData.password) {
       setError("Please enter email and password");
@@ -74,6 +170,23 @@ const Auth = () => {
         return;
       }
 
+      // Check for pending status - handle both uppercase and lowercase
+      const userStatus = userData.status?.toUpperCase();
+      if (userStatus === "PENDING") {
+        setError(
+          "Your account is pending approval. Please wait for admin activation before logging in."
+        );
+        return;
+      }
+
+      // Check for inactive/suspended status
+      if (userStatus === "INACTIVE") {
+        setError(
+          "Your account is suspended. Please contact support for assistance."
+        );
+        return;
+      }
+
       localStorage.setItem("authToken", token);
       localStorage.setItem("userRole", role);
       localStorage.setItem("user_info", JSON.stringify({ ...userData, token }));
@@ -84,13 +197,48 @@ const Auth = () => {
         state: { role },
       });
     } catch (error: any) {
+      console.error("Login error:", error);
+
       if (error.response?.status === 401) {
         setError("Invalid credentials");
+      } else if (error.response?.status === 403) {
+        // Handle specific forbidden messages for pending/suspended accounts
+        const message = error.response?.data?.message;
+        if (message) {
+          // Check if it's a pending account message
+          if (message.toLowerCase().includes("pending")) {
+            setError(
+              "Your account is pending approval. Please wait for admin activation."
+            );
+          } else if (message.toLowerCase().includes("suspend")) {
+            setError("Your account is suspended. Please contact support.");
+          } else {
+            setError(message);
+          }
+        } else {
+          setError("Access denied. Please contact support.");
+        }
+      } else if (error.response?.data?.message) {
+        // Handle other error messages from the server
+        const message = error.response.data.message;
+        if (Array.isArray(message)) {
+          setError(message.join(", "));
+        } else {
+          setError(message);
+        }
       } else {
-        setError("Login failed");
+        setError("Login failed. Please try again.");
       }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    if (isLogin) {
+      handleLogin(e);
+    } else {
+      handleSignup(e);
     }
   };
 
@@ -100,6 +248,22 @@ const Auth = () => {
       [e.target.name]: e.target.value,
     });
     if (error) setError("");
+    if (success) setSuccess("");
+  };
+
+  const handleTabSwitch = (loginTab: boolean) => {
+    setIsLogin(loginTab);
+    setError("");
+    setSuccess("");
+    // Clear form when switching tabs
+    setFormData({
+      email: "",
+      password: "",
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      confirmPassword: "",
+    });
   };
 
   return (
@@ -110,14 +274,14 @@ const Auth = () => {
       </div>
 
       <div className="relative w-full max-w-md">
-        <Card className="bg-[#14181F] backdrop-blur-md border border-[#E2DCD533] ">
+        <Card className="bg-[#14181F] backdrop-blur-md border border-[#E2DCD533]">
           <CardHeader className="text-center pb-8">
             <CardTitle className="text-3xl font-bold mb-2 flex justify-center">
               <img src="/leadslogo.svg" alt="Logo" className="h-10 w-auto" />
             </CardTitle>
             <p className="text-cyan-100/70">
               {isLogin
-                ? "Join thousands of successful agents"
+                ? "Welcome back to your dashboard"
                 : "Join thousands of successful agents"}
             </p>
           </CardHeader>
@@ -125,7 +289,7 @@ const Auth = () => {
           <CardContent className="space-y-6">
             <div className="flex border-b border-cyan-400/20">
               <button
-                onClick={() => setIsLogin(true)}
+                onClick={() => handleTabSwitch(true)}
                 className={`flex-1 py-3 text-center transition-colors ${
                   isLogin
                     ? "text-[#FFFFFF] border-b-2 border-[#E2DCD5]"
@@ -135,7 +299,7 @@ const Auth = () => {
                 Login
               </button>
               <button
-                onClick={() => setIsLogin(false)}
+                onClick={() => handleTabSwitch(false)}
                 className={`flex-1 py-3 text-center transition-colors ${
                   !isLogin
                     ? "text-[#FFFFFF] border-b-2 border-[#E2DCD5]"
@@ -156,7 +320,7 @@ const Auth = () => {
                     className={`flex-1 p-4 rounded-lg border transition-all ${
                       loginType === "agent"
                         ? "border-[#E2DCD5] bg-black/20 text-[#FFFFFF]"
-                        : "border-[#E2DCD545] bg-black/30 text-[#E2DCD545] "
+                        : "border-[#E2DCD545] bg-black/30 text-[#E2DCD545]"
                     }`}
                   >
                     <div className="flex flex-col items-center space-y-2">
@@ -169,8 +333,8 @@ const Auth = () => {
                     onClick={() => setLoginType("admin")}
                     className={`flex-1 p-4 rounded-lg border transition-all ${
                       loginType === "admin"
-                        ? "border-[#E2DCD5] bg-black/20 text-[#FFFFFF] "
-                        : "border-[#E2DCD545] bg-black/30 text-[#E2DCD545] "
+                        ? "border-[#E2DCD5] bg-black/20 text-[#FFFFFF]"
+                        : "border-[#E2DCD545] bg-black/30 text-[#E2DCD545]"
                     }`}
                   >
                     <div className="flex flex-col items-center space-y-2">
@@ -188,26 +352,76 @@ const Auth = () => {
               </Alert>
             )}
 
+            {success && (
+              <Alert className="bg-green-500/10 border-green-500/20 text-green-400">
+                <AlertDescription>{success}</AlertDescription>
+              </Alert>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-4">
               {!isLogin && (
-                <div className="space-y-2">
-                  <Label htmlFor="fullName" className="text-[#E2DCD5]">
-                    Full Name
-                  </Label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-3 h-4 w-4 text-[#E2DCD5]" />
-                    <Input
-                      id="fullName"
-                      name="fullName"
-                      type="text"
-                      placeholder="Enter your full name"
-                      value={formData.fullName}
-                      onChange={handleInputChange}
-                      className="pl-10 bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545] "
-                      required={!isLogin}
-                    />
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="firstName" className="text-[#E2DCD5]">
+                        First Name
+                      </Label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-3 h-4 w-4 text-[#E2DCD5]" />
+                        <Input
+                          id="firstName"
+                          name="firstName"
+                          type="text"
+                          placeholder="First name"
+                          value={formData.firstName}
+                          onChange={handleInputChange}
+                          className="pl-10 bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545]"
+                          required={!isLogin}
+                          disabled={isLoading}
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="lastName" className="text-[#E2DCD5]">
+                        Last Name
+                      </Label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-3 h-4 w-4 text-[#E2DCD5]" />
+                        <Input
+                          id="lastName"
+                          name="lastName"
+                          type="text"
+                          placeholder="Last name"
+                          value={formData.lastName}
+                          onChange={handleInputChange}
+                          className="pl-10 bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545]"
+                          required={!isLogin}
+                          disabled={isLoading}
+                        />
+                      </div>
+                    </div>
                   </div>
-                </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="phoneNumber" className="text-[#E2DCD5]">
+                      Phone Number
+                    </Label>
+                    <div className="relative">
+                      <Phone className="absolute left-3 top-3 h-4 w-4 text-[#E2DCD5]" />
+                      <Input
+                        id="phoneNumber"
+                        name="phoneNumber"
+                        type="tel"
+                        placeholder="Enter your phone number"
+                        value={formData.phoneNumber}
+                        onChange={handleInputChange}
+                        className="pl-10 bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545]"
+                        required={!isLogin}
+                        disabled={isLoading}
+                      />
+                    </div>
+                  </div>
+                </>
               )}
 
               <div className="space-y-2">
@@ -223,8 +437,8 @@ const Auth = () => {
                     placeholder="Enter your email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="pl-10 bg-black/30 border-[#E2DCD5] !text-[#E2DCD5] placeholder:text-[#E2DCD545] "
-                    required={loginType === "admin"}
+                    className="pl-10 bg-black/30 border-[#E2DCD5] !text-[#E2DCD5] placeholder:text-[#E2DCD545]"
+                    required
                     disabled={isLoading}
                   />
                 </div>
@@ -243,14 +457,15 @@ const Auth = () => {
                     placeholder="Enter your password"
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="pl-10 pr-10 bg-black/30 border-[#E2DCD5] !text-[#E2DCD5] placeholder:text-[#E2DCD545] "
-                    required={loginType === "admin"}
+                    className="pl-10 pr-10 bg-black/30 border-[#E2DCD5] !text-[#E2DCD5] placeholder:text-[#E2DCD545]"
+                    required
                     disabled={isLoading}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-3 text-[#E2DCD5] hover:text-cyan-300"
+                    disabled={isLoading}
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4" />
@@ -271,13 +486,28 @@ const Auth = () => {
                     <Input
                       id="confirmPassword"
                       name="confirmPassword"
-                      type="password"
+                      type={showConfirmPassword ? "text" : "password"}
                       placeholder="Confirm your password"
                       value={formData.confirmPassword}
                       onChange={handleInputChange}
-                      className="pl-10 bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545] focus:outline-none"
+                      className="pl-10 pr-10 bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545] focus:outline-none"
                       required={!isLogin}
+                      disabled={isLoading}
                     />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                      className="absolute right-3 top-3 text-[#E2DCD5] hover:text-cyan-300"
+                      disabled={isLoading}
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
                   </div>
                 </div>
               )}
@@ -290,12 +520,12 @@ const Auth = () => {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Signing in...
+                    {isLogin ? "Signing in..." : "Creating account..."}
                   </>
                 ) : isLogin ? (
                   `Login as ${loginType === "admin" ? "Admin" : "Agent"}`
                 ) : (
-                  "Create Account"
+                  "Create Agent Account"
                 )}
               </Button>
             </form>

@@ -1,15 +1,14 @@
-// @/api/agent.ts
 import BaseApi from "./baseapi";
 
-export default class AgentApi extends BaseApi {
-  baseUrl: string = "api/v1/";
+class AgentApi extends BaseApi {
+  baseUrl: string = "agents";
 
   constructor() {
     super();
   }
 
   async getAllAgents(token: string) {
-    return await this.get(`${this.baseUrl}agents`, {
+    return await this.get(`${this.baseUrl}/`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -18,7 +17,7 @@ export default class AgentApi extends BaseApi {
 
   async agentSuspend(id: string, token: string) {
     await this.put(
-      `${this.baseUrl}agents/${id}/suspend`,
+      `${this.baseUrl}/${id}/suspend`,
       {},
       {
         headers: {
@@ -30,7 +29,7 @@ export default class AgentApi extends BaseApi {
 
   async agentReactivate(id: string, token: string) {
     await this.put(
-      `${this.baseUrl}agents/${id}/reactivate`,
+      `${this.baseUrl}/${id}/reactivate`,
       {},
       {
         headers: {
@@ -39,4 +38,18 @@ export default class AgentApi extends BaseApi {
       }
     );
   }
+
+  async registerAgent(agentData: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    password: string;
+  }) {
+    const data = await this.post(`${this.baseUrl}/register`, agentData);
+    return data;
+  }
 }
+
+export const agentApi = new AgentApi();
+export default agentApi;

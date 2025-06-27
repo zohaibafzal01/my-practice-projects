@@ -1,5 +1,8 @@
-import { useEffect, useState } from "react";
+import { agentApi } from "@/api/agent";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -8,14 +11,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Eye, UserX, UserCheck, Mail, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import AgentApi from "@/api/agent";
-import { useSelector } from "react-redux";
 import { selectUserInfo } from "@/redux/selectors/userSelectors";
+import { Eye, Mail, Phone, UserCheck, UserX } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 interface Agent {
   id: string;
@@ -34,7 +34,6 @@ interface Agent {
 export function UserManagement() {
   const userInfo = useSelector(selectUserInfo);
 
-  const agentapi = new AgentApi();
   const [agents, setAgents] = useState<Agent[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -64,9 +63,9 @@ export function UserManagement() {
 
     try {
       if (newStatus === "suspended") {
-        await agentapi.agentSuspend(agentId, userInfo.token);
+        await agentApi.agentSuspend(agentId, userInfo.token);
       } else if (newStatus === "active") {
-        await agentapi.agentReactivate(agentId, userInfo.token);
+        await agentApi.agentReactivate(agentId, userInfo.token);
       }
 
       setAgents((prev) =>
@@ -102,7 +101,7 @@ export function UserManagement() {
           return;
         }
 
-        const response = await agentapi.getAllAgents(userInfo?.token);
+        const response = await agentApi.getAllAgents(userInfo?.token);
         const fetchedAgents = response.items.map(
           (agent: any): Agent => ({
             id: agent?._id,
