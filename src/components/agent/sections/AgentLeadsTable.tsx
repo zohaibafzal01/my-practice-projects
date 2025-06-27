@@ -1,12 +1,19 @@
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Phone, Mail, MapPin, CheckCircle, RotateCcw, RefreshCw } from 'lucide-react';
-import { MarkAsSoldModal } from '../modals/MarkAsSoldModal';
-import { useToast } from '@/hooks/use-toast';
-import leadsApi from '@/api/leads';
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import {
+  Phone,
+  Mail,
+  MapPin,
+  CheckCircle,
+  RotateCcw,
+  RefreshCw,
+} from "lucide-react";
+import { MarkAsSoldModal } from "../modals/MarkAsSoldModal";
+import { useToast } from "@/hooks/use-toast";
+import leadsApi from "@/api/leads";
 
 interface Lead {
   id: string;
@@ -16,13 +23,13 @@ interface Lead {
   phone: string;
   region: string;
   zipCode?: string;
-  leadType: 'Fresh' | 'Aged';
-  status: 'New' | 'Sold' | 'Replacement Requested' | 'Replaced';
+  leadType: "Fresh" | "Aged";
+  status: "New" | "Sold" | "Replacement Requested" | "Requested";
   backendStatus: string;
   assignedDate: string;
   createdAt: string;
   updatedAt?: string;
-  replacementStatus?: 'Pending' | 'Approved' | 'Denied';
+  replacementStatus?: "Pending" | "Approved" | "Denied";
   // Additional fields from backend
   leadSource?: string;
   campaign?: string;
@@ -63,50 +70,54 @@ export function AgentLeadsTable() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [showSoldModal, setShowSoldModal] = useState(false);
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
   const [pagination, setPagination] = useState({
     currentPage: 1,
     totalPages: 1,
     totalItems: 0,
-    itemsPerPage: 10
+    itemsPerPage: 10,
   });
   const { toast } = useToast();
 
   // Get authentication token
   const getAuthToken = (): string | null => {
     // Adjust this based on how you store auth tokens
-    return localStorage.getItem('authToken') || 
-           localStorage.getItem('token') || 
-           sessionStorage.getItem('authToken');
+    return (
+      localStorage.getItem("authToken") ||
+      localStorage.getItem("token") ||
+      sessionStorage.getItem("authToken")
+    );
   };
 
   // Function to determine if lead is fresh or aged based on creation date
-  const getLeadType = (createdAt: string): 'Fresh' | 'Aged' => {
+  const getLeadType = (createdAt: string): "Fresh" | "Aged" => {
     const createdDate = new Date(createdAt);
     const oneDayAgo = new Date();
     oneDayAgo.setDate(oneDayAgo.getDate() - 1);
-    
-    return createdDate >= oneDayAgo ? 'Fresh' : 'Aged';
+
+    return createdDate >= oneDayAgo ? "Fresh" : "Aged";
   };
 
   // Function to map backend status to frontend display status
-  const mapBackendStatusToDisplay = (backendStatus: string): 'New' | 'Sold' | 'Replacement Requested' | 'Replaced' => {
+  const mapBackendStatusToDisplay = (
+    backendStatus: string
+  ): "New" | "Sold" | "Replacement Requested" | "Requested" => {
     switch (backendStatus?.toUpperCase()) {
-      case 'ASSIGNED':
-      case 'NEW':
-      case 'CONTACTED':
-        return 'New';
-      case 'SOLD':
-        return 'Sold';
-      case 'REPLACEMENT_REQUESTED':
-        return 'Replacement Requested';
-      case 'REPLACED':
-        return 'Replaced';
+      case "ASSIGNED":
+      case "NEW":
+      case "CONTACTED":
+        return "New";
+      case "SOLD":
+        return "Sold";
+      case "REPLACEMENT_REQUESTED":
+        return "Replacement Requested";
+      case "REQUESTED":
+        return "Requested";
       default:
-        return 'New';
+        return "New";
     }
   };
 
@@ -114,16 +125,19 @@ export function AgentLeadsTable() {
   const transformLeadData = (backendLead: any): Lead => {
     return {
       id: backendLead._id || backendLead.id,
-      firstName: backendLead.firstName || '',
-      lastName: backendLead.lastName || '',
-      email: backendLead.email || '',
-      phone: backendLead.phone || '',
-      region: backendLead.region || backendLead.state || '',
+      firstName: backendLead.firstName || "",
+      lastName: backendLead.lastName || "",
+      email: backendLead.email || "",
+      phone: backendLead.phone || "",
+      region: backendLead.region || backendLead.state || "",
       zipCode: backendLead.zipCode,
       leadType: getLeadType(backendLead.createdAt),
       status: mapBackendStatusToDisplay(backendLead.status),
       backendStatus: backendLead.status,
-      assignedDate: backendLead.assignedAt || backendLead.assignedDate || backendLead.createdAt,
+      assignedDate:
+        backendLead.assignedAt ||
+        backendLead.assignedDate ||
+        backendLead.createdAt,
       createdAt: backendLead.createdAt,
       updatedAt: backendLead.updatedAt,
       leadSource: backendLead.leadSource,
@@ -131,7 +145,7 @@ export function AgentLeadsTable() {
       assignedAgent: backendLead.assignedAgent,
       purchase: backendLead.purchase,
       sold: backendLead.sold,
-      replacementStatus: backendLead.replacementStatus
+      replacementStatus: backendLead.replacementStatus,
     };
   };
 
@@ -149,7 +163,7 @@ export function AgentLeadsTable() {
         toast({
           title: "Authentication Error",
           description: "Please log in to view your leads.",
-          variant: "destructive"
+          variant: "destructive",
         });
         return;
       }
@@ -158,11 +172,11 @@ export function AgentLeadsTable() {
         page: pagination.currentPage,
         limit: pagination.itemsPerPage,
         ...(searchTerm && { search: searchTerm }),
-        ...(selectedStatus !== 'all' && { status: selectedStatus })
+        ...(selectedStatus !== "all" && { status: selectedStatus }),
       };
 
       const response: ApiResponse = await leadsApi.getAllLeads(token, params);
-      
+
       // Handle different response structures
       let leadsData = [];
       let paginationData = pagination;
@@ -175,12 +189,14 @@ export function AgentLeadsTable() {
             currentPage: response.pagination.currentPage || 1,
             totalPages: response.pagination.totalPages || 1,
             totalItems: response.pagination.totalItems || 0,
-            itemsPerPage: response.pagination.itemsPerPage || 10
+            itemsPerPage: response.pagination.itemsPerPage || 10,
           };
         }
       } else if (response.data) {
         // Simple data response
-        leadsData = Array.isArray(response.data) ? response.data : [response.data];
+        leadsData = Array.isArray(response.data)
+          ? response.data
+          : [response.data];
       } else if (Array.isArray(response)) {
         // Direct array response
         leadsData = response;
@@ -189,13 +205,14 @@ export function AgentLeadsTable() {
       const transformedLeads = leadsData.map(transformLeadData);
       setLeads(transformedLeads);
       setPagination(paginationData);
-
     } catch (error: any) {
-      console.error('Error fetching leads:', error);
+      console.error("Error fetching leads:", error);
       toast({
         title: "Error",
-        description: error?.response?.data?.message || "Failed to fetch leads. Please try again.",
-        variant: "destructive"
+        description:
+          error?.response?.data?.message ||
+          "Failed to fetch leads. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -212,7 +229,7 @@ export function AgentLeadsTable() {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (searchTerm !== undefined) {
-        setPagination(prev => ({ ...prev, currentPage: 1 }));
+        setPagination((prev) => ({ ...prev, currentPage: 1 }));
         fetchLeads();
       }
     }, 500);
@@ -220,11 +237,15 @@ export function AgentLeadsTable() {
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  const filteredLeads = leads.filter(lead => {
+  const filteredLeads = leads.filter((lead) => {
     const fullName = `${lead.firstName} ${lead.lastName}`;
-    const matchesSearch = searchTerm === '' || 
-      `${fullName} ${lead.email} ${lead.region}`.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = selectedStatus === 'all' || lead.status === selectedStatus;
+    const matchesSearch =
+      searchTerm === "" ||
+      `${fullName} ${lead.email} ${lead.region}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+    const matchesStatus =
+      selectedStatus === "all" || lead.status === selectedStatus;
     return matchesSearch && matchesStatus;
   });
 
@@ -242,7 +263,7 @@ export function AgentLeadsTable() {
         toast({
           title: "Authentication Error",
           description: "Please log in to perform this action.",
-          variant: "destructive"
+          variant: "destructive",
         });
         return;
       }
@@ -253,27 +274,31 @@ export function AgentLeadsTable() {
         annualSubmitAmount: parseFloat(saleData.annualSubmitAmount),
         insuranceCompany: saleData.insuranceCompany,
         product: saleData.product,
-        notes: saleData.notes || undefined
+        notes: saleData.notes || undefined,
       };
 
       await leadsApi.markLeadAsSold(selectedLeadId, apiSaleData, token);
 
       // Update local state
-      setLeads(prev => prev.map(lead => 
-        lead.id === selectedLeadId ? { 
-          ...lead, 
-          status: 'Sold' as const,
-          backendStatus: 'SOLD',
-          sold: {
-            ...apiSaleData,
-            soldAt: new Date().toISOString()
-          }
-        } : lead
-      ));
+      setLeads((prev) =>
+        prev.map((lead) =>
+          lead.id === selectedLeadId
+            ? {
+                ...lead,
+                status: "Sold" as const,
+                backendStatus: "SOLD",
+                sold: {
+                  ...apiSaleData,
+                  soldAt: new Date().toISOString(),
+                },
+              }
+            : lead
+        )
+      );
 
       setShowSoldModal(false);
       setSelectedLeadId(null);
-      
+
       toast({
         title: "Sale Recorded",
         description: "The lead has been successfully marked as sold.",
@@ -281,13 +306,14 @@ export function AgentLeadsTable() {
 
       // Optionally refresh the leads to get updated data from server
       fetchLeads(true);
-
     } catch (error: any) {
-      console.error('Error marking lead as sold:', error);
+      console.error("Error marking lead as sold:", error);
       toast({
         title: "Error",
-        description: error?.response?.data?.message || "Failed to mark lead as sold. Please try again.",
-        variant: "destructive"
+        description:
+          error?.response?.data?.message ||
+          "Failed to mark lead as sold. Please try again.",
+        variant: "destructive",
       });
     }
   };
@@ -299,35 +325,41 @@ export function AgentLeadsTable() {
         toast({
           title: "Authentication Error",
           description: "Please log in to perform this action.",
-          variant: "destructive"
+          variant: "destructive",
         });
         return;
       }
 
       // Update status to replacement requested
-      await leadsApi.updateLeadStatus(leadId, 'REPLACEMENT_REQUESTED', token);
+      await leadsApi.updateLeadStatus(leadId, "REPLACEMENT_REQUESTED", token);
 
       // Update local state
-      setLeads(prev => prev.map(lead => 
-        lead.id === leadId ? { 
-          ...lead, 
-          status: 'Replacement Requested' as const,
-          backendStatus: 'REPLACEMENT_REQUESTED',
-          replacementStatus: 'Pending'
-        } : lead
-      ));
+      setLeads((prev) =>
+        prev.map((lead) =>
+          lead.id === leadId
+            ? {
+                ...lead,
+                status: "Replacement Requested" as const,
+                backendStatus: "REPLACEMENT_REQUESTED",
+                replacementStatus: "Pending",
+              }
+            : lead
+        )
+      );
 
       toast({
         title: "Replacement Requested",
-        description: "Your replacement request has been submitted for admin approval.",
+        description:
+          "Your replacement request has been submitted for admin approval.",
       });
-
     } catch (error: any) {
-      console.error('Error requesting replacement:', error);
+      console.error("Error requesting replacement:", error);
       toast({
         title: "Error",
-        description: error?.response?.data?.message || "Failed to request replacement. Please try again.",
-        variant: "destructive"
+        description:
+          error?.response?.data?.message ||
+          "Failed to request replacement. Please try again.",
+        variant: "destructive",
       });
     }
   };
@@ -336,20 +368,25 @@ export function AgentLeadsTable() {
     fetchLeads(true);
   };
 
-  const getStatusColor = (status: Lead['status']) => {
+  const getStatusColor = (status: Lead["status"]) => {
     switch (status) {
-      case 'New': return 'bg-blue-500/20 text-blue-300 border-blue-400/50';
-      case 'Sold': return 'bg-green-500/20 text-green-300 border-green-400/50';
-      case 'Replacement Requested': return 'bg-orange-500/20 text-orange-300 border-orange-400/50';
-      case 'Replaced': return 'bg-gray-500/20 text-gray-300 border-gray-400/50';
-      default: return 'bg-gray-500/20 text-gray-300 border-gray-400/50';
+      case "New":
+        return "bg-blue-500/20 text-blue-300 border-blue-400/50";
+      case "Sold":
+        return "bg-green-500/20 text-green-300 border-green-400/50";
+      case "Replacement Requested":
+        return "bg-orange-500/20 text-orange-300 border-orange-400/50";
+      case "Requested":
+        return "bg-gray-500/20 text-gray-300 border-gray-400/50";
+      default:
+        return "bg-gray-500/20 text-gray-300 border-gray-400/50";
     }
   };
 
-  const getLeadTypeColor = (type: Lead['leadType']) => {
-    return type === 'Fresh' 
-      ? 'bg-green-500/20 text-green-300 border-green-400/50'
-      : 'bg-yellow-500/20 text-yellow-300 border-yellow-400/50';
+  const getLeadTypeColor = (type: Lead["leadType"]) => {
+    return type === "Fresh"
+      ? "bg-green-500/20 text-green-300 border-green-400/50"
+      : "bg-yellow-500/20 text-yellow-300 border-yellow-400/50";
   };
 
   if (loading) {
@@ -386,7 +423,9 @@ export function AgentLeadsTable() {
                 disabled={refreshing}
                 className="border-cyan-400/50 text-cyan-300 hover:bg-cyan-500/20"
               >
-                <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+                <RefreshCw
+                  className={`h-4 w-4 mr-2 ${refreshing ? "animate-spin" : ""}`}
+                />
                 Refresh
               </Button>
               <div className="w-64">
@@ -403,10 +442,12 @@ export function AgentLeadsTable() {
                 className="bg-gray-800/50 border border-cyan-400/30 text-white rounded-md px-3 py-2"
               >
                 <option value="all">All Status</option>
-                <option value="New">New</option>
-                <option value="Sold">Sold</option>
-                <option value="Replacement Requested">Replacement Requested</option>
-                <option value="Replaced">Replaced</option>
+                <option value="NEW">New</option>
+                <option value="SOLD">Sold</option>
+                <option value="REPLACEMENT_REQUESTED">
+                  Replacement Requested
+                </option>
+                <option value="REQUESTED">Requested</option>
               </select>
             </div>
           </div>
@@ -426,7 +467,10 @@ export function AgentLeadsTable() {
               </thead>
               <tbody>
                 {filteredLeads.map((lead) => (
-                  <tr key={lead.id} className="border-gray-700/50 hover:bg-gray-800/20 border-b">
+                  <tr
+                    key={lead.id}
+                    className="border-gray-700/50 hover:bg-gray-800/20 border-b"
+                  >
                     <td className="p-3">
                       <div className="font-medium text-white">
                         {lead.firstName} {lead.lastName}
@@ -475,35 +519,39 @@ export function AgentLeadsTable() {
                         )}
                         {lead.sold && (
                           <div className="text-xs text-gray-400">
-                            Sold: ${lead.sold.annualSubmitAmount?.toLocaleString()}
+                            Sold: $
+                            {lead.sold.annualSubmitAmount?.toLocaleString()}
                           </div>
                         )}
                       </div>
                     </td>
                     <td className="p-3">
                       <div className="flex space-x-2">
-                        {lead.status !== 'Sold' && lead.status !== 'Replacement Requested' && (
-                          <>
-                            <Button 
-                              size="sm" 
-                              onClick={() => handleMarkAsSold(lead.id)}
-                              className="bg-green-600/20 border border-green-500/50 text-green-300 hover:bg-green-500/30"
-                            >
-                              <CheckCircle className="h-3 w-3 mr-1" />
-                              Mark Sold
-                            </Button>
-                            <Button 
-                              size="sm" 
-                              variant="outline"
-                              onClick={() => handleRequestReplacement(lead.id)}
-                              className="border-orange-400/50 text-orange-300 hover:bg-orange-500/20"
-                            >
-                              <RotateCcw className="h-3 w-3 mr-1" />
-                              Request Replacement
-                            </Button>
-                          </>
-                        )}
-                        {lead.status === 'Replacement Requested' && (
+                        {lead.status !== "Sold" &&
+                          lead.status !== "Replacement Requested" && (
+                            <>
+                              <Button
+                                size="sm"
+                                onClick={() => handleMarkAsSold(lead.id)}
+                                className="bg-green-600/20 border border-green-500/50 text-green-300 hover:bg-green-500/30"
+                              >
+                                <CheckCircle className="h-3 w-3 mr-1" />
+                                Mark Sold
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() =>
+                                  handleRequestReplacement(lead.id)
+                                }
+                                className="border-orange-400/50 text-orange-300 hover:bg-orange-500/20"
+                              >
+                                <RotateCcw className="h-3 w-3 mr-1" />
+                                Request Replacement
+                              </Button>
+                            </>
+                          )}
+                        {lead.status === "Replacement Requested" && (
                           <Badge className="bg-orange-500/20 text-orange-300">
                             {lead.replacementStatus}
                           </Badge>
@@ -515,13 +563,12 @@ export function AgentLeadsTable() {
               </tbody>
             </table>
           </div>
-          
+
           {filteredLeads.length === 0 && !loading && (
             <div className="text-center py-8 text-gray-400">
-              {searchTerm || selectedStatus !== 'all' 
-                ? 'No leads found matching your criteria.'
-                : 'No leads assigned to you yet.'
-              }
+              {searchTerm || selectedStatus !== "all"
+                ? "No leads found matching your criteria."
+                : "No leads assigned to you yet."}
             </div>
           )}
 
@@ -529,15 +576,24 @@ export function AgentLeadsTable() {
           {pagination.totalPages > 1 && (
             <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-700/50">
               <div className="text-sm text-gray-400">
-                Showing {((pagination.currentPage - 1) * pagination.itemsPerPage) + 1} to{' '}
-                {Math.min(pagination.currentPage * pagination.itemsPerPage, pagination.totalItems)} of{' '}
-                {pagination.totalItems} results
+                Showing{" "}
+                {(pagination.currentPage - 1) * pagination.itemsPerPage + 1} to{" "}
+                {Math.min(
+                  pagination.currentPage * pagination.itemsPerPage,
+                  pagination.totalItems
+                )}{" "}
+                of {pagination.totalItems} results
               </div>
               <div className="flex space-x-2">
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => setPagination(prev => ({ ...prev, currentPage: prev.currentPage - 1 }))}
+                  onClick={() =>
+                    setPagination((prev) => ({
+                      ...prev,
+                      currentPage: prev.currentPage - 1,
+                    }))
+                  }
                   disabled={pagination.currentPage === 1}
                   className="border-cyan-400/50 text-cyan-300"
                 >
@@ -549,7 +605,12 @@ export function AgentLeadsTable() {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => setPagination(prev => ({ ...prev, currentPage: prev.currentPage + 1 }))}
+                  onClick={() =>
+                    setPagination((prev) => ({
+                      ...prev,
+                      currentPage: prev.currentPage + 1,
+                    }))
+                  }
                   disabled={pagination.currentPage === pagination.totalPages}
                   className="border-cyan-400/50 text-cyan-300"
                 >

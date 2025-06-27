@@ -7,7 +7,7 @@ import { AgentSubscriptionBilling } from "./sections/AgentSubscriptionBilling";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CreateProfilePage from "../admin/sections/ProfilePage";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUserInfo } from "@/redux/selectors/userSelectors";
 
@@ -22,7 +22,6 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -38,20 +37,17 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
   }, []);
 
   const handleProfile = () => {
-    console.log("Navigate to profile");
     setIsOpen(false);
   };
 
   const handleLogout = () => {
     localStorage.clear();
-    console.log("Logout user");
     setIsOpen(false);
     navigate("/auth");
   };
 
   return (
     <div className="relative" ref={dropdownRef}>
-      {/* User Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-elevated-bg border border-input-border hover:bg-cream-primary/10 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cream-primary/50"
@@ -69,19 +65,15 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
         />
       </button>
 
-      {/* Dropdown Menu */}
       {isOpen && (
         <>
-          {/* Backdrop for mobile */}
           <div
             className="fixed inset-0 z-40 md:hidden"
             onClick={() => setIsOpen(false)}
           />
 
           <div className="absolute right-0 mt-2 w-40 bg-elevated-bg border border-input-border rounded-lg shadow-lg z-50 animate-in fade-in-0 zoom-in-95">
-            {/* Menu Options */}
             <div className="py-2">
-              {/* Profile Option */}
               <button
                 onClick={handleProfile}
                 className="w-full flex items-center px-4 py-2 text-sm text-primary-text hover:bg-cream-primary/10 transition-colors duration-200 focus:outline-none focus:bg-cream-primary/10"
@@ -89,11 +81,7 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
                 <User className="w-4 h-4 mr-3 text-cream-primary" />
                 <span>View Profile</span>
               </button>
-
-              {/* Divider */}
               <div className="border-t border-input-border my-1"></div>
-
-              {/* Logout Option */}
               <button
                 onClick={handleLogout}
                 className="w-full flex items-center px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors duration-200 focus:outline-none focus:bg-red-500/10"
@@ -110,7 +98,14 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
 };
 
 export function AgentDashboard() {
-  const [activeTab, setActiveTab] = useState("overview");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const defaultTab = searchParams.get("tab") || "overview";
+  const [activeTab, setActiveTab] = useState(defaultTab);
+
+  useEffect(() => {
+    setSearchParams({ tab: activeTab });
+  }, [activeTab, setSearchParams]);
+
   const userInfo = useSelector(selectUserInfo);
   const userName = useMemo(() => {
     const agent = userInfo?.agentRef;
@@ -121,18 +116,16 @@ export function AgentDashboard() {
         [agent.firstName, agent.lastName].filter(Boolean).join(" ") || "Agent"
       );
     }
-
     if (admin) {
       return (
         [admin.firstName, admin.lastName].filter(Boolean).join(" ") || "Admin"
       );
     }
-
     return "User";
   }, [userInfo]);
+
   return (
     <div className="flex-1 flex flex-col">
-      {/* Header */}
       <header className="sticky top-0 z-40 bg-elevated-bg/90 backdrop-blur-md border-b border-input-border">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center space-x-4">
@@ -150,64 +143,58 @@ export function AgentDashboard() {
             <div className="text-xs bg-cream-primary/20 text-cream-primary px-3 py-1 rounded border border-cream-primary/50">
               AGENT ACCESS
             </div>
-            {/* User Action Menu */}
             <UserActionMenu userName={userName} />
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="flex-1 p-6 bg-dark-base">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-5 bg-elevated-bg backdrop-blur-md border border-input-border">
             <TabsTrigger
               value="overview"
-              className="data-[state=active]:bg-cream-primary/20 data-[state=active]:text-cream-primary"
+              className="data-[state=active]:text-white"
             >
               Dashboard
             </TabsTrigger>
             <TabsTrigger
               value="leads"
-              className="data-[state=active]:bg-cream-primary/20 data-[state=active]:text-cream-primary"
+              className="data-[state=active]:text-white"
             >
               My Leads
             </TabsTrigger>
             <TabsTrigger
               value="analytics"
-              className="data-[state=active]:bg-cream-primary/20 data-[state=active]:text-cream-primary"
+              className="data-[state=active]:text-white"
             >
               Performance
             </TabsTrigger>
             <TabsTrigger
               value="billing"
-              className="data-[state=active]:bg-cream-primary/20 data-[state=active]:text-cream-primary"
+              className="data-[state=active]:text-white"
             >
               Subscription
             </TabsTrigger>
             <TabsTrigger
               value="profile"
-              className="data-[state=active]:bg-cream-primary/20 data-[state=active]:text-cream-primary"
+              className="data-[state=active]:text-white"
             >
               Profile
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="mt-8">
+          <TabsContent value="overview" className="mt-8 ">
             <AgentOverview />
           </TabsContent>
-
           <TabsContent value="leads" className="mt-8">
             <AgentLeadsTable />
           </TabsContent>
-
           <TabsContent value="analytics" className="mt-8">
             <AgentPerformanceAnalytics />
           </TabsContent>
-
           <TabsContent value="billing" className="mt-8">
             <AgentSubscriptionBilling />
           </TabsContent>
-
           <TabsContent value="profile" className="mt-8">
             <CreateProfilePage />
           </TabsContent>
