@@ -14,6 +14,7 @@ import {
 import { MarkAsSoldModal } from "../modals/MarkAsSoldModal";
 import { useToast } from "@/hooks/use-toast";
 import leadsApi from "@/api/leads";
+import { RequestReplacementModal } from "../modals/RequestReplacementModal";
 
 interface Lead {
   id: string;
@@ -74,6 +75,12 @@ export function AgentLeadsTable() {
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [showSoldModal, setShowSoldModal] = useState(false);
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
+  const [showReplacementModal, setShowReplacementModal] = useState(false);
+  const [selectedReplacementLeadId, setSelectedReplacementLeadId] = useState<
+    string | null
+  >(null);
+  const [isSubmittingReplacement, setIsSubmittingReplacement] = useState(false);
+
   const [pagination, setPagination] = useState({
     currentPage: 1,
     totalPages: 1,
@@ -318,7 +325,7 @@ export function AgentLeadsTable() {
     }
   };
 
-  const handleRequestReplacement = async (leadId: string) => {
+  const handleRequestReplacement = async (leadId: string, reason: string) => {
     try {
       const token = getAuthToken();
       if (!token) {
@@ -330,7 +337,7 @@ export function AgentLeadsTable() {
         return;
       }
 
-      // Update status to replacement requested
+      // Include reason in the payload only if your API supports additional data in this call
       await leadsApi.updateLeadStatus(leadId, "REPLACEMENT_REQUESTED", token);
 
       // Update local state
@@ -541,9 +548,10 @@ export function AgentLeadsTable() {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                onClick={() =>
-                                  handleRequestReplacement(lead.id)
-                                }
+                                onClick={() => {
+                                  setSelectedReplacementLeadId(lead.id);
+                                  setShowReplacementModal(true);
+                                }}
                                 className="border-orange-400/50 text-orange-300 hover:bg-orange-500/20"
                               >
                                 <RotateCcw className="h-3 w-3 mr-1" />
@@ -630,6 +638,20 @@ export function AgentLeadsTable() {
         }}
         onSubmit={handleSoldSubmit}
         leadId={selectedLeadId}
+      />
+
+      <RequestReplacementModal
+        isOpen={showReplacementModal}
+        onClose={() => {
+          setShowReplacementModal(false);
+          setSelectedReplacementLeadId(null);
+        }}
+        onSubmit={(reason: string) => {
+          if (selectedReplacementLeadId) {
+            handleRequestReplacement(selectedReplacementLeadId, reason);
+          }
+        }}
+        isSubmitting={isSubmittingReplacement}
       />
     </>
   );
