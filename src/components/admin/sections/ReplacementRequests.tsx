@@ -290,13 +290,13 @@ export function ReplacementRequests() {
                             </Dialog>
                           </>
                         )}
-                        <Button
+                        {/* <Button
                           size="sm"
                           variant="outline"
                           className="border-input-border text-secondary-text hover:bg-cream-primary/20 hover:text-cream-primary"
                         >
                           <MessageSquare className="w-3 h-3" />
-                        </Button>
+                        </Button> */}
                       </div>
                     </TableCell>
                   </TableRow>
