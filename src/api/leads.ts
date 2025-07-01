@@ -3,70 +3,52 @@ import BaseApi from "./baseapi";
 class LeadsApi extends BaseApi {
   baseUrl: string = "leads";
 
-  constructor() {
-    super();
+  async createLeads(formData: any) {
+    return await this.post(`${this.baseUrl}/`, formData);
   }
 
-  async createLeads(formData: any, token: string) {
-    const data = await this.post(`${this.baseUrl}/`, formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return data;
-  }
-
-  async getAllLeads(
-    token: string,
-    params?: {
-      page?: number;
-      limit?: number;
-      search?: string;
-      status?: string;
-      region?: string;
-    }
-  ) {
+  async getAllLeads(params?: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    status?: string;
+    region?: string;
+  }) {
     const queryParams = new URLSearchParams();
 
-    if (params?.page) queryParams.append("page", params.page.toString());
-    if (params?.limit) queryParams.append("limit", params.limit.toString());
-    if (params?.search) queryParams.append("search", params.search);
-    if (params?.status) queryParams.append("status", params.status);
-    if (params?.region) queryParams.append("region", params.region);
+    if (typeof params?.page === "number") {
+      queryParams.append("page", params?.page.toString());
+    }
+
+    if (typeof params?.limit === "number") {
+      queryParams.append("limit", params?.limit.toString());
+    }
+
+    if (typeof params?.search === "string" && params?.search.trim() !== "") {
+      queryParams.append("search", params?.search.trim());
+    }
+
+    if (typeof params?.status === "string" && params?.status.trim() !== "") {
+      queryParams.append("status", params?.status.trim());
+    }
+
+    if (typeof params?.region === "string" && params?.region.trim() !== "") {
+      queryParams.append("region", params?.region.trim());
+    }
 
     const url = queryParams.toString()
       ? `${this.baseUrl}/?${queryParams.toString()}`
       : `${this.baseUrl}/`;
 
-    return await this.get(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return await this.get(url);
   }
 
-  async leadsAssign(id: string, agentId: string, token: string) {
-    await this.put(
-      `${this.baseUrl}/${id}/assign`,
-      { agentId },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+  async leadsAssign(id: string, agentId: string) {
+    await this.put(`${this.baseUrl}/${id}/assign`, { agentId });
   }
 
-  async requestReplacement(id: string, reason: string, token: string) {
-    await this.put(
-      `${this.baseUrl}/${id}/request-replacement`,
-      { reason },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+  async requestReplacement(id: string, reason: string) {
+    await this.put(`${this.baseUrl}/${id}/request-replacement`, { reason });
   }
 
   async markLeadAsSold(
@@ -77,35 +59,26 @@ class LeadsApi extends BaseApi {
       insuranceCompany: string;
       product: string;
       notes?: string;
-    },
-    token: string
+    }
   ) {
-    const data = await this.put(`${this.baseUrl}/${id}/sold`, saleData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return data;
+    return await this.put(`${this.baseUrl}/${id}/sold`, saleData);
   }
 
-  async updateLeadStatus(id: string, status: string, token: string) {
-    const data = await this.put(
-      `${this.baseUrl}/${id}/status`,
-      { status },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    return data;
+  async updateLeadStatus(id: string, status: string) {
+    return await this.put(`${this.baseUrl}/${id}/status`, { status });
   }
 
-  async getLeadById(id: string, token: string) {
-    return await this.get(`${this.baseUrl}/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+  async getLeadById(id: string) {
+    return await this.get(`${this.baseUrl}/${id}`);
+  }
+
+  async getAllReplacementRequestLeads() {
+    return await this.get(`${this.baseUrl}/replacement-requests`);
+  }
+
+  async updateReplacementstatus(id: string, status: string, reason?: string) {
+    return await this.put(`${this.baseUrl}/${id}/replacement-status`, {
+      status, reason
     });
   }
 }
