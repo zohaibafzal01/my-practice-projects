@@ -57,6 +57,18 @@ class LeadsApi extends BaseApi {
     );
   }
 
+  async requestReplacement(id: string, reason: string, token: string) {
+    await this.put(
+      `${this.baseUrl}/${id}/request-replacement`,
+      { reason },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  }
+
   async markLeadAsSold(
     id: string,
     saleData: {
