@@ -563,10 +563,18 @@ export function AgentLeadsTable() {
                               </Button>
                             </>
                           )}
-                        {lead.status === "Replacement Requested" && (
-                          <Badge className="bg-orange-500/20 text-orange-300">
-                            {lead.replacementStatus}
-                          </Badge>
+                        {lead?.status === "Replacement Requested" && (
+                          // <Badge className="bg-orange-500/20 text-orange-300">
+                          //   {lead.replacementStatus}
+                          // </Badge>
+                          <Button
+                            size="sm"
+                            onClick={() => handleMarkAsSold(lead.id)}
+                            className="bg-green-600/20 border border-green-500/50 text-green-300 hover:bg-green-500/30"
+                          >
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            Mark Sold
+                          </Button>
                         )}
                       </div>
                     </td>
