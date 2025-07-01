@@ -63,7 +63,7 @@ export function LeadManagement() {
 
       try {
         // Step 1: Fetch all agents
-        const agentResponse = await agentApi.getAllAgents(token);
+        const agentResponse = await agentApi.getAllAgents();
         const fetchedAgents = agentResponse.items.map((agent: any) => ({
           id: agent._id,
           name: `${agent.firstName} ${agent.lastName}`,
@@ -135,7 +135,7 @@ export function LeadManagement() {
   const handleAssignLead = async (leadId: string, agentId: string) => {
     try {
       if (!token) return;
-      await leadsApi.leadsAssign(leadId, agentId, token);
+      await leadsApi.leadsAssign(leadId, agentId);
       await refreshLeads();
     } catch (err) {
       console.error("Failed to assign lead:", err);
@@ -146,7 +146,7 @@ export function LeadManagement() {
     const fetchAgents = async () => {
       try {
         if (!token) return;
-        const response = await agentApi.getAllAgents(token);
+        const response = await agentApi.getAllAgents();
         const fetchedAgents = response.items.map((agent: any) => ({
           id: agent._id,
           name: `${agent.firstName} ${agent.lastName}`,

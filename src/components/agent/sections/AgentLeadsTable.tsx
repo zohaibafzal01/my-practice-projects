@@ -178,11 +178,11 @@ export function AgentLeadsTable() {
       const params = {
         page: pagination.currentPage,
         limit: pagination.itemsPerPage,
-        ...(searchTerm && { search: searchTerm }),
+        ...(searchTerm?.trim() && { search: searchTerm.trim() }),
         ...(selectedStatus !== "all" && { status: selectedStatus }),
       };
 
-      const response: ApiResponse = await leadsApi.getAllLeads(token, params);
+      const response: ApiResponse = await leadsApi.getAllLeads(params);
 
       // Handle different response structures
       let leadsData = [];
@@ -284,7 +284,7 @@ export function AgentLeadsTable() {
         notes: saleData.notes || undefined,
       };
 
-      await leadsApi.markLeadAsSold(selectedLeadId, apiSaleData, token);
+      await leadsApi.markLeadAsSold(selectedLeadId, apiSaleData);
 
       // Update local state
       setLeads((prev) =>
@@ -339,7 +339,7 @@ export function AgentLeadsTable() {
 
       setIsSubmittingReplacement(true);
 
-      await leadsApi.requestReplacement(leadId, reason, token);
+      await leadsApi.requestReplacement(leadId, reason);
 
       setLeads((prev) =>
         prev.map((lead) =>

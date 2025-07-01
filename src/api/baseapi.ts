@@ -1,10 +1,30 @@
 import axios from "axios";
+import { store } from "@/redux/store";
+import { selectUserInfo } from "@/redux/selectors/userSelectors";
 
 export default class BaseApi {
   protected axiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
-    headers: {},
   });
+
+  constructor() {
+    this.axiosInstance.interceptors.request.use(
+      (config) => {
+        const state = store.getState();
+        const token = selectUserInfo(state)?.token;
+
+        if (token) {
+          config.headers = {
+            ...config.headers,
+            Authorization: `Bearer ${token}`,
+          };
+        }
+
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+  }
 
   async get<T = any>(url: string, config?: any): Promise<T> {
     const response = await this.axiosInstance.get<T>(url, config);

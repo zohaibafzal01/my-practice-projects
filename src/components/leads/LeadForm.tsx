@@ -68,7 +68,7 @@ const LeadForm = ({
     }
 
     try {
-      const response = await leadsApi.createLeads(formData, token);
+      const response = await leadsApi.createLeads(formData);
       toast.success("Lead created successfully!");
       setIsOpen(false);
       refreshLeads();
