@@ -337,10 +337,10 @@ export function AgentLeadsTable() {
         return;
       }
 
-      // Include reason in the payload only if your API supports additional data in this call
-      await leadsApi.updateLeadStatus(leadId, "REPLACEMENT_REQUESTED", token);
+      setIsSubmittingReplacement(true);
 
-      // Update local state
+      await leadsApi.requestReplacement(leadId, reason, token);
+
       setLeads((prev) =>
         prev.map((lead) =>
           lead.id === leadId
@@ -359,15 +359,19 @@ export function AgentLeadsTable() {
         description:
           "Your replacement request has been submitted for admin approval.",
       });
+
+      setShowReplacementModal(false);
+      setSelectedReplacementLeadId(null);
     } catch (error: any) {
       console.error("Error requesting replacement:", error);
       toast({
         title: "Error",
         description:
-          error?.response?.data?.message ||
-          "Failed to request replacement. Please try again.",
+          error?.response?.data?.message || "Failed to request replacement.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmittingReplacement(false);
     }
   };
 
@@ -549,7 +553,7 @@ export function AgentLeadsTable() {
                                 size="sm"
                                 variant="outline"
                                 onClick={() => {
-                                  setSelectedReplacementLeadId(lead.id);
+                                  setSelectedReplacementLeadId(lead?.id);
                                   setShowReplacementModal(true);
                                 }}
                                 className="border-orange-400/50 text-orange-300 hover:bg-orange-500/20"
