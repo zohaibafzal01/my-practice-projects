@@ -38,12 +38,13 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
 
   const handleProfile = () => {
     setIsOpen(false);
+    navigate("/dashboard?tab=profile");
   };
 
   const handleLogout = () => {
     localStorage.clear();
     setIsOpen(false);
-    navigate("/auth");
+    navigate("/");
   };
 
   return (
@@ -103,8 +104,9 @@ export function AgentDashboard() {
   const [activeTab, setActiveTab] = useState(defaultTab);
 
   useEffect(() => {
-    setSearchParams({ tab: activeTab });
-  }, [activeTab, setSearchParams]);
+    const currentTab = searchParams.get("tab") || "overview";
+    setActiveTab(currentTab);
+  }, [searchParams]);
 
   const userInfo = useSelector(selectUserInfo);
   const userName = useMemo(() => {
@@ -149,7 +151,11 @@ export function AgentDashboard() {
       </header>
 
       <main className="flex-1 p-6 bg-dark-base">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <Tabs
+          value={activeTab}
+          onValueChange={(val) => setSearchParams({ tab: val })}
+          className="w-full"
+        >
           <TabsList className="grid w-full grid-cols-5 bg-elevated-bg backdrop-blur-md border border-input-border">
             <TabsTrigger
               value="overview"

@@ -39,15 +39,15 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
   }, []);
 
   const handleProfile = () => {
-    console.log("Navigate to profile");
     setIsOpen(false);
+    navigate("/admin/profile");
   };
 
   const handleLogout = () => {
     localStorage.clear();
     console.log("Logout user");
     setIsOpen(false);
-    navigate("/auth");
+    navigate("/");
   };
 
   return (

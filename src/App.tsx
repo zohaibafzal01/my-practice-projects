@@ -9,7 +9,6 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import AboutNeon from "./pages/AboutNeon";
 import ContactNeon from "./pages/ContactNeon";
-import Auth from "./pages/Auth";
 import ForgotPassword from "./pages/ForgotPassword";
 import OtpVerification from "./pages/OtpVerification";
 import ThankYou from "./pages/ThankYou";
@@ -22,6 +21,8 @@ import ScrollToTop from "./components/ScrollToTop";
 import AdminPage from "./pages/AdminPage";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
+import AgentLogin from "./pages/AgentLogin";
+import AdminLogin from "./pages/AdminLogin";
 
 const queryClient = new QueryClient();
 
@@ -41,7 +42,8 @@ const App = () => (
             <Route path="/contact-neon" element={<Contact />} />
             <Route path="/about" element={<AboutNeon />} />
             <Route path="/contact" element={<ContactNeon />} />
-            <Route path="/auth" element={<Auth />} />
+            <Route path="/agent-login" element={<AgentLogin />} />
+            <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/otp-verification" element={<OtpVerification />} />
             <Route path="/thank-you" element={<ThankYou />} />
