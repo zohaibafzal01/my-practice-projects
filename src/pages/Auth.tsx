@@ -21,13 +21,17 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
-const Auth = () => {
+interface AuthProps {
+  loginMode: "admin" | "agent";
+}
+
+const Auth: React.FC<AuthProps> = ({ loginMode }) => {
   const dispatch = useDispatch();
 
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [loginType, setLoginType] = useState<"admin" | "agent">("agent");
+  const [loginType, setLoginType] = useState<"admin" | "agent">(loginMode);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -314,34 +318,39 @@ const Auth = () => {
               <div className="space-y-4">
                 <Label className="text-[#FFFFFF]">Login As</Label>
                 <div className="flex gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setLoginType("agent")}
-                    className={`flex-1 p-4 rounded-lg border transition-all ${
-                      loginType === "agent"
-                        ? "border-[#E2DCD5] bg-black/20 text-[#FFFFFF]"
-                        : "border-[#E2DCD545] bg-black/30 text-[#E2DCD545]"
-                    }`}
-                  >
-                    <div className="flex flex-col items-center space-y-2">
-                      <UserCheck className="h-6 w-6" />
-                      <span className="font-medium">Agent</span>
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setLoginType("admin")}
-                    className={`flex-1 p-4 rounded-lg border transition-all ${
-                      loginType === "admin"
-                        ? "border-[#E2DCD5] bg-black/20 text-[#FFFFFF]"
-                        : "border-[#E2DCD545] bg-black/30 text-[#E2DCD545]"
-                    }`}
-                  >
-                    <div className="flex flex-col items-center space-y-2">
-                      <Shield className="h-6 w-6" />
-                      <span className="font-medium">Admin</span>
-                    </div>
-                  </button>
+                  {loginMode === "agent" && (
+                    <button
+                      type="button"
+                      onClick={() => setLoginType("agent")}
+                      className={`flex-1 p-4 rounded-lg border transition-all ${
+                        loginType === "agent"
+                          ? "border-[#E2DCD5] bg-black/20 text-[#FFFFFF]"
+                          : "border-[#E2DCD545] bg-black/30 text-[#E2DCD545]"
+                      }`}
+                    >
+                      <div className="flex flex-col items-center space-y-2">
+                        <UserCheck className="h-6 w-6" />
+                        <span className="font-medium">Agent</span>
+                      </div>
+                    </button>
+                  )}
+
+                  {loginMode === "admin" && (
+                    <button
+                      type="button"
+                      onClick={() => setLoginType("admin")}
+                      className={`flex-1 p-4 rounded-lg border transition-all ${
+                        loginType === "admin"
+                          ? "border-[#E2DCD5] bg-black/20 text-[#FFFFFF]"
+                          : "border-[#E2DCD545] bg-black/30 text-[#E2DCD545]"
+                      }`}
+                    >
+                      <div className="flex flex-col items-center space-y-2">
+                        <Shield className="h-6 w-6" />
+                        <span className="font-medium">Admin</span>
+                      </div>
+                    </button>
+                  )}
                 </div>
               </div>
             )}

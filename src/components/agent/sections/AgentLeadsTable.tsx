@@ -402,7 +402,7 @@ export function AgentLeadsTable() {
 
   if (loading) {
     return (
-      <Card className="bg-black/40 backdrop-blur-md border border-cyan-400/30 shadow-xl shadow-cyan-500/10">
+      <Card className="bg-black/40 border border-gray-700">
         <CardContent className="flex items-center justify-center py-8">
           <div className="flex items-center space-x-2 text-cyan-100/70">
             <RefreshCw className="h-4 w-4 animate-spin" />
@@ -415,14 +415,14 @@ export function AgentLeadsTable() {
 
   return (
     <>
-      <Card className="bg-black/40 backdrop-blur-md border border-cyan-400/30 shadow-xl shadow-cyan-500/10">
+      <Card className="bg-black/40  border border-gray-700">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
+              <CardTitle className="text-2xl font-bold text-cream-primary">
                 My Leads
               </CardTitle>
-              <p className="text-cyan-100/70">
+              <p className="text-gray-400 ">
                 Manage your assigned leads • Total: {pagination.totalItems}
               </p>
             </div>
@@ -432,7 +432,7 @@ export function AgentLeadsTable() {
                 variant="outline"
                 size="sm"
                 disabled={refreshing}
-                className="border-cyan-400/50 text-cyan-300 hover:bg-cyan-500/20"
+                className="border border-gray-700 text-cream-primary hover:bg-cyan-500/20"
               >
                 <RefreshCw
                   className={`h-4 w-4 mr-2 ${refreshing ? "animate-spin" : ""}`}
@@ -444,13 +444,13 @@ export function AgentLeadsTable() {
                   placeholder="Search leads..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="bg-gray-800/50 border-cyan-400/30 text-white placeholder-gray-400"
+                  className="bg-gray-800/50 border border-gray-700  text-white placeholder-gray-400"
                 />
               </div>
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
-                className="bg-gray-800/50 border border-cyan-400/30 text-white rounded-md px-3 py-2"
+                className="bg-gray-800/50 border border-gray-700 text-white rounded-md px-3 py-2"
               >
                 <option value="all">All Status</option>
                 <option value="NEW">New</option>
@@ -467,13 +467,19 @@ export function AgentLeadsTable() {
           <div className="rounded-lg border border-gray-700/50 overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="bg-gray-800/30 border-gray-700/50">
-                  <th className="text-cyan-200 text-left p-3">Client Name</th>
-                  <th className="text-cyan-200 text-left p-3">Contact Info</th>
-                  <th className="text-cyan-200 text-left p-3">Region</th>
-                  <th className="text-cyan-200 text-left p-3">Lead Type</th>
-                  <th className="text-cyan-200 text-left p-3">Status</th>
-                  <th className="text-cyan-200 text-left p-3">Actions</th>
+                <tr className="bg-gray-800/30 border border-gray-700 ">
+                  <th className="text-cream-primary text-left p-3">
+                    Client Name
+                  </th>
+                  <th className="text-cream-primary text-left p-3">
+                    Contact Info
+                  </th>
+                  <th className="text-cream-primary text-left p-3">Region</th>
+                  <th className="text-cream-primary text-left p-3">
+                    Lead Type
+                  </th>
+                  <th className="text-cream-primary text-left p-3">Status</th>
+                  <th className="text-cream-primary text-left p-3">Actions</th>
                 </tr>
               </thead>
               <tbody>

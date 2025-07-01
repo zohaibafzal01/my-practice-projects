@@ -30,17 +30,23 @@ export function AgentPerformanceAnalytics() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
+        <h2 className="text-3xl font-bold text-cream-primary">
           Performance Analytics
         </h2>
-        <p className="text-cyan-100/70">Interactive charts showing your performance data</p>
+        <p className="text-gray-100/70">
+          Interactive charts showing your performance data
+        </p>
       </div>
 
       {/* Leads per State Chart */}
-      <Card className="bg-black/40 border-cyan-400/30">
+      <Card className="bg-black/40 border border-gray-700 ">
         <CardHeader>
-          <CardTitle className="text-xl font-bold text-cyan-100">Leads per State</CardTitle>
-          <p className="text-cyan-100/70">Total leads assigned vs converted by state</p>
+          <CardTitle className="text-xl font-bold text-cream-primary">
+            Leads per State
+          </CardTitle>
+          <p className="text-gray-100/70">
+            Total leads assigned vs converted by state
+          </p>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
@@ -50,9 +56,9 @@ export function AgentPerformanceAnalytics() {
               <YAxis stroke="#94a3b8" />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#1f2937',
-                  border: '1px solid #374151',
-                  borderRadius: '8px'
+                  backgroundColor: "#1f2937",
+                  border: "1px solid #374151",
+                  borderRadius: "8px",
                 }}
               />
               <Bar dataKey="leads" fill="#06b6d4" name="Total Leads" />
@@ -64,10 +70,14 @@ export function AgentPerformanceAnalytics() {
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Conversion Rate per State */}
-        <Card className="bg-black/40 border-purple-400/30">
+        <Card className="bg-black/40 border border-gray-700 ">
           <CardHeader>
-            <CardTitle className="text-xl font-bold text-cyan-100">Conversion Rate per State</CardTitle>
-            <p className="text-cyan-100/70">Your conversion percentage by state</p>
+            <CardTitle className="text-xl font-bold text-cream-primary">
+              Conversion Rate per State
+            </CardTitle>
+            <p className="text-gray-100/70">
+              Your conversion percentage by state
+            </p>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={250}>
@@ -77,9 +87,9 @@ export function AgentPerformanceAnalytics() {
                 <YAxis stroke="#94a3b8" />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1f2937',
-                    border: '1px solid #374151',
-                    borderRadius: '8px'
+                    backgroundColor: "#1f2937",
+                    border: "1px solid #374151",
+                    borderRadius: "8px",
                   }}
                 />
                 <Bar dataKey="rate" fill="#8b5cf6" name="Conversion Rate %" />
@@ -89,10 +99,12 @@ export function AgentPerformanceAnalytics() {
         </Card>
 
         {/* Replaced Leads Breakdown */}
-        <Card className="bg-black/40 border-orange-400/30">
+        <Card className="bg-black/40 border border-gray-700">
           <CardHeader>
-            <CardTitle className="text-xl font-bold text-cyan-100">Replaced Leads Breakdown</CardTitle>
-            <p className="text-cyan-100/70">Reasons for lead replacements</p>
+            <CardTitle className="text-xl font-bold text-cream-primary">
+              Replaced Leads Breakdown
+            </CardTitle>
+            <p className="text-gray-100/70">Reasons for lead replacements</p>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={250}>
@@ -103,7 +115,9 @@ export function AgentPerformanceAnalytics() {
                   cy="50%"
                   outerRadius={80}
                   dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) =>
+                    `${name} ${(percent * 100).toFixed(0)}%`
+                  }
                 >
                   {replacedLeadsBreakdown.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
@@ -111,9 +125,9 @@ export function AgentPerformanceAnalytics() {
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1f2937',
-                    border: '1px solid #374151',
-                    borderRadius: '8px'
+                    backgroundColor: "#1f2937",
+                    border: "1px solid #374151",
+                    borderRadius: "8px",
                   }}
                 />
               </PieChart>
@@ -123,26 +137,34 @@ export function AgentPerformanceAnalytics() {
       </div>
 
       {/* Performance Summary */}
-      <Card className="bg-black/40 border-green-400/30">
+      <Card className="bg-black/40 border border-gray-700 ">
         <CardHeader>
-          <CardTitle className="text-xl font-bold text-cyan-100">Performance Summary</CardTitle>
+          <CardTitle className="text-xl font-bold tborder text-cream-primary">
+            Performance Summary
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="p-4 rounded-lg bg-gray-800/30 border border-gray-700/50">
-              <div className="text-2xl font-bold text-green-400">26.7%</div>
-              <div className="text-sm text-cyan-100/70">Overall Conversion Rate</div>
+              <div className="text-2xl font-bold text-cream-primary">26.7%</div>
+              <div className="text-sm text-cyan-100/70">
+                Overall Conversion Rate
+              </div>
             </div>
             <div className="p-4 rounded-lg bg-gray-800/30 border border-gray-700/50">
-              <div className="text-2xl font-bold text-blue-400">51</div>
-              <div className="text-sm text-cyan-100/70">Total Leads Processed</div>
+              <div className="text-2xl font-bold text-cream-primary">51</div>
+              <div className="text-sm text-cyan-100/70">
+                Total Leads Processed
+              </div>
             </div>
             <div className="p-4 rounded-lg bg-gray-800/30 border border-gray-700/50">
-              <div className="text-2xl font-bold text-purple-400">CA</div>
-              <div className="text-sm text-cyan-100/70">Best Performing State</div>
+              <div className="text-2xl font-bold text-cream-primary">CA</div>
+              <div className="text-sm text-cyan-100/70">
+                Best Performing State
+              </div>
             </div>
             <div className="p-4 rounded-lg bg-gray-800/30 border border-gray-700/50">
-              <div className="text-2xl font-bold text-orange-400">8</div>
+              <div className="text-2xl font-bold text-cream-primary">8</div>
               <div className="text-sm text-cyan-100/70">Total Replacements</div>
             </div>
           </div>
