@@ -57,7 +57,7 @@ const TermsService = () => {
               </Link>
             </div>
             <div className="flex items-center space-x-4">
-              <Link to="/agent-login">
+              <Link to="/login">
                 <Button className="bg-[#E2DCD5] hover:bg-[#E2DCD5] text-[#0A0A0F] text-[14px] font-semibold ">
                   Login / Signup
                 </Button>

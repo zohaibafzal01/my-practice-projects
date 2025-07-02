@@ -302,6 +302,7 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
               >
                 Login
               </button>
+              {loginMode === "agent" && (
               <button
                 onClick={() => handleTabSwitch(false)}
                 className={`flex-1 py-3 text-center transition-colors ${
@@ -312,6 +313,7 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
               >
                 Sign Up
               </button>
+              )}
             </div>
 
             {isLogin && (

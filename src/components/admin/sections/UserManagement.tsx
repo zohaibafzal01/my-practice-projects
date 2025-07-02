@@ -33,10 +33,11 @@ interface Agent {
 
 export function UserManagement() {
   const userInfo = useSelector(selectUserInfo);
-
   const [agents, setAgents] = useState<Agent[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const { toast } = useToast();
 
   const filteredAgents = agents.filter((agent) => {
@@ -48,25 +49,51 @@ export function UserManagement() {
     return matchesSearch && matchesStatus;
   });
 
+  const fetchAgents = async (page = 1) => {
+    try {
+      if (!userInfo?.token) return;
+      const response = await agentApi.getAllAgents(page);
+
+      const fetchedAgents = response.items.map(
+        (agent: any): Agent => ({
+          id: agent?._id,
+          name: `${agent?.firstName} ${agent?.lastName}`,
+          email: agent.email,
+          phone: agent.phoneNumber,
+          plan: "Pro",
+          assignedLeads: agent?.totalLeadsAssigned || 0,
+          maxLeads: agent?.totalLeadsPurchased || 10,
+          status: agent?.status?.toLowerCase() as Agent["status"],
+          joinDate: agent?.createdAt,
+          lastActive:
+            agent?.lastLoginAt || agent?.updatedAt || agent?.createdAt,
+          totalSales: 0,
+        })
+      );
+
+      setAgents(fetchedAgents);
+      setTotalPages(response.totalPages || 1);
+      setCurrentPage(response.page || 1);
+    } catch (error: any) {
+      toast({
+        title: "Failed to fetch agents",
+        description: error?.response?.data?.message || error.message,
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchAgents(currentPage);
+  }, [userInfo, currentPage]);
+
   const handleStatusChange = async (
     agentId: string,
     newStatus: Agent["status"]
   ) => {
-    if (!userInfo?.token) {
-      toast({
-        title: "Unauthorized",
-        description: "Token not found. Please login again.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     try {
-      if (newStatus === "suspended") {
-        await agentApi.agentSuspend(agentId, userInfo.token);
-      } else if (newStatus === "active") {
-        await agentApi.agentReactivate(agentId, userInfo.token);
-      }
+      if (!userInfo?.token) return;
+      if (newStatus === "suspended") await agentApi.agentSuspend(agentId);
+      else if (newStatus === "active") await agentApi.agentReactivate(agentId);
 
       setAgents((prev) =>
         prev.map((agent) =>
@@ -84,7 +111,6 @@ export function UserManagement() {
         duration: 3000,
       });
     } catch (error: any) {
-      console.error("Agent status update failed:", error);
       toast({
         title: "Error",
         description: error?.response?.data?.message || error.message,
@@ -92,45 +118,6 @@ export function UserManagement() {
       });
     }
   };
-
-  useEffect(() => {
-    const fetchAgents = async () => {
-      try {
-        if (!userInfo?.token) {
-          console.error("No token found");
-          return;
-        }
-
-        const response = await agentApi.getAllAgents(userInfo?.token);
-        const fetchedAgents = response.items.map(
-          (agent: any): Agent => ({
-            id: agent?._id,
-            name: `${agent?.firstName} ${agent?.lastName}`,
-            email: agent.email,
-            phone: agent.phoneNumber,
-            plan: "Pro",
-            assignedLeads: agent?.totalLeadsAssigned || 0,
-            maxLeads: agent?.totalLeadsPurchased || 10,
-            status: agent?.status?.toLowerCase() as Agent["status"],
-            joinDate: agent?.createdAt,
-            lastActive:
-              agent?.lastLoginAt || agent?.updatedAt || agent?.createdAt,
-            totalSales: 0,
-          })
-        );
-
-        setAgents(fetchedAgents);
-      } catch (error: any) {
-        console.error("Fetch agents failed:", error);
-        toast({
-          title: "Failed to fetch agents",
-          description: error?.response?.data?.message || error.message,
-        });
-      }
-    };
-
-    fetchAgents();
-  }, [userInfo]);
 
   const getStatusColor = (status: Agent["status"]) => {
     switch (status) {
@@ -286,14 +273,6 @@ export function UserManagement() {
                     </TableCell>
                     <TableCell>
                       <div className="flex space-x-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="border-input-border text-secondary-text hover:bg-cream-primary/20 hover:text-cream-primary"
-                        >
-                          <Eye className="h-3 w-3 mr-1" />
-                          View
-                        </Button>
                         {agent.status === "active" ? (
                           <Button
                             size="sm"
@@ -303,8 +282,7 @@ export function UserManagement() {
                             }
                             className="border-theme-danger/50 text-theme-danger hover:bg-theme-danger/20"
                           >
-                            <UserX className="h-3 w-3 mr-1" />
-                            Suspend
+                            <UserX className="h-3 w-3 mr-1" /> Suspend
                           </Button>
                         ) : (
                           <Button
@@ -315,8 +293,7 @@ export function UserManagement() {
                             }
                             className="border-theme-success/50 text-theme-success hover:bg-theme-success/20"
                           >
-                            <UserCheck className="h-3 w-3 mr-1" />
-                            Activate
+                            <UserCheck className="h-3 w-3 mr-1" /> Activate
                           </Button>
                         )}
                       </div>
@@ -325,6 +302,31 @@ export function UserManagement() {
                 ))}
               </TableBody>
             </Table>
+          </div>
+          {/* Pagination Controls */}
+          <div className="mt-4 flex justify-between items-center">
+            <span className="text-primary-text">
+              Page {currentPage} of {totalPages}
+            </span>
+            <div className="flex space-x-2">
+              <Button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="bg-cream-primary text-dark-base"
+              >
+                Previous
+              </Button>
+
+              <Button
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                disabled={currentPage === totalPages}
+                className="bg-cream-primary text-dark-base"
+              >
+                Next
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>

@@ -1,8 +1,17 @@
 import { leadsApi } from "@/api/leads";
+import { US_STATES } from "@/constants/states";
 import { selectUserInfo } from "@/redux/selectors/userSelectors";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Input } from "../ui/input";
 
 const LeadForm = ({
   setIsOpen,
@@ -13,6 +22,13 @@ const LeadForm = ({
 }) => {
   const userInfo = useSelector(selectUserInfo);
   const token = userInfo?.token;
+  const [stateSearch, setStateSearch] = useState("");
+
+  const filteredStates = stateSearch
+    ? US_STATES.filter((s) =>
+        s.name.toLowerCase().includes(stateSearch.toLowerCase())
+      )
+    : US_STATES.slice(0, 5);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -160,14 +176,40 @@ const LeadForm = ({
 
       <div>
         <label className="block mb-1">Region</label>
-        <input
-          type="text"
-          name="region"
+        <Select
           value={formData.region}
-          onChange={handleChange}
-          className="w-full p-2 rounded bg-[#252525] border border-[#3A3A3A] text-[#E2DCD5] placeholder-[#B0B0B0]"
-          placeholder="Enter region"
-        />
+          onValueChange={(value) =>
+            setFormData((prev) => ({ ...prev, region: value }))
+          }
+        >
+          <SelectTrigger className="w-full p-2 rounded bg-[#252525] border border-[#3A3A3A] text-[#E2DCD5]">
+            <SelectValue placeholder="Select a state" />
+          </SelectTrigger>
+
+          <SelectContent
+            side="bottom" 
+            className="max-h-60 overflow-auto bg-[#1A1A1A] border border-[#3A3A3A] text-[#E2DCD5] shadow-lg"
+          >
+            <div className="p-2 sticky top-0 bg-[#1A1A1A] z-10">
+              <Input
+                placeholder="Search states..."
+                value={stateSearch}
+                onChange={(e) => setStateSearch(e.target.value)}
+                className="w-full bg-[#252525] border border-[#3A3A3A] text-[#E2DCD5] placeholder-[#888] rounded"
+              />
+            </div>
+
+            {filteredStates.map((state) => (
+              <SelectItem
+                key={state.code}
+                value={state.code}
+                className="text-[#E2DCD5] hover:bg-[#2A2A2A] cursor-pointer"
+              >
+                {state.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         {errors.region && (
           <p className="text-red-400 text-sm mt-1">{errors.region}</p>
         )}

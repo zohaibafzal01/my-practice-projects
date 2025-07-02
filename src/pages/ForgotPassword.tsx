@@ -9,6 +9,7 @@ import { Mail, ArrowLeft } from "lucide-react";
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [showOtpScreen, setShowOtpScreen] = useState(false);
+  const [showResetScreen, setShowResetScreen] = useState(false);
   const otpRefs = useRef<HTMLInputElement[]>([]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -26,6 +27,55 @@ const ForgotPassword = () => {
       }
     }
   };
+
+  if (showResetScreen) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6 bg-black">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-0 left-0 w-80 h-80 bg-[#06B6D433] rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-0 w-80 h-80 bg-[#A855F733] rounded-full blur-3xl"></div>
+        </div>
+        <div className="relative w-full max-w-md">
+          <Card className="bg-[#14181F] border border-[#E2DCD533]">
+            <CardHeader className="text-center pb-4">
+              <CardTitle className="text-2xl font-bold text-[#E2DCD5]">
+                Reset Your Password
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="new-password" className="text-[#E2DCD5]">
+                    New Password
+                  </Label>
+                  <Input
+                    id="new-password"
+                    type="password"
+                    placeholder="Enter new password"
+                    className="bg-black/30 border border-[#E2DCD533] text-cyan-100"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="confirm-password" className="text-[#E2DCD5]">
+                    Confirm Password
+                  </Label>
+                  <Input
+                    id="confirm-password"
+                    type="password"
+                    placeholder="Confirm new password"
+                    className="bg-black/30 border border-[#E2DCD533] text-cyan-100"
+                  />
+                </div>
+                <Button className="w-full bg-[#E2DCD5] hover:bg-[#E2DCD5] text-black font-semibold">
+                  Reset Password
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   if (showOtpScreen) {
     return (
@@ -59,7 +109,7 @@ const ForgotPassword = () => {
                 ))}
               </div>
               <Button
-                onClick={() => alert("OTP Verified (mock)")}
+                onClick={() => setShowResetScreen(true)}
                 className="w-full bg-[#E2DCD5] hover:bg-[#E2DCD5] text-black font-semibold"
               >
                 Verify OTP
