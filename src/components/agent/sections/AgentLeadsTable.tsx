@@ -529,7 +529,7 @@ export function AgentLeadsTable() {
                         <Badge className={getStatusColor(lead.status)}>
                           {lead.status}
                         </Badge>
-                        {lead.replacementStatus && (
+                        {lead.status !== "Sold" && lead.replacementStatus && (
                           <div className="text-xs text-gray-400">
                             Status: {lead.replacementStatus}
                           </div>

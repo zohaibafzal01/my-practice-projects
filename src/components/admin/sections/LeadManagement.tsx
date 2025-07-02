@@ -27,22 +27,31 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import ViewModal from "@/components/view-modal/ViewModal";
+import { US_STATES } from "@/constants/states";
 import { selectUserInfo } from "@/redux/selectors/userSelectors";
 import { RotateCcw, Search, UserPlus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 export function LeadManagement() {
-
   const [agents, setAgents] = useState<{ id: string; name: string }[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [totalLeads, setTotalLeads] = useState(0);
-
   const [leads, setLeads] = useState<any[]>([]);
+  const [totalLeads, setTotalLeads] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterState, setFilterState] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [search, setSearch] = useState("");
+
+  const defaultStates = US_STATES.slice(0, 10);
+  const filteredStates = search
+    ? US_STATES.filter((state) =>
+        state.name.toLowerCase().includes(search.toLowerCase())
+      )
+    : defaultStates;
 
   const filteredLeads = leads.filter((lead) => {
     const matchesSearch =
@@ -57,63 +66,23 @@ export function LeadManagement() {
   const userInfo = useSelector(selectUserInfo);
   const token = userInfo?.token;
 
-  useEffect(() => {
-    const fetchAgentsAndLeads = async () => {
-      if (!token) return;
-
-      try {
-        // Step 1: Fetch all agents
-        const agentResponse = await agentApi.getAllAgents();
-        const fetchedAgents = agentResponse.items.map((agent: any) => ({
-          id: agent._id,
-          name: `${agent.firstName} ${agent.lastName}`,
-        }));
-        setAgents(fetchedAgents);
-
-        // Step 2: Fetch all leads
-        const leadResponse = await leadsApi.getAllLeads(token);
-        const apiLeads = leadResponse?.items || [];
-
-        // Step 3: Map agentRef to name
-        const formattedLeads = apiLeads.map((lead: any) => {
-          const assignedAgentName = fetchedAgents.find(
-            (agent) => agent.id === lead.agentRef
-          )?.name;
-
-          return {
-            id: lead._id,
-            name: `${lead.firstName} ${lead.lastName}`,
-            email: lead.email,
-            phone: lead.phone,
-            state: lead.region,
-            status: lead.status.toLowerCase(),
-            assignedTo: assignedAgentName || null,
-            type: "Standard",
-          };
-        });
-
-        setLeads(formattedLeads);
-        setTotalLeads(leadResponse?.total || apiLeads.length);
-      } catch (err) {
-        console.error("❌ Failed to fetch agents or leads:", err);
-      }
-    };
-
-    fetchAgentsAndLeads();
-  }, [token]);
-
-  const refreshLeads = async () => {
+  const fetchAgentsAndLeads = async (page = 1) => {
     if (!token) return;
-
     try {
-      const leadResponse = await leadsApi.getAllLeads(token);
+      const agentResponse = await agentApi.getAllAgents();
+      const fetchedAgents = agentResponse.items.map((agent: any) => ({
+        id: agent._id,
+        name: `${agent.firstName} ${agent.lastName}`,
+      }));
+      setAgents(fetchedAgents);
+
+      const leadResponse = await leadsApi.getAllLeads({ page });
       const apiLeads = leadResponse?.items || [];
 
       const formattedLeads = apiLeads.map((lead: any) => {
-        const assignedAgentName = agents.find(
+        const assignedAgentName = fetchedAgents.find(
           (agent) => agent.id === lead.agentRef
         )?.name;
-
         return {
           id: lead._id,
           name: `${lead.firstName} ${lead.lastName}`,
@@ -127,10 +96,21 @@ export function LeadManagement() {
       });
 
       setLeads(formattedLeads);
+      setTotalLeads(leadResponse?.total || apiLeads.length);
+      setTotalPages(leadResponse?.totalPages || 1);
+      setCurrentPage(page);
     } catch (err) {
-      console.error("❌ Failed to refresh leads:", err);
+      console.error("❌ Failed to fetch agents or leads:", err);
     }
   };
+
+  const refreshLeads = async () => {
+    await fetchAgentsAndLeads(currentPage);
+  };
+
+  useEffect(() => {
+    fetchAgentsAndLeads(currentPage);
+  }, [token, currentPage]);
 
   const handleAssignLead = async (leadId: string, agentId: string) => {
     try {
@@ -141,24 +121,6 @@ export function LeadManagement() {
       console.error("Failed to assign lead:", err);
     }
   };
-
-  useEffect(() => {
-    const fetchAgents = async () => {
-      try {
-        if (!token) return;
-        const response = await agentApi.getAllAgents();
-        const fetchedAgents = response.items.map((agent: any) => ({
-          id: agent._id,
-          name: `${agent.firstName} ${agent.lastName}`,
-        }));
-        setAgents(fetchedAgents);
-      } catch (err) {
-        console.error("Failed to fetch agents:", err);
-      }
-    };
-
-    fetchAgents();
-  }, [token]);
 
   const getStatusBadge = (status: string) => {
     const colors = {
@@ -178,7 +140,6 @@ export function LeadManagement() {
       </Badge>
     );
   };
-
   return (
     <>
       <div className="space-y-6">
@@ -285,15 +246,24 @@ export function LeadManagement() {
                 </SelectContent>
               </Select>
               <Select value={filterState} onValueChange={setFilterState}>
-                <SelectTrigger className="w-[150px] bg-section-bg border-input-border text-primary-text">
-                  <SelectValue placeholder="State" />
+                <SelectTrigger className="w-[200px] bg-section-bg border-input-border text-primary-text">
+                  <SelectValue placeholder="Select state" />
                 </SelectTrigger>
                 <SelectContent>
+                  <div className="p-2">
+                    <Input
+                      placeholder="Search state..."
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      className="w-full bg-section-bg text-primary-text border-input-border"
+                    />
+                  </div>
                   <SelectItem value="all">All States</SelectItem>
-                  <SelectItem value="CA">California</SelectItem>
-                  <SelectItem value="TX">Texas</SelectItem>
-                  <SelectItem value="FL">Florida</SelectItem>
-                  <SelectItem value="NY">New York</SelectItem>
+                  {filteredStates.map((state) => (
+                    <SelectItem key={state?.code} value={state?.code}>
+                      {state?.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -370,13 +340,13 @@ export function LeadManagement() {
                               </SelectContent>
                             </Select>
                           )}
-                          <Button
+                          {/* <Button
                             size="sm"
                             variant="outline"
                             className="border-input-border text-secondary-text hover:bg-cream-primary/20 hover:text-cream-primary"
                           >
                             <RotateCcw className="w-3 h-3" />
-                          </Button>
+                          </Button> */}
                         </div>
                       </TableCell>
                     </TableRow>
@@ -386,6 +356,29 @@ export function LeadManagement() {
             </div>
           </CardContent>
         </Card>
+        <div className="flex justify-between items-center mt-4">
+          <p className="text-sm text-secondary-text">
+            Page {currentPage} of {totalPages}
+          </p>
+          <div className="space-x-2">
+            <Button
+              variant="outline"
+              className="text-primary-text border-input-border"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              className="text-primary-text border-input-border"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
       </div>
       <ViewModal
         show={isOpen}
@@ -393,7 +386,10 @@ export function LeadManagement() {
         size="lg"
         title="Create New Lead"
       >
-        <LeadForm setIsOpen={setIsOpen} refreshLeads={refreshLeads} />
+        <LeadForm
+          setIsOpen={setIsOpen}
+          refreshLeads={() => fetchAgentsAndLeads(currentPage)}
+        />
       </ViewModal>
     </>
   );

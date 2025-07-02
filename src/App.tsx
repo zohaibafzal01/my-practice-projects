@@ -23,6 +23,7 @@ import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import AgentLogin from "./pages/AgentLogin";
 import AdminLogin from "./pages/AdminLogin";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -36,13 +37,55 @@ const App = () => (
           <ScrollToTop />
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/leads" element={<Leads />} />
-            <Route path="/about-neon" element={<About />} />
-            <Route path="/contact-neon" element={<Contact />} />
-            <Route path="/about" element={<AboutNeon />} />
-            <Route path="/contact" element={<ContactNeon />} />
-            <Route path="/agent-login" element={<AgentLogin />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/leads"
+              element={
+                <ProtectedRoute>
+                  <Leads />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/about-neon"
+              element={
+                <ProtectedRoute>
+                  <About />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/contact-neon"
+              element={
+                <ProtectedRoute>
+                  <Contact />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/about"
+              element={
+                <ProtectedRoute>
+                  <AboutNeon />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/contact"
+              element={
+                <ProtectedRoute>
+                  <ContactNeon />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/login" element={<AgentLogin />} />
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/otp-verification" element={<OtpVerification />} />
@@ -52,15 +95,78 @@ const App = () => (
             {/* <Route path="/lead-capture" element={<LeadForm />} /> */}
 
             {/* Admin Routes */}
-            <Route path="/admin/overview" element={<AdminPage />} />
-            <Route path="/admin/users" element={<AdminPage />} />
-            <Route path="/admin/leads" element={<AdminPage />} />
-            <Route path="/admin/replacements" element={<AdminPage />} />
-            <Route path="/admin/analytics" element={<AdminPage />} />
-            <Route path="/admin/sales" element={<AdminPage />} />
-            <Route path="/admin/subscriptions" element={<AdminPage />} />
-            <Route path="/admin/profile" element={<AdminPage />} />
-            <Route path="/admin/notifications" element={<AdminPage />} />
+            <Route
+              path="/admin/overview"
+              element={
+                <ProtectedRoute>
+                  <AdminPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/users"
+              element={
+                <ProtectedRoute>
+                  <AdminPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/leads"
+              element={
+                <ProtectedRoute>
+                  <AdminPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/replacements"
+              element={
+                <ProtectedRoute>
+                  <AdminPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/analytics"
+              element={
+                <ProtectedRoute>
+                  <AdminPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/sales"
+              element={
+                <ProtectedRoute>
+                  <AdminPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/subscriptions"
+              element={
+                <ProtectedRoute>
+                  <AdminPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/profile"
+              element={
+                <ProtectedRoute>
+                  <AdminPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/notifications"
+              element={
+                <ProtectedRoute>
+                  <AdminPage />
+                </ProtectedRoute>
+              }
+            />
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

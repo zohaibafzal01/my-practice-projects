@@ -128,7 +128,7 @@ export function AdminSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup>
+        {/* <SidebarGroup>
           <SidebarGroupLabel className="text-cream-primary">
             Quick Access
           </SidebarGroupLabel>
@@ -147,16 +147,16 @@ export function AdminSidebar() {
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
-        </SidebarGroup>
+        </SidebarGroup> */}
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-input-border p-4">
+      {/* <SidebarFooter className="border-t border-input-border p-4">
         <Link to="/auth" className="w-full">
           <Button className="w-full bg-cream-primary hover:bg-cream-hover text-dark-base font-semibold">
             Switch Account
           </Button>
         </Link>
-      </SidebarFooter>
+      </SidebarFooter> */}
     </Sidebar>
   );
 }

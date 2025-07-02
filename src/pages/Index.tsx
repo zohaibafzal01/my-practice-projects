@@ -68,7 +68,7 @@ const Index = () => {
               </Link>
             </div>
             <div className="flex items-center space-x-4">
-              <Link to="/agent-login">
+              <Link to="/login">
                 <Button className="bg-[#E2DCD5] hover:bg-[#E2DCD5] text-[#0A0A0F] text-[14px] font-semibold ">
                   Login / Signup
                 </Button>
@@ -95,7 +95,7 @@ const Index = () => {
             States
           </p>
           <div className="flex justify-center space-x-4">
-            <Link to="/dashboard">
+            <Link to="/login">
               <Button className="bg-transparent hover:bg-transparent text-[#F5F5DC] font-semibold px-8 py-3 text-lg shadow-xl shadow-[#F5F5DC4D]/15">
                 Start Free Trial
               </Button>

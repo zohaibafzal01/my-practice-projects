@@ -3,8 +3,8 @@ import BaseApi from "./baseapi";
 class AgentApi extends BaseApi {
   baseUrl: string = "agents";
 
-  async getAllAgents() {
-    return await this.get(`${this.baseUrl}/`);
+  async getAllAgents(page = 1) {
+    return await this.get(`${this.baseUrl}/?page=${page}`);
   }
 
   async agentSuspend(id: string) {
