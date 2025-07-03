@@ -11,6 +11,8 @@ import { SalesReporting } from "./sections/SalesReporting";
 import { SubscriptionManagement } from "./sections/SubscriptionManagement";
 import { NotificationCenter } from "./sections/NotificationCenter";
 import CreateProfilePage from "./sections/ProfilePage";
+import { selectUserInfo } from "@/redux/selectors/userSelectors";
+import { useSelector } from "react-redux";
 
 interface UserActionMenuProps {
   userName?: string;
@@ -114,6 +116,7 @@ export function AdminContent() {
   // Get the current route and extract the section
   const location = useLocation();
   const activeSection = location.pathname.split("/").pop() || "overview";
+  const userInfo = useSelector(selectUserInfo);
 
   const renderContent = () => {
     switch (activeSection) {
@@ -176,7 +179,9 @@ export function AdminContent() {
               ADMIN ACCESS
             </div>
             {/* User Action Menu */}
-            <UserActionMenu userName="John Doe" />
+            <UserActionMenu
+              userName={userInfo?.adminRef?.name || "Admin User"}
+            />
           </div>
         </div>
       </header>
