@@ -3,38 +3,102 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
-import { Mail, ArrowLeft } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Mail, ArrowLeft, Eye, EyeOff } from "lucide-react";
+import userApi from "@/api/user";
+import { toast } from "sonner";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [showOtpScreen, setShowOtpScreen] = useState(false);
   const [showResetScreen, setShowResetScreen] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const otpRefs = useRef<HTMLInputElement[]>([]);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
-      setShowOtpScreen(true);
+      try {
+        setLoading(true);
+        await userApi.forgotPassword(email);
+        setShowOtpScreen(true);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        setErrorMessage("Failed to send OTP. Please try again later.");
+      }
     }
   };
 
   const handleOtpChange = (index: number, value: string) => {
     if (/^\d?$/.test(value)) {
       otpRefs.current[index].value = value;
+
+      const otpValue = otpRefs.current.map((input) => input.value).join("");
+      setOtp(otpValue);
+
       if (value && index < 5) {
         otpRefs.current[index + 1]?.focus();
       }
     }
   };
 
+  const handleVerifyOtp = async () => {
+    if (!otp || otp.length !== 6) {
+      setErrorMessage("Please enter a valid 6-digit OTP.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await userApi.verifyResetOtp(email, otp);
+      if (response.success && response.valid) {
+        setShowResetScreen(true);
+        setErrorMessage("");
+      } else {
+        setErrorMessage("Invalid or expired OTP. Please try again.");
+      }
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      setErrorMessage("Failed to verify OTP. Please try again.");
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (newPassword !== confirmPassword) {
+      setErrorMessage("Passwords do not match.");
+      return;
+    }
+    try {
+      setLoading(true);
+      await userApi.resetPassword(email, otp, newPassword);
+      setLoading(false);
+      toast.success("Password reset successfully!");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } catch (error) {
+      setLoading(false);
+      setErrorMessage("Failed to reset password. Please try again later.");
+    }
+  };
+
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
+  const toggleConfirmPasswordVisibility = () =>
+    setShowConfirmPassword(!showConfirmPassword);
+
   if (showResetScreen) {
     return (
       <div className="min-h-screen flex items-center justify-center p-6 bg-black">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-0 left-0 w-80 h-80 bg-[#06B6D433] rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-0 w-80 h-80 bg-[#A855F733] rounded-full blur-3xl"></div>
-        </div>
         <div className="relative w-full max-w-md">
           <Card className="bg-[#14181F] border border-[#E2DCD533]">
             <CardHeader className="text-center pb-4">
@@ -43,31 +107,62 @@ const ForgotPassword = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
+              {errorMessage && (
+                <div className="text-red-500 text-center mb-4">
+                  {errorMessage}
+                </div>
+              )}
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="new-password" className="text-[#E2DCD5]">
                     New Password
                   </Label>
-                  <Input
-                    id="new-password"
-                    type="password"
-                    placeholder="Enter new password"
-                    className="bg-black/30 border border-[#E2DCD533] text-cyan-100"
-                  />
+                  <div className="relative">
+                    <Input
+                      id="new-password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter new password"
+                      className="bg-black/30 border border-[#E2DCD533] text-cyan-100"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                    <button
+                      type="button"
+                      onClick={togglePasswordVisibility}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E2DCD5]"
+                    >
+                      {showPassword ? <EyeOff /> : <Eye />}
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <Label htmlFor="confirm-password" className="text-[#E2DCD5]">
                     Confirm Password
                   </Label>
-                  <Input
-                    id="confirm-password"
-                    type="password"
-                    placeholder="Confirm new password"
-                    className="bg-black/30 border border-[#E2DCD533] text-cyan-100"
-                  />
+                  <div className="relative">
+                    <Input
+                      id="confirm-password"
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder="Confirm new password"
+                      className="bg-black/30 border border-[#E2DCD533] text-cyan-100"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                    />
+                    <button
+                      type="button"
+                      onClick={toggleConfirmPasswordVisibility}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#E2DCD5]"
+                    >
+                      {showConfirmPassword ? <EyeOff /> : <Eye />}
+                    </button>
+                  </div>
                 </div>
-                <Button className="w-full bg-[#E2DCD5] hover:bg-[#E2DCD5] text-black font-semibold">
-                  Reset Password
+                <Button
+                  onClick={handleResetPassword}
+                  className="w-full bg-[#E2DCD5] hover:bg-[#E2DCD5] text-black font-semibold"
+                  disabled={loading}
+                >
+                  {loading ? "Resetting..." : "Reset Password"}
                 </Button>
               </div>
             </CardContent>
@@ -80,10 +175,6 @@ const ForgotPassword = () => {
   if (showOtpScreen) {
     return (
       <div className="min-h-screen flex items-center justify-center p-6 bg-black ">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-0 left-0 w-80 h-80 bg-[#06B6D433] rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-0 w-80 h-80 bg-[#A855F733] rounded-full blur-3xl"></div>
-        </div>
         <div className="relative w-full max-w-md">
           <Card className="bg-[#14181F] border border-[#E2DCD533]">
             <CardHeader className="text-center pb-4">
@@ -108,11 +199,17 @@ const ForgotPassword = () => {
                   />
                 ))}
               </div>
+              {errorMessage && (
+                <div className="text-red-500 text-center mb-4">
+                  {errorMessage}
+                </div>
+              )}
               <Button
-                onClick={() => setShowResetScreen(true)}
+                onClick={handleVerifyOtp}
                 className="w-full bg-[#E2DCD5] hover:bg-[#E2DCD5] text-black font-semibold"
+                disabled={loading}
               >
-                Verify OTP
+                {loading ? "Verifying..." : "Verify OTP"}
               </Button>
               <div className="text-center">
                 <button
@@ -131,13 +228,8 @@ const ForgotPassword = () => {
 
   return (
     <div className="min-h-screen bg-black via-blue-900 to-indigo-900 flex items-center justify-center p-6">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 left-0 w-80 h-80 bg-[#06B6D433] rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-0 w-80 h-80 bg-[#A855F733] rounded-full blur-3xl"></div>
-      </div>
-
       <div className="relative w-full max-w-md">
-        <Card className="bg-[#14181F] border border-[#E2DCD533] ">
+        <Card className="bg-[#14181F] border border-[#E2DCD533]">
           <CardHeader className="text-center pb-8">
             <CardTitle className="text-3xl font-bold text-[#E2DCD5] bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400 mb-2">
               Reset Password
@@ -176,10 +268,10 @@ const ForgotPassword = () => {
 
               <Button
                 type="submit"
-                disabled={!email}
+                disabled={!email || loading}
                 className="w-full bg-[#E2DCD5] hover:bg-[#E2DCD5] text-black font-semibold py-3"
               >
-                Forgot password
+                {loading ? "Sending..." : "Forgot password"}
               </Button>
             </form>
 
