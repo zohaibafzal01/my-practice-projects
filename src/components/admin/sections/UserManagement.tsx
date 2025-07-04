@@ -192,7 +192,7 @@ export function UserManagement() {
                   <TableHead className="text-cream-primary">
                     Agent Information
                   </TableHead>
-                  <TableHead className="text-cream-primary">Plan</TableHead>
+                  {/* <TableHead className="text-cream-primary">Plan</TableHead> */}
                   <TableHead className="text-cream-primary">
                     Lead Assignment
                   </TableHead>
@@ -227,11 +227,11 @@ export function UserManagement() {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       <Badge className={getPlanColor(agent.plan)}>
                         {agent.plan}
                       </Badge>
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>
                       <div className="space-y-1">
                         <div className="text-primary-text font-medium">

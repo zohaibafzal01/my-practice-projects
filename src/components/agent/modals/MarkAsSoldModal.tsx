@@ -154,13 +154,11 @@ export function MarkAsSoldModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-900 border border-cyan-400/30 rounded-lg w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+      <div className="bg-black border border-gray-700/50 rounded-lg w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-700/50">
           <div>
-            <h2 className="text-xl font-bold text-cyan-400">
-              Mark Lead as Sold
-            </h2>
+            <h2 className="text-xl font-bold text-white">Mark Lead as Sold</h2>
             <p className="text-gray-400 text-sm mt-1">
               Enter the sale details for this lead
             </p>
@@ -170,7 +168,7 @@ export function MarkAsSoldModal({
             variant="ghost"
             size="sm"
             disabled={isSubmitting}
-            className="text-gray-400 hover:text-white hover:bg-gray-800"
+            className="text-white hover:text-white hover:bg-gray-800"
           >
             <X className="h-4 w-4" />
           </Button>
@@ -182,7 +180,7 @@ export function MarkAsSoldModal({
           <div>
             <label
               htmlFor="zipCode"
-              className="flex items-center text-cyan-200 text-sm font-medium mb-2"
+              className="flex items-center text-white text-sm font-medium mb-2"
             >
               <MapPin className="h-4 w-4 mr-2" />
               Client ZIP Code *
@@ -191,7 +189,7 @@ export function MarkAsSoldModal({
               id="zipCode"
               value={formData.zipCode}
               onChange={(e) => handleInputChange("zipCode", e.target.value)}
-              className={`bg-gray-800/50 border-cyan-400/30 text-white focus:border-cyan-400 ${
+              className={`bg-gray-800/50 border-gray-700/50 text-white focus:border-cyan-400 ${
                 errors.zipCode ? "border-red-400 focus:border-red-400" : ""
               }`}
               placeholder="12345 or 12345-6789"
@@ -206,7 +204,7 @@ export function MarkAsSoldModal({
           <div>
             <label
               htmlFor="annualSubmitAmount"
-              className="flex items-center text-cyan-200 text-sm font-medium mb-2"
+              className="flex items-center text-white text-sm font-medium mb-2"
             >
               <DollarSign className="h-4 w-4 mr-2" />
               Annual Submit Amount *
@@ -224,7 +222,7 @@ export function MarkAsSoldModal({
                     : ""
                 }
                 onChange={(e) => handleAmountChange(e.target.value)}
-                className={`bg-gray-800/50 border-cyan-400/30 text-white focus:border-cyan-400 pl-8 ${
+                className={`bg-gray-800/50 border-gray-700/50 text-white focus:border-cyan-400 pl-8 ${
                   errors.annualSubmitAmount
                     ? "border-red-400 focus:border-red-400"
                     : ""
@@ -247,7 +245,7 @@ export function MarkAsSoldModal({
           <div>
             <label
               htmlFor="insuranceCompany"
-              className="flex items-center text-cyan-200 text-sm font-medium mb-2"
+              className="flex items-center text-white text-sm font-medium mb-2"
             >
               <Building2 className="h-4 w-4 mr-2" />
               Insurance Company *
@@ -258,7 +256,7 @@ export function MarkAsSoldModal({
               onChange={(e) =>
                 handleInputChange("insuranceCompany", e.target.value)
               }
-              className={`bg-gray-800/50 border-cyan-400/30 text-white focus:border-cyan-400 ${
+              className={`bg-gray-800/50 border-gray-700/50 text-white focus:border-cyan-400 ${
                 errors.insuranceCompany
                   ? "border-red-400 focus:border-red-400"
                   : ""
@@ -277,7 +275,7 @@ export function MarkAsSoldModal({
           <div>
             <label
               htmlFor="product"
-              className="flex items-center text-cyan-200 text-sm font-medium mb-2"
+              className="flex items-center text-white text-sm font-medium mb-2"
             >
               <Package className="h-4 w-4 mr-2" />
               Product *
@@ -286,7 +284,7 @@ export function MarkAsSoldModal({
               id="product"
               value={formData.product}
               onChange={(e) => handleInputChange("product", e.target.value)}
-              className={`w-full bg-gray-800/50 border border-cyan-400/30 text-white rounded-md px-3 py-2 focus:border-cyan-400 focus:outline-none ${
+              className={`w-full bg-gray-800/50 border border-gray-700/50 text-white rounded-md px-3 py-2 focus:border-cyan-400 focus:outline-none ${
                 errors.product ? "border-red-400 focus:border-red-400" : ""
               }`}
               disabled={isSubmitting}
@@ -311,7 +309,7 @@ export function MarkAsSoldModal({
           <div>
             <label
               htmlFor="notes"
-              className="flex items-center text-cyan-200 text-sm font-medium mb-2"
+              className="flex items-center text-white text-sm font-medium mb-2"
             >
               <FileText className="h-4 w-4 mr-2" />
               Notes (Optional)
@@ -320,7 +318,7 @@ export function MarkAsSoldModal({
               id="notes"
               value={formData.notes}
               onChange={(e) => handleInputChange("notes", e.target.value)}
-              className="w-full bg-gray-800/50 border border-cyan-400/30 text-white rounded-md px-3 py-2 resize-none focus:border-cyan-400 focus:outline-none"
+              className="w-full bg-gray-800/50 border border-gray-700/50 text-white rounded-md px-3 py-2 resize-none focus:border-cyan-400 focus:outline-none"
               placeholder="Additional notes about this sale..."
               rows={3}
               disabled={isSubmitting}

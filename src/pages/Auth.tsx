@@ -168,9 +168,7 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
       const selected = loginType?.toLowerCase();
 
       if (role !== selected) {
-        setError(
-          `This account is registered as "${role}", but you're trying to log in as "${selected}".`
-        );
+        setError(`User not found`);
         return;
       }
 
@@ -303,16 +301,16 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
                 Login
               </button>
               {loginMode === "agent" && (
-              <button
-                onClick={() => handleTabSwitch(false)}
-                className={`flex-1 py-3 text-center transition-colors ${
-                  !isLogin
-                    ? "text-[#FFFFFF] border-b-2 border-[#E2DCD5]"
-                    : "text-[#E2DCD545] hover:text-[#FFFFFF]"
-                }`}
-              >
-                Sign Up
-              </button>
+                <button
+                  onClick={() => handleTabSwitch(false)}
+                  className={`flex-1 py-3 text-center transition-colors ${
+                    !isLogin
+                      ? "text-[#FFFFFF] border-b-2 border-[#E2DCD5]"
+                      : "text-[#E2DCD545] hover:text-[#FFFFFF]"
+                  }`}
+                >
+                  Sign Up
+                </button>
               )}
             </div>
 
@@ -541,7 +539,7 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
               </Button>
             </form>
 
-            {isLogin && (
+            {isLogin && loginType === "agent" && (
               <div className="text-center">
                 <Link
                   to="/forgot-password"

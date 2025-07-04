@@ -49,7 +49,7 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
     localStorage.clear();
     console.log("Logout user");
     setIsOpen(false);
-    navigate("/");
+    navigate("/admin-login");
   };
 
   return (

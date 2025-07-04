@@ -295,11 +295,11 @@ const ForgotPassword = () => {
 
             <div className="text-center">
               <Link
-                to="/"
+                to="/login"
                 className="text-[#E2DCD5] hover:text-white text-sm flex items-center justify-center space-x-1"
               >
                 <ArrowLeft className="h-4 w-4" />
-                <span>Back to Home</span>
+                <span>Back to Login</span>
               </Link>
             </div>
           </CardContent>

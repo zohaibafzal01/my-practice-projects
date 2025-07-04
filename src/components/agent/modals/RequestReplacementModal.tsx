@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FileText } from "lucide-react";
+import { X, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Props {
@@ -21,15 +21,26 @@ export function RequestReplacementModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-      <div className="bg-[#1F2937] border border-cyan-500/30 rounded-lg shadow-lg w-full max-w-md p-6 relative">
-        <h2 className="text-xl font-bold text-cyan-300 mb-4">
-          Request Replacement
-        </h2>
+      <div className="bg-black border border-gray-700 rounded-lg shadow-lg w-full max-w-md p-6 relative">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-white ">
+            Request Replacement
+          </h2>
+          <Button
+            onClick={onClose}
+            variant="ghost"
+            size="sm"
+            disabled={isSubmitting}
+            className="text-white hover:text-white hover:bg-gray-800"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
 
         <div>
           <label
             htmlFor="reason"
-            className="flex items-center text-cyan-200 text-sm font-medium mb-2"
+            className="flex items-center text-white text-sm font-medium mb-2"
           >
             <FileText className="h-4 w-4 mr-2" />
             Reason
@@ -38,7 +49,7 @@ export function RequestReplacementModal({
             id="reason"
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            className="w-full bg-gray-800/50 border border-cyan-400/30 text-white rounded-md px-3 py-2 resize-none focus:border-cyan-400 focus:outline-none"
+            className="w-full bg-gray-800/50 border border-gray-700 text-white rounded-md px-3 py-2 resize-none focus:border-cyan-400 focus:outline-none"
             placeholder="Additional reason about this sale..."
             rows={3}
             disabled={isSubmitting}
