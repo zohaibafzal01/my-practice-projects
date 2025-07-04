@@ -44,7 +44,7 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
   const handleLogout = () => {
     localStorage.clear();
     setIsOpen(false);
-    navigate("/");
+    navigate("/login");
   };
 
   return (
