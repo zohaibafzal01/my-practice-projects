@@ -6,6 +6,8 @@ import { selectUserInfo } from "@/redux/selectors/userSelectors";
 import adminApi from "@/api/admin";
 import { toast } from "sonner";
 import userApi from "@/api/user";
+import { useDispatch } from "react-redux";
+import { login } from "@/redux/slices/userSlice";
 
 const CreateProfilePage = () => {
   const [form, setForm] = useState({
@@ -23,6 +25,7 @@ const CreateProfilePage = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const userInfo = useSelector(selectUserInfo);
+  const dispatch = useDispatch();
 
   const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -32,19 +35,47 @@ const CreateProfilePage = () => {
     const { firstName, lastName, phone } = form;
 
     if (!firstName || !lastName || !phone) {
-      alert("Please fill in all profile fields");
+      toast.error("Please fill in all profile fields");
       return;
     }
 
     try {
       setIsUpdating(true);
 
+      let updatedUser;
+
       if (userInfo?.userType === "ADMIN") {
         const fullName = `${firstName} ${lastName}`.trim();
         await adminApi.updateAdminProfile(fullName, phone);
+
+        updatedUser = {
+          ...userInfo,
+          adminRef: {
+            ...userInfo.adminRef,
+            name: fullName,
+            phoneNumber: phone,
+          },
+        };
       } else {
         await agentApi.updateAgentProfile(firstName, lastName, phone);
+
+        updatedUser = {
+          ...userInfo,
+          firstName,
+          lastName,
+          phoneNumber: phone,
+          agentRef: {
+            ...userInfo.agentRef,
+            firstName,
+            lastName,
+            phoneNumber: phone,
+          },
+        };
       }
+
+      localStorage.setItem("user_info", JSON.stringify(updatedUser));
+
+      dispatch(login(updatedUser));
 
       toast.success("Profile updated successfully!");
 
@@ -55,7 +86,6 @@ const CreateProfilePage = () => {
         phone: "",
       }));
     } catch (error: any) {
-      console.error("Update profile failed:", error);
       const message =
         error?.response?.data?.message || "Failed to update profile.";
       toast.error(message);
@@ -155,9 +185,14 @@ const CreateProfilePage = () => {
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
-                  type="tel"
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   value={form.phone}
-                  onChange={(e) => handleChange("phone", e.target.value)}
+                  onChange={(e) => {
+                    const numericValue = e.target.value.replace(/\D/g, "");
+                    handleChange("phone", numericValue);
+                  }}
                   placeholder="Enter phone number"
                   className="w-full pl-10 pr-4 py-3 bg-elevated-bg border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
                 />
