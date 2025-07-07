@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { User, Phone, Lock, Eye, EyeOff } from "lucide-react";
 import agentApi from "@/api/agent";
+import { useSelector } from "react-redux";
+import { selectUserInfo } from "@/redux/selectors/userSelectors";
+import adminApi from "@/api/admin";
+import { toast } from "sonner";
 
 const CreateProfilePage = () => {
   const [form, setForm] = useState({
@@ -16,11 +20,11 @@ const CreateProfilePage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const userInfo = useSelector(selectUserInfo);
 
   const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
-
 
   const handleUpdateProfile = async () => {
     const { firstName, lastName, phone } = form;
@@ -32,19 +36,31 @@ const CreateProfilePage = () => {
 
     try {
       setIsUpdating(true);
-      await agentApi.updateAgentProfile(firstName, lastName, phone);
-      alert("Profile updated successfully!");
+
+      if (userInfo?.userType === "ADMIN") {
+        const fullName = `${firstName} ${lastName}`.trim();
+        await adminApi.updateAdminProfile(fullName, phone);
+      } else {
+        await agentApi.updateAgentProfile(firstName, lastName, phone);
+      }
+
+      toast.success("Profile updated successfully!");
+
+      setForm((prev) => ({
+        ...prev,
+        firstName: "",
+        lastName: "",
+        phone: "",
+      }));
     } catch (error: any) {
       console.error("Update profile failed:", error);
-      alert(
-        error?.response?.data?.message ||
-          "Failed to update profile. Please try again."
-      );
+      const message =
+        error?.response?.data?.message || "Failed to update profile.";
+      toast.error(message);
     } finally {
       setIsUpdating(false);
     }
   };
-  
 
   const handleCreatePassword = async () => {
     const { currentPassword, newPassword, confirmPassword } = form;
@@ -244,4 +260,3 @@ const CreateProfilePage = () => {
 };
 
 export default CreateProfilePage;
-
