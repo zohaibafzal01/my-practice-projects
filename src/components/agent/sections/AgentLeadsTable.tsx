@@ -179,7 +179,9 @@ export function AgentLeadsTable() {
         page: pagination.currentPage,
         limit: pagination.itemsPerPage,
         ...(searchTerm?.trim() && { search: searchTerm.trim() }),
-        ...(selectedStatus !== "all" && { status: selectedStatus }),
+        ...(selectedStatus !== "all" && {
+          status: selectedStatus.toUpperCase(),
+        }),
       };
 
       const response: ApiResponse = await leadsApi.getAllLeads(params);
@@ -227,12 +229,10 @@ export function AgentLeadsTable() {
     }
   };
 
-  // Initial fetch and when dependencies change
   useEffect(() => {
     fetchLeads();
-  }, [pagination.currentPage, selectedStatus]); // Removed searchTerm from dependencies
+  }, [pagination.currentPage, selectedStatus]);
 
-  // Search with debounce
   useEffect(() => {
     const timer = setTimeout(() => {
       if (searchTerm !== undefined) {
@@ -252,7 +252,9 @@ export function AgentLeadsTable() {
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
     const matchesStatus =
-      selectedStatus === "all" || lead.status === selectedStatus;
+      selectedStatus === "all" ||
+      lead.backendStatus?.toUpperCase() === selectedStatus;
+
     return matchesSearch && matchesStatus;
   });
 
@@ -447,20 +449,20 @@ export function AgentLeadsTable() {
                   className="bg-gray-800/50 border border-gray-700  text-white placeholder-gray-400"
                 />
               </div>
-              {/* <select
+              <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
                 className="bg-gray-800/50 border border-gray-700 text-white rounded-md px-3 py-2"
               >
                 <option value="all">All Status</option>
-                <option value="NEW">New</option>
+                {/* <option value="NEW">New</option> */}
                 <option value="SOLD">Sold</option>
-                <option value="ASSIGNED">Assigned</option>
-                <option value="UNASSIGNED">Unassigned</option>
+                {/* <option value="ASSIGNED">Assigned</option>
+                <option value="UNASSIGNED">Unassigned</option> */}
                 <option value="REPLACEMENT_REQUESTED">
                   Replacement Requested
                 </option>
-              </select> */}
+              </select>
             </div>
           </div>
         </CardHeader>
@@ -530,11 +532,11 @@ export function AgentLeadsTable() {
                         <Badge className={getStatusColor(lead.status)}>
                           {lead.status}
                         </Badge>
-                        {lead.status !== "Sold" && lead.replacementStatus && (
+                        {/* {lead.status !== "Sold" && lead.replacementStatus && (
                           <div className="text-xs text-gray-400">
                             Status: {lead.replacementStatus}
                           </div>
-                        )}
+                        )} */}
                         {lead.sold && (
                           <div className="text-xs text-gray-400">
                             Sold: $
