@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { User, Phone, Lock, Eye, EyeOff } from "lucide-react";
 import agentApi from "@/api/agent";
 import { useSelector } from "react-redux";
@@ -132,6 +132,29 @@ const CreateProfilePage = () => {
       setIsCreating(false);
     }
   };
+
+  useEffect(() => {
+    if (!userInfo) return;
+
+    if (userInfo.userType === "ADMIN") {
+      const [firstName, ...rest] = userInfo.adminRef?.name?.split(" ") || [];
+      const lastName = rest?.join(" ") || "";
+
+      setForm((prev) => ({
+        ...prev,
+        firstName: firstName || "",
+        lastName: lastName || "",
+        phone: userInfo.adminRef?.phoneNumber || "",
+      }));
+    } else {
+      setForm((prev) => ({
+        ...prev,
+        firstName: userInfo.agentRef?.firstName || userInfo.firstName || "",
+        lastName: userInfo.agentRef?.lastName || userInfo.lastName || "",
+        phone: userInfo.agentRef?.phoneNumber || userInfo.phoneNumber || "",
+      }));
+    }
+  }, [userInfo]);
 
   return (
     <main className="flex-1 p-6">
