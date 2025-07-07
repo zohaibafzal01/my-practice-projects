@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { User, Phone, Lock, Eye, EyeOff } from "lucide-react";
+import agentApi from "@/api/agent";
 
 const CreateProfilePage = () => {
   const [form, setForm] = useState({
@@ -20,17 +21,30 @@ const CreateProfilePage = () => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
+
   const handleUpdateProfile = async () => {
-    if (!form.firstName || !form.lastName || !form.phone) {
+    const { firstName, lastName, phone } = form;
+
+    if (!firstName || !lastName || !phone) {
       alert("Please fill in all profile fields");
       return;
     }
 
-    setIsUpdating(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    alert("Profile updated successfully!");
-    setIsUpdating(false);
+    try {
+      setIsUpdating(true);
+      await agentApi.updateAgentProfile(firstName, lastName, phone);
+      alert("Profile updated successfully!");
+    } catch (error: any) {
+      console.error("Update profile failed:", error);
+      alert(
+        error?.response?.data?.message ||
+          "Failed to update profile. Please try again."
+      );
+    } finally {
+      setIsUpdating(false);
+    }
   };
+  
 
   const handleCreatePassword = async () => {
     const { currentPassword, newPassword, confirmPassword } = form;

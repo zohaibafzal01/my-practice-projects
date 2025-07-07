@@ -31,6 +31,18 @@ class AgentApi extends BaseApi {
   }) {
     return await this.post(`${this.baseUrl}/register`, agentData);
   }
+
+  async updateAgentProfile(
+    firstName: string,
+    lastName: string,
+    phoneNumber: string
+  ) {
+    await this.put(`${this.baseUrl}/profile`, {
+      firstName,
+      lastName,
+      phoneNumber,
+    });
+  }
 }
 
 export const agentApi = new AgentApi();
