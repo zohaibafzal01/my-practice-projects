@@ -258,7 +258,7 @@ export function LeadManagement() {
                   <SelectItem value="assigned">Assigned</SelectItem>
                   <SelectItem value="unassigned">Unassigned</SelectItem>
                   <SelectItem value="sold">Sold</SelectItem>
-                  <SelectItem value="replaced">Replaced</SelectItem>
+                  {/* <SelectItem value="replaced">Replaced</SelectItem> */}
                 </SelectContent>
               </Select>
               <Select value={filterState} onValueChange={setFilterState}>
