@@ -455,7 +455,7 @@ export function AgentLeadsTable() {
                 className="bg-gray-800/50 border border-gray-700 text-white rounded-md px-3 py-2"
               >
                 <option value="all">All Status</option>
-                {/* <option value="NEW">New</option> */}
+                <option value="NEW">New</option>
                 <option value="SOLD">Sold</option>
                 {/* <option value="ASSIGNED">Assigned</option>
                 <option value="UNASSIGNED">Unassigned</option> */}
