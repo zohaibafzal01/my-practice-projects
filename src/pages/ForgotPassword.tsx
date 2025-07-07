@@ -1,9 +1,9 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Mail, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import userApi from "@/api/user";
 import { toast } from "sonner";
@@ -21,6 +21,23 @@ const ForgotPassword = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const otpRefs = useRef<HTMLInputElement[]>([]);
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const urlEmail = searchParams.get("email");
+    const urlOtp = searchParams.get("otp");
+
+    if (urlEmail) {
+      setEmail(urlEmail);
+      setShowOtpScreen(true);
+    }
+
+    if (urlEmail && urlOtp) {
+      setOtp(urlOtp);
+      setShowOtpScreen(false);
+      setShowResetScreen(true);
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,6 +45,7 @@ const ForgotPassword = () => {
       try {
         setLoading(true);
         await userApi.forgotPassword(email);
+        setSearchParams({ email });
         setShowOtpScreen(true);
         setLoading(false);
       } catch (error) {
@@ -60,6 +78,7 @@ const ForgotPassword = () => {
       setLoading(true);
       const response = await userApi.verifyResetOtp(email, otp);
       if (response.success && response.valid) {
+        setSearchParams({ email, otp });
         setShowResetScreen(true);
         setErrorMessage("");
       } else {
@@ -214,7 +233,10 @@ const ForgotPassword = () => {
               <div className="text-center">
                 <button
                   className="text-sm text-[#E2DCD5] hover:text-[#E2DCD5]"
-                  onClick={() => setShowOtpScreen(false)}
+                  onClick={() => {
+                    setSearchParams({});
+                    setShowOtpScreen(false);
+                  }}
                 >
                   ← Back to Email Input
                 </button>

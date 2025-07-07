@@ -25,7 +25,7 @@ interface Agent {
   plan: "Basic" | "Pro" | "Enterprise";
   assignedLeads: number;
   maxLeads: number;
-  status: "active" | "suspended" | "inactive";
+  status: "active" | "suspended" | "inactive" | "pending";
   joinDate: string;
   lastActive: string;
   totalSales: number;
@@ -49,10 +49,10 @@ export function UserManagement() {
     return matchesSearch && matchesStatus;
   });
 
-  const fetchAgents = async (page = 1) => {
+  const fetchAgents = async (page = 1, search = "", status = "") => {
     try {
       if (!userInfo?.token) return;
-      const response = await agentApi.getAllAgents(page);
+      const response = await agentApi.getAllAgents(page, search, status);
 
       const fetchedAgents = response.items.map(
         (agent: any): Agent => ({
@@ -83,8 +83,15 @@ export function UserManagement() {
   };
 
   useEffect(() => {
-    fetchAgents(currentPage);
+    fetchAgents(currentPage, searchTerm, statusFilter);
   }, [userInfo, currentPage]);
+
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      fetchAgents(1, searchTerm, statusFilter);
+    }, 500);
+    return () => clearTimeout(delayDebounce);
+  }, [searchTerm, statusFilter]);
 
   const handleStatusChange = async (
     agentId: string,
@@ -123,7 +130,7 @@ export function UserManagement() {
     switch (status) {
       case "active":
         return "bg-green-500/20 text-green-300 border-green-400/50";
-      case "suspended":
+      case "pending":
         return "bg-red-500/20 text-red-300 border-red-400/50";
       case "inactive":
         return "bg-gray-500/20 text-gray-300 border-gray-400/50";
@@ -178,7 +185,7 @@ export function UserManagement() {
               >
                 <option value="all">All Status</option>
                 <option value="active">Active</option>
-                <option value="suspended">Suspended</option>
+                <option value="pending">Pending</option>
                 <option value="inactive">Inactive</option>
               </select>
             </div>
@@ -310,7 +317,11 @@ export function UserManagement() {
             </span>
             <div className="flex space-x-2">
               <Button
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                onClick={() => {
+                  const newPage = Math.max(1, currentPage - 1);
+                  setCurrentPage(newPage);
+                  fetchAgents(newPage, searchTerm, statusFilter);
+                }}
                 disabled={currentPage === 1}
                 className="bg-cream-primary text-dark-base"
               >
@@ -318,9 +329,11 @@ export function UserManagement() {
               </Button>
 
               <Button
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(totalPages, p + 1))
-                }
+                onClick={() => {
+                  const newPage = Math.min(totalPages, currentPage + 1);
+                  setCurrentPage(newPage);
+                  fetchAgents(newPage, searchTerm, statusFilter);
+                }}
                 disabled={currentPage === totalPages}
                 className="bg-cream-primary text-dark-base"
               >

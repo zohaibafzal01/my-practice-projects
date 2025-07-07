@@ -76,13 +76,21 @@ export function LeadManagement() {
       }));
       setAgents(fetchedAgents);
 
-      const leadResponse = await leadsApi.getAllLeads({ page });
+      const apiFilters = {
+        page,
+        search: searchTerm.trim(),
+        status: filterStatus !== "all" ? filterStatus.toUpperCase() : undefined,
+        region: filterState !== "all" ? filterState : undefined,
+      };
+
+      const leadResponse = await leadsApi.getAllLeads(apiFilters);
       const apiLeads = leadResponse?.items || [];
 
       const formattedLeads = apiLeads.map((lead: any) => {
         const assignedAgentName = fetchedAgents.find(
           (agent) => agent.id === lead.agentRef
         )?.name;
+
         return {
           id: lead._id,
           name: `${lead.firstName} ${lead.lastName}`,
@@ -103,6 +111,14 @@ export function LeadManagement() {
       console.error("❌ Failed to fetch agents or leads:", err);
     }
   };
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      fetchAgentsAndLeads(1);
+    }, 500);
+
+    return () => clearTimeout(delay);
+  }, [searchTerm, filterStatus, filterState]);
 
   const refreshLeads = async () => {
     await fetchAgentsAndLeads(currentPage);

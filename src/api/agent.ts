@@ -3,8 +3,15 @@ import BaseApi from "./baseapi";
 class AgentApi extends BaseApi {
   baseUrl: string = "agents";
 
-  async getAllAgents(page = 1) {
-    return await this.get(`${this.baseUrl}/?page=${page}`);
+  async getAllAgents(page = 1, search = "", status = "") {
+    const query = new URLSearchParams({ page: page.toString() });
+
+    if (search) query.append("search", search);
+    if (status && status !== "all") {
+      query.append("status", status.toUpperCase());
+    }
+
+    return await this.get(`${this.baseUrl}/?${query.toString()}`);
   }
 
   async agentSuspend(id: string) {
