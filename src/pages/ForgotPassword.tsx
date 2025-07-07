@@ -48,9 +48,12 @@ const ForgotPassword = () => {
         setSearchParams({ email });
         setShowOtpScreen(true);
         setLoading(false);
-      } catch (error) {
+      } catch (error: any) {
         setLoading(false);
-        setErrorMessage("Failed to send OTP. Please try again later.");
+        const backendMessage =
+          error?.response?.data?.message ||
+          "Failed to send OTP. Please try again.";
+        setErrorMessage(backendMessage);
       }
     }
   };
@@ -280,7 +283,10 @@ const ForgotPassword = () => {
                     type="email"
                     placeholder="Enter your email address"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setErrorMessage("");
+                    }}
                     className="pl-10 bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545]"
                     autoComplete="new-email"
                     required
@@ -295,6 +301,11 @@ const ForgotPassword = () => {
               >
                 {loading ? "Sending..." : "Forgot password"}
               </Button>
+              {errorMessage && (
+                <div className="text-red-500 text-center mb-4">
+                  {errorMessage}
+                </div>
+              )}
             </form>
 
             <div className="text-center space-y-4">
