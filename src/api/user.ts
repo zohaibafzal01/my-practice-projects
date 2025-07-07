@@ -18,6 +18,13 @@ class UserApi extends BaseApi {
       password,
     });
   }
+
+  async updateProfilesPassword(currentPassword: string, newPassword: string) {
+    await this.put(`${this.baseUrl}/password`, {
+      currentPassword,
+      newPassword,
+    });
+  }
 }
 
 export const userApi = new UserApi();
