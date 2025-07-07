@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { selectUserInfo } from "@/redux/selectors/userSelectors";
 import adminApi from "@/api/admin";
 import { toast } from "sonner";
+import userApi from "@/api/user";
 
 const CreateProfilePage = () => {
   const [form, setForm] = useState({
@@ -20,6 +21,7 @@ const CreateProfilePage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const userInfo = useSelector(selectUserInfo);
 
   const handleChange = (field: string, value: string) => {
@@ -66,24 +68,39 @@ const CreateProfilePage = () => {
     const { currentPassword, newPassword, confirmPassword } = form;
 
     if (!currentPassword || !newPassword || !confirmPassword) {
-      alert("Please fill in all password fields");
+      toast.error("Please fill in all password fields");
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      alert("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
     if (newPassword.length < 8) {
-      alert("Password must be at least 8 characters long");
+      toast.error("Password must be at least 8 characters long");
       return;
     }
 
-    setIsCreating(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    alert("Password updated successfully!");
-    setIsCreating(false);
+    try {
+      setIsCreating(true);
+      await userApi.updateProfilesPassword(currentPassword, newPassword);
+
+      toast.success("Password updated successfully!");
+
+      setForm((prev) => ({
+        ...prev,
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      }));
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message || "Failed to update password.";
+      toast.error(message);
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   return (
@@ -173,14 +190,25 @@ const CreateProfilePage = () => {
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
-                  type="password"
+                  type={showCurrentPassword ? "text" : "password"}
                   value={form.currentPassword}
                   onChange={(e) =>
                     handleChange("currentPassword", e.target.value)
                   }
                   placeholder="Enter current password"
-                  className="w-full pl-10 pr-4 py-3 bg-elevated-bg border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                  className="w-full pl-10 pr-12 py-3 bg-elevated-bg border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                >
+                  {showCurrentPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
               </div>
             </div>
 
