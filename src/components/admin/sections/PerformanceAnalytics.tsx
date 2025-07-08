@@ -59,7 +59,7 @@ const leadStatusData = [
   { name: "Assigned", value: 65, color: "#3B82F6" },
   { name: "Unassigned", value: 12, color: "#EAB308" },
   { name: "Sold", value: 52, color: "#10B981" },
-  { name: "Replaced", value: 18, color: "#EF4444" },
+  // { name: "Replaced", value: 18, color: "#EF4444" },
 ];
 
 export function PerformanceAnalytics() {
@@ -99,10 +99,10 @@ export function PerformanceAnalytics() {
             <div className="text-2xl font-bold text-cream-primary">
               {totalLeads}
             </div>
-            <div className="flex items-center text-sm text-theme-success">
+            {/* <div className="flex items-center text-sm text-theme-success">
               <TrendingUp className="w-3 h-3 mr-1" />
               +12% from last month
-            </div>
+            </div> */}
           </CardContent>
         </Card>
 
@@ -117,10 +117,10 @@ export function PerformanceAnalytics() {
             <div className="text-2xl font-bold text-theme-success">
               {totalSold}
             </div>
-            <div className="flex items-center text-sm text-theme-success">
+            {/* <div className="flex items-center text-sm text-theme-success">
               <TrendingUp className="w-3 h-3 mr-1" />
               +8% from last month
-            </div>
+            </div> */}
           </CardContent>
         </Card>
 
@@ -135,10 +135,10 @@ export function PerformanceAnalytics() {
             <div className="text-2xl font-bold text-blue-400">
               {overallConversion}%
             </div>
-            <div className="flex items-center text-sm text-theme-danger">
+            {/* <div className="flex items-center text-sm text-theme-danger">
               <TrendingDown className="w-3 h-3 mr-1" />
               -2% from last month
-            </div>
+            </div> */}
           </CardContent>
         </Card>
 
@@ -183,6 +183,7 @@ export function PerformanceAnalytics() {
                     borderRadius: "8px",
                     color: "#F5F5F5",
                   }}
+                  cursor={{ fill: "#FFD700", opacity: 0.2 }}
                 />
                 <Bar dataKey="leads" fill="#E2DCD5" name="Total Leads" />
                 <Bar dataKey="sold" fill="#4CAF50" name="Sold" />
@@ -222,8 +223,8 @@ export function PerformanceAnalytics() {
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#1E1E1E",
-                    border: "1px solid #E2DCD5",
+                    backgroundColor: "#E2DCD5",
+                    border: "1px solid #1E1E1E ",
                     borderRadius: "8px",
                     color: "#F5F5F5",
                   }}
