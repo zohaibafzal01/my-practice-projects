@@ -20,10 +20,10 @@ const conversionPerState = [
 ];
 
 const replacedLeadsBreakdown = [
-  { name: 'No Contact', value: 45, color: '#ef4444' },
-  { name: 'Not Interested', value: 30, color: '#f59e0b' },
-  { name: 'Wrong Information', value: 15, color: '#8b5cf6' },
-  { name: 'Already Covered', value: 10, color: '#06b6d4' }
+  { name: "Assigned", value: 34, color: "#3B82F6" },
+  // { name: "Unassigned", value: 12, color: "#EAB308" },
+  { name: "Sold", value: 47, color: "#10B981" },
+  { name: "Replaced", value: 22, color: "#EAB308" },
 ];
 
 export function AgentPerformanceAnalytics() {
@@ -60,6 +60,7 @@ export function AgentPerformanceAnalytics() {
                   border: "1px solid #374151",
                   borderRadius: "8px",
                 }}
+                cursor={{ fill: "#FFD700", opacity: 0.2 }}
               />
               <Bar dataKey="leads" fill="#06b6d4" name="Total Leads" />
               <Bar dataKey="converted" fill="#10b981" name="Converted" />
@@ -91,6 +92,7 @@ export function AgentPerformanceAnalytics() {
                     border: "1px solid #374151",
                     borderRadius: "8px",
                   }}
+                  cursor={{ fill: "#FFD700", opacity: 0.2 }}
                 />
                 <Bar dataKey="rate" fill="#8b5cf6" name="Conversion Rate %" />
               </BarChart>
@@ -102,9 +104,9 @@ export function AgentPerformanceAnalytics() {
         <Card className="bg-black/40 border border-gray-700">
           <CardHeader>
             <CardTitle className="text-xl font-bold text-cream-primary">
-              Replaced Leads Breakdown
+              Lead Status Distribution
             </CardTitle>
-            <p className="text-gray-100/70">Reasons for lead replacements</p>
+            <p className="text-gray-100/70">Current status of all leads</p>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={250}>
@@ -125,7 +127,7 @@ export function AgentPerformanceAnalytics() {
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#1f2937",
+                    backgroundColor: "#E2DCD5",
                     border: "1px solid #374151",
                     borderRadius: "8px",
                   }}
