@@ -239,7 +239,7 @@ const LeadForm = ({
           <option value="SOLD">SOLD</option>
           <option value="ASSIGNED">ASSIGNED</option>
           <option value="UNASSIGNED">UNASSIGNED</option>
-          <option value="REQUESTED">REQUESTED</option>
+          {/* <option value="REQUESTED">REQUESTED</option> */}
           <option value="REPLACEMENT_REQUESTED">REPLACEMENT_REQUESTED</option>
         </select>
       </div>

@@ -55,16 +55,14 @@ interface SaleData {
 }
 
 interface ApiResponse {
-  data?: any;
   items?: any[];
-  pagination?: {
-    currentPage: number;
-    totalPages: number;
-    totalItems: number;
-    itemsPerPage: number;
-  };
+  page?: number;
+  limit?: number;
+  total?: number;
+  totalPages?: number;
   message?: string;
   success?: boolean;
+  data?: any;
 }
 
 export function AgentLeadsTable() {
@@ -193,14 +191,13 @@ export function AgentLeadsTable() {
       if (response.items) {
         // Paginated response
         leadsData = response.items;
-        if (response.pagination) {
-          paginationData = {
-            currentPage: response.pagination.currentPage || 1,
-            totalPages: response.pagination.totalPages || 1,
-            totalItems: response.pagination.totalItems || 0,
-            itemsPerPage: response.pagination.itemsPerPage || 10,
-          };
-        }
+
+        paginationData = {
+          currentPage: response?.page || 1,
+          totalPages: response?.totalPages || 1,
+          totalItems: response?.total || leadsData?.length,
+          itemsPerPage: response?.limit || 10,
+        };
       } else if (response.data) {
         // Simple data response
         leadsData = Array.isArray(response.data)
@@ -605,13 +602,7 @@ export function AgentLeadsTable() {
           {pagination.totalPages > 1 && (
             <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-700/50">
               <div className="text-sm text-gray-400">
-                Showing{" "}
-                {(pagination.currentPage - 1) * pagination.itemsPerPage + 1} to{" "}
-                {Math.min(
-                  pagination.currentPage * pagination.itemsPerPage,
-                  pagination.totalItems
-                )}{" "}
-                of {pagination.totalItems} results
+                Page {pagination.currentPage} of {pagination.totalPages}
               </div>
               <div className="flex space-x-2">
                 <Button
@@ -624,13 +615,11 @@ export function AgentLeadsTable() {
                     }))
                   }
                   disabled={pagination.currentPage === 1}
-                  className="border-cyan-400/50 text-cyan-300"
+                  className="border-gray-700/50 text-white"
                 >
                   Previous
                 </Button>
-                <span className="px-3 py-1 text-cyan-300">
-                  Page {pagination.currentPage} of {pagination.totalPages}
-                </span>
+
                 <Button
                   size="sm"
                   variant="outline"
@@ -641,7 +630,7 @@ export function AgentLeadsTable() {
                     }))
                   }
                   disabled={pagination.currentPage === pagination.totalPages}
-                  className="border-cyan-400/50 text-cyan-300"
+                  className="border-gray-700/50 text-white"
                 >
                   Next
                 </Button>
