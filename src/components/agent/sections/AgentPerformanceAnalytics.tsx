@@ -21,9 +21,8 @@ const conversionPerState = [
 
 const replacedLeadsBreakdown = [
   { name: "Assigned", value: 34, color: "#3B82F6" },
-  // { name: "Unassigned", value: 12, color: "#EAB308" },
   { name: "Sold", value: 47, color: "#10B981" },
-  { name: "Replaced", value: 22, color: "#EAB308" },
+  { name: "Replacement Requested", value: 22, color: "#EAB308" },
 ];
 
 export function AgentPerformanceAnalytics() {
