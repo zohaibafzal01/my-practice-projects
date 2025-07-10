@@ -335,7 +335,7 @@ const CreateProfilePage = () => {
                 disabled={isCreating}
                 className="px-8 py-3 bg-[#E2DCD5] hover:bg-[#E2DCD5] text-black rounded-lg font-medium text-lg disabled:opacity-50"
               >
-                {isCreating ? "Saving..." : "Create Profile"}
+                {isCreating ? "Updating..." : "Update Password"}
               </button>
             </div>
           </div>
