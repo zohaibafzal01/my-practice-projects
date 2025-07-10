@@ -16,128 +16,147 @@ import LeadsDifferentiator from "@/components/LeadsDifferentiator";
 const Index = () => {
   return (
     <div className="min-h-screen bg-[#0A0A0FE5]">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-black/30 backdrop-blur-md ">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <Link to="/">
-              <img src={leadslogo} alt="Londen Leads" />
-            </Link>
-            <div className="hidden md:flex space-x-8">
-              {/* <Link
+      {/* Hero + Scoreboard Section with Background Video */}
+      <section className="relative overflow-hidden py-[200px]">
+        {/* Background Video */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute top-0 left-0 w-full h-full object-cover z-0 pointer-events-none"
+        >
+          <source
+            src="https://storage.googleapis.com/msgsndr/BiX0KW3dsGruTvFqEdB2/media/669ea58154921d465ceb3e22.mp4"
+            type="video/mp4"
+          />
+          Your browser does not support the video tag.
+        </video>
+
+        {/* Optional Dark Overlay */}
+        {/* <div className="absolute top-0 left-0 w-full h-full bg-[#0A0A0FE5] z-10" /> */}
+
+        <nav className="fixed top-0 w-full z-50 bg-black/30 backdrop-blur-md ">
+          <div className="container mx-auto px-6 py-4">
+            <div className="flex items-center justify-between">
+              <Link to="/">
+                <img src={leadslogo} alt="Londen Leads" />
+              </Link>
+              <div className="hidden md:flex space-x-8">
+                {/* <Link
                 to="/dashboard"
                 className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
               >
                 Dashboard
               </Link> */}
-              <Link
-                to="/"
-                className="text-[#E2DCD5] hover:text-cyan-100 transition-colors"
-              >
-                Home
-              </Link>
-              <a
-                href="#features"
-                className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
-              >
-                Features
-              </a>
-              <a
-                href="#testimonials"
-                className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
-              >
-                Testimonials
-              </a>
-              <a
-                href="#pricing"
-                className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
-              >
-                Pricing
-              </a>
-              <Link
-                to="/about"
-                className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
-              >
-                About Us
-              </Link>
-              <Link
-                to="/contact"
-                className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
-              >
-                Contact Us
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link to="/login">
-                <Button className="bg-[#E2DCD5] hover:bg-[#E2DCD5] text-[#0A0A0F] text-[14px] font-semibold ">
-                  Login / Signup
-                </Button>
-              </Link>
-              {/* <Link to="/lead-capture">
+                <Link
+                  to="/"
+                  className="text-[#E2DCD5] hover:text-cyan-100 transition-colors"
+                >
+                  Home
+                </Link>
+                <a
+                  href="#features"
+                  className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
+                >
+                  Features
+                </a>
+                <a
+                  href="#testimonials"
+                  className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
+                >
+                  Testimonials
+                </a>
+                <a
+                  href="#pricing"
+                  className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
+                >
+                  Pricing
+                </a>
+                <Link
+                  to="/about"
+                  className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
+                >
+                  About Us
+                </Link>
+                <Link
+                  to="/contact"
+                  className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
+                >
+                  Contact Us
+                </Link>
+              </div>
+              <div className="flex items-center space-x-4">
+                <Link to="/login">
+                  <Button className="bg-[#E2DCD5] hover:bg-[#E2DCD5] text-[#0A0A0F] text-[14px] font-semibold ">
+                    Login / Signup
+                  </Button>
+                </Link>
+                {/* <Link to="/lead-capture">
                 <Button className="bg-[#E2DCD5] hover:bg-[#E2DCD5] text-[#0A0A0F] text-[14px] font-semibold ">
                   Submit Lead
                 </Button>
               </Link> */}
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        {/* Hero Content */}
+        <div className="relative z-20 pt-32 pb-16">
+          <div className="container mx-auto px-6 text-center">
+            <h1 className="text-[72px] font-bold mb-6 text-[#E2DCD5] leading-[72px]">
+              Take your insurance <br /> Agency to the next level
+            </h1>
+            <p className="text-[24px] text-[#D1D5DB] max-w-4xl mx-auto mb-8">
+              Access high-quality leads, real-time market insights, and join a
+              community of top-performing insurance agents across the United
+              States
+            </p>
+            <div className="flex justify-center space-x-4">
+              <Link to="/login">
+                <Button className="bg-transparent hover:bg-transparent text-[#F5F5DC] font-semibold px-8 py-3 text-lg shadow-xl shadow-[#F5F5DC4D]/15">
+                  Start Free Trial
+                </Button>
+              </Link>
+              <Button className="border-[#141414]/50 text-[#F5F5DC] hover:text-[#F5F5DC] !bg-[#F5F5DC33] hover:bg-[#333333]/10 px-8 py-3 text-lg">
+                Watch Demo
+              </Button>
             </div>
           </div>
         </div>
-      </nav>
 
-      {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-[#000000]">
-        <div className="container mx-auto px-6 text-center">
-          <h1 className="text-[72px] font-bold mb-6 text-[#E2DCD5] leading-[72px]">
-            Take your insurance <br /> Agency to the next level
-          </h1>
-          <p className="text-[24px] text-[#D1D5DB] max-w-4xl mx-auto mb-8">
-            Access high-quality leads, real-time market insights, and join a
-            community of top-performing insurance agents across the United
-            States
-          </p>
-          <div className="flex justify-center space-x-4">
-            <Link to="/login">
-              <Button className="bg-transparent hover:bg-transparent text-[#F5F5DC] font-semibold px-8 py-3 text-lg shadow-xl shadow-[#F5F5DC4D]/15">
-                Start Free Trial
-              </Button>
-            </Link>
-            <Button
-              // variant="outline"
-              className="border-[#141414]/50 text-[#F5F5DC] hover:text-[#F5F5DC] !bg-[#F5F5DC33] hover:bg-[#333333]/10 px-8 py-3 text-lg"
-            >
-              Watch Demo
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Live Scoreboard */}
-      <section className="pb-16 bg-[#000000]">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-3 gap-6">
-            <Card className="bg-black/40 backdrop-blur-md border border-[#F5F5DC33]  text-center">
-              <CardContent className="p-6">
-                <div className="text-[30px] font-bold text-[#FFFDD0] mb-2">
-                  50K+
-                </div>
-                <div className="text-[#9CA3AF]">Average AP per Policy</div>
-              </CardContent>
-            </Card>
-            <Card className="bg-black/40 backdrop-blur-md border border-[#F5F5DC33]  text-center">
-              <CardContent className="p-6">
-                <div className="text-[30px] font-bold text-[#FFFDD0] mb-2">
-                  $2.8B+
-                </div>
-                <div className="text-[#9CA3AF]">Policies Closed</div>
-              </CardContent>
-            </Card>
-            <Card className="bg-black/40 backdrop-blur-md border border-[#F5F5DC33]  text-center">
-              <CardContent className="p-6">
-                <div className="text-[30px] font-bold text-[#FFFDD0] mb-2">
-                  98.7%
-                </div>
-                <div className="text-[#9CA3AF]">Number of Leads Generated</div>
-              </CardContent>
-            </Card>
+        {/* Scoreboard Content */}
+        <div className="relative z-20 pb-16">
+          <div className="container mx-auto px-6">
+            <div className="grid md:grid-cols-3 gap-6">
+              <Card className="bg-black/40 backdrop-blur-md border border-[#F5F5DC33] text-center">
+                <CardContent className="p-6">
+                  <div className="text-[30px] font-bold text-[#FFFDD0] mb-2">
+                    50K+
+                  </div>
+                  <div className="text-[#9CA3AF]">Average AP per Policy</div>
+                </CardContent>
+              </Card>
+              <Card className="bg-black/40 backdrop-blur-md border border-[#F5F5DC33] text-center">
+                <CardContent className="p-6">
+                  <div className="text-[30px] font-bold text-[#FFFDD0] mb-2">
+                    $2.8B+
+                  </div>
+                  <div className="text-[#9CA3AF]">Policies Closed</div>
+                </CardContent>
+              </Card>
+              <Card className="bg-black/40 backdrop-blur-md border border-[#F5F5DC33] text-center">
+                <CardContent className="p-6">
+                  <div className="text-[30px] font-bold text-[#FFFDD0] mb-2">
+                    98.7%
+                  </div>
+                  <div className="text-[#9CA3AF]">
+                    Number of Leads Generated
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </section>

@@ -72,17 +72,17 @@ const App = () => (
             <Route
               path="/about"
               element={
-                <ProtectedRoute>
+                // <ProtectedRoute>
                   <AboutNeon />
-                </ProtectedRoute>
+                // </ProtectedRoute>
               }
             />
             <Route
               path="/contact"
               element={
-                <ProtectedRoute>
+                // <ProtectedRoute>
                   <ContactNeon />
-                </ProtectedRoute>
+                // </ProtectedRoute>
               }
             />
             <Route path="/login" element={<AgentLogin />} />
