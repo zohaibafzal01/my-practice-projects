@@ -43,6 +43,110 @@ class AgentApi extends BaseApi {
       phoneNumber,
     });
   }
+
+  async getPerformanceAnalytics(params?: {
+    timeframe?: "7d" | "30d" | "90d" | "1y";
+  }) {
+    const queryParams = new URLSearchParams();
+    if (params?.timeframe) {
+      queryParams.append("timeframe", params.timeframe);
+    }
+
+    const url = `${this.baseUrl}/analytics/performance${
+      queryParams.toString() ? `?${queryParams}` : ""
+    }`;
+
+    try {
+      const result = await this.get(url);
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async getLeadsByRegion(timeframe?: "7d" | "30d" | "90d" | "1y") {
+    const queryParams = new URLSearchParams();
+    if (timeframe) {
+      queryParams.append("timeframe", timeframe);
+    }
+
+    const url = `${this.baseUrl}/analytics/leads-by-region${
+      queryParams.toString() ? `?${queryParams}` : ""
+    }`;
+
+    try {
+      const result = await this.get(url);
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async getMonthlyTrends(months: number = 6) {
+    const url = `${this.baseUrl}/analytics/monthly-trends?months=${months}`;
+
+    try {
+      const result = await this.get(url);
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async getConversionMetrics(
+    groupBy: "region" | "source" | "month" = "region",
+    timeframe?: "7d" | "30d" | "90d" | "1y"
+  ) {
+    const queryParams = new URLSearchParams();
+    queryParams.append("groupBy", groupBy);
+    if (timeframe) {
+      queryParams.append("timeframe", timeframe);
+    }
+
+    const url = `${this.baseUrl}/analytics/conversion-metrics?${queryParams}`;
+
+    try {
+      const result = await this.get(url);
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async getDashboardStats() {
+    const url = `${this.baseUrl}/analytics/dashboard-stats`;
+
+    try {
+      const result = await this.get(url);
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async getRevenueAnalytics(timeframe?: "7d" | "30d" | "90d" | "1y") {
+    const queryParams = new URLSearchParams();
+    if (timeframe) {
+      queryParams.append("timeframe", timeframe);
+    }
+
+    const url = `${this.baseUrl}/analytics/revenue-analytics${
+      queryParams.toString() ? `?${queryParams}` : ""
+    }`;
+
+    try {
+      const result = await this.get(url);
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
 }
 
 export const agentApi = new AgentApi();
