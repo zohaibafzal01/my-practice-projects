@@ -37,54 +37,10 @@ const App = () => (
           <ScrollToTop />
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/leads"
-              element={
-                <ProtectedRoute>
-                  <Leads />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/about-neon"
-              element={
-                <ProtectedRoute>
-                  <About />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/contact-neon"
-              element={
-                <ProtectedRoute>
-                  <Contact />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/about"
-              element={
-                // <ProtectedRoute>
-                  <AboutNeon />
-                // </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/contact"
-              element={
-                // <ProtectedRoute>
-                  <ContactNeon />
-                // </ProtectedRoute>
-              }
-            />
+            <Route path="/about-neon" element={<About />} />
+            <Route path="/contact-neon" element={<Contact />} />
+            <Route path="/about" element={<AboutNeon />} />
+            <Route path="/contact" element={<ContactNeon />} />
             <Route path="/login" element={<AgentLogin />} />
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -93,6 +49,25 @@ const App = () => (
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsService />} />
             {/* <Route path="/lead-capture" element={<LeadForm />} /> */}
+
+            <Route
+              path="/leads"
+              element={
+                <ProtectedRoute>
+                  <Leads />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Agent Routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
 
             {/* Admin Routes */}
             <Route

@@ -15,6 +15,7 @@ import { MarkAsSoldModal } from "../modals/MarkAsSoldModal";
 import { useToast } from "@/hooks/use-toast";
 import leadsApi from "@/api/leads";
 import { RequestReplacementModal } from "../modals/RequestReplacementModal";
+import { TestemonialsDataModal } from "../modals/TestemonialsData";
 
 interface Lead {
   id: string;
@@ -78,6 +79,8 @@ export function AgentLeadsTable() {
     string | null
   >(null);
   const [isSubmittingReplacement, setIsSubmittingReplacement] = useState(false);
+  const [showSecondModal, setShowSecondModal] = useState(false);
+  const [companyName, setCompanyName] = useState<string>("");
 
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -302,6 +305,12 @@ export function AgentLeadsTable() {
         )
       );
 
+      const updatedLead = leads.find((lead) => lead?.id === selectedLeadId);
+      if (updatedLead) {
+        setCompanyName(updatedLead?.sold?.insuranceCompany || "");
+        setShowSecondModal(true);
+      }
+
       setShowSoldModal(false);
       setSelectedLeadId(null);
 
@@ -321,6 +330,17 @@ export function AgentLeadsTable() {
           "Failed to mark lead as sold. Please try again.",
         variant: "destructive",
       });
+    }
+  };
+
+  const handleSecondModalSubmit = async () => {
+    try {
+      // Handle second modal form submission here (e.g., save the data)
+      console.log("Second modal data submitted");
+      // You can make an API request to save the data if needed
+      // Example: await leadsApi.saveSecondModalData(data);
+    } catch (error) {
+      console.error("Error submitting second modal data:", error);
     }
   };
 
@@ -648,6 +668,13 @@ export function AgentLeadsTable() {
         }}
         onSubmit={handleSoldSubmit}
         leadId={selectedLeadId}
+      />
+
+      <TestemonialsDataModal
+        isOpen={showSecondModal}
+        onClose={() => setShowSecondModal(false)}
+        companyName={companyName}
+        onSubmit={handleSecondModalSubmit}
       />
 
       <RequestReplacementModal

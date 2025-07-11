@@ -12,6 +12,7 @@ import PricingSection from "@/components/PricingSection";
 import leadslogo from "@/../public/leadslogo.svg";
 import LiveAgentActivity from "@/components/LiveAgentActivity";
 import LeadsDifferentiator from "@/components/LeadsDifferentiator";
+import FAQ from "@/components/FAQ";
 
 const Index = () => {
   return (
@@ -214,6 +215,13 @@ const Index = () => {
       <section id="pricing" className="py-20 bg-[#000000]">
         <div>
           <PricingSection />
+        </div>
+      </section>
+
+      {/* Faq Section */}
+      <section className="py-20 bg-[#16213E4D]">
+        <div>
+          <FAQ />
         </div>
       </section>
 
