@@ -50,20 +50,11 @@ const App = () => (
             <Route path="/terms-of-service" element={<TermsService />} />
             {/* <Route path="/lead-capture" element={<LeadForm />} /> */}
 
-            <Route
-              path="/leads"
-              element={
-                <ProtectedRoute>
-                  <Leads />
-                </ProtectedRoute>
-              }
-            />
-
             {/* Agent Routes */}
             <Route
               path="/dashboard"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute >
                   <Dashboard />
                 </ProtectedRoute>
               }
