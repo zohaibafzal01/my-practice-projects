@@ -1,64 +1,80 @@
+import { useState, useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import testimonialsApi from "@/api/testimonials";
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-
-const testimonials = [
-  {
-    id: 1,
-    name: "Sarah Mitchell",
-    role: "Senior Insurance Agent",
-    company: "Texas Elite Insurance",
-    image: "SM",
-    rating: 5,
-    text: "InsuranceElite transformed my business. I've increased my monthly revenue by 340% and the lead quality is unmatched. The real-time analytics help me target the right markets at the right time."
-  },
-  {
-    id: 2,
-    name: "Michael Chen",
-    role: "Independent Agent",
-    company: "Pacific Coast Insurance",
-    image: "MC",
-    rating: 5,
-    text: "The platform's data insights are incredible. I can see exactly where the hottest leads are and act fast. My conversion rate jumped from 12% to 47% in just 3 months."
-  },
-  {
-    id: 3,
-    name: "Jessica Torres",
-    role: "Regional Manager",
-    company: "Sunshine State Insurance",
-    image: "JT",
-    rating: 5,
-    text: "Managing a team of 15 agents became so much easier with InsuranceElite. The live scoreboard keeps everyone motivated and the lead distribution is perfectly balanced."
-  },
-  {
-    id: 4,
-    name: "David Kim",
-    role: "Top Producer",
-    company: "Empire State Insurance",
-    image: "DK",
-    rating: 5,
-    text: "Best investment I've made in my career. The ROI was positive within the first week. The quality of leads and the speed of delivery is exactly what I needed to scale my business."
-  }
-];
+interface Testimonial {
+  _id: string;
+  companyName: string;
+  designation: string;
+  notes: string;
+  stars: number;
+  leadId?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
 
 const AgentTestimonials = () => {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const response = await testimonialsApi.getPublicTestimonials();
+        const data = Array.isArray(response?.data?.topRated)
+          ? response.data.topRated
+          : [];
+        setTestimonials(data);
+      } catch (error) {
+        console.error("Failed to fetch testimonials:", error);
+        setTestimonials([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTestimonials();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+      setCurrentIndex((prev) =>
+        testimonials.length > 0 ? (prev + 1) % testimonials.length : 0
+      );
     }, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [testimonials]);
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
-      <span key={i} className={`text-xl ${i < rating ? 'text-yellow-400' : 'text-gray-600'}`}>
+      <span
+        key={i}
+        className={`text-xl ${
+          i < rating ? "text-yellow-400" : "text-gray-600"
+        }`}
+      >
         ★
       </span>
     ));
   };
+
+  if (loading) {
+    return (
+      <div className="text-center text-gray-400 py-10">
+        Loading testimonials...
+      </div>
+    );
+  }
+
+  if (testimonials.length === 0) {
+    return (
+      <div className="text-center text-gray-400 py-10">
+        No testimonials available yet.
+      </div>
+    );
+  }
 
   return (
     <div className="text-center">
@@ -69,30 +85,26 @@ const AgentTestimonials = () => {
             style={{ transform: `translateX(-${currentIndex * 100}%)` }}
           >
             {testimonials.map((testimonial) => (
-              <div key={testimonial.id} className="w-full flex-shrink-0 px-4">
+              <div key={testimonial._id} className="w-full flex-shrink-0 px-4">
                 <Card className="card-glass max-w-3xl mx-auto bg-[#14181F] border border-[#00D4FF33]">
                   <CardContent className="p-8">
-                    <div className="mb-6">
-                      {renderStars(testimonial.rating)}
-                    </div>
+                    <div className="mb-6">{renderStars(testimonial.stars)}</div>
 
                     <blockquote className="text-lg md:text-[20px] text-[#D1D5DB] mb-6 leading-relaxed">
-                      "{testimonial.text}"
+                      "{testimonial.notes}"
                     </blockquote>
 
                     <div className="flex items-center justify-center space-x-4">
                       <div className="w-16 h-16 bg-gradient-to-r from-electric-blue to-electric-teal rounded-full flex text-white items-center justify-center font-bold text-dark-bg text-xl">
-                        {testimonial.image}
+                        {testimonial.companyName?.slice(0, 2).toUpperCase() ||
+                          "??"}
                       </div>
                       <div className="text-left">
                         <div className="font-semibold text-white text-[20px]">
-                          {testimonial.name}
-                        </div>
-                        <div className="text-[#F5F5DC] font-medium">
-                          {testimonial.role}
+                          {testimonial.designation || "Anonymous"}
                         </div>
                         <div className="text-[#9CA3AF] text-[14px]">
-                          {testimonial.company}
+                          {testimonial.companyName}
                         </div>
                       </div>
                     </div>

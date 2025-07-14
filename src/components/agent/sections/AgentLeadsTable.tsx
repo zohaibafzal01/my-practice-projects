@@ -16,6 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import leadsApi from "@/api/leads";
 import { RequestReplacementModal } from "../modals/RequestReplacementModal";
 import { TestemonialsDataModal } from "../modals/TestemonialsData";
+import testimonialsApi from "@/api/testimonials";
 
 interface Lead {
   id: string;
@@ -277,7 +278,6 @@ export function AgentLeadsTable() {
         return;
       }
 
-      // Convert annualSubmitAmount to number for API
       const apiSaleData = {
         zipCode: saleData.zipCode,
         annualSubmitAmount: parseFloat(saleData.annualSubmitAmount),
@@ -286,12 +286,27 @@ export function AgentLeadsTable() {
         notes: saleData.notes || undefined,
       };
 
-      await leadsApi.markLeadAsSold(selectedLeadId, apiSaleData);
+      const response = await leadsApi.markLeadAsSold(
+        selectedLeadId,
+        apiSaleData
+      );
+      const updatedLead = response?.data;
 
-      // Update local state
+      if (!updatedLead?._id || !updatedLead?.sold?.insuranceCompany) {
+        toast({
+          title: "Error",
+          description: "Failed to retrieve updated lead info.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const leadIdFromResponse = updatedLead._id;
+      const insuranceCompanyFromResponse = updatedLead.sold.insuranceCompany;
+
       setLeads((prev) =>
         prev.map((lead) =>
-          lead.id === selectedLeadId
+          lead.id === leadIdFromResponse
             ? {
                 ...lead,
                 status: "Sold" as const,
@@ -305,21 +320,17 @@ export function AgentLeadsTable() {
         )
       );
 
-      const updatedLead = leads.find((lead) => lead?.id === selectedLeadId);
-      if (updatedLead) {
-        setCompanyName(updatedLead?.sold?.insuranceCompany || "");
-        setShowSecondModal(true);
-      }
+      setCompanyName(insuranceCompanyFromResponse);
+      setSelectedLeadId(leadIdFromResponse);
+      setShowSecondModal(true);
 
       setShowSoldModal(false);
-      setSelectedLeadId(null);
 
       toast({
         title: "Sale Recorded",
         description: "The lead has been successfully marked as sold.",
       });
 
-      // Optionally refresh the leads to get updated data from server
       fetchLeads(true);
     } catch (error: any) {
       console.error("Error marking lead as sold:", error);
@@ -333,14 +344,40 @@ export function AgentLeadsTable() {
     }
   };
 
-  const handleSecondModalSubmit = async () => {
+  const handleSecondModalSubmit = async (data) => {
+
     try {
-      // Handle second modal form submission here (e.g., save the data)
-      console.log("Second modal data submitted");
-      // You can make an API request to save the data if needed
-      // Example: await leadsApi.saveSecondModalData(data);
-    } catch (error) {
-      console.error("Error submitting second modal data:", error);
+      if (!selectedLeadId) {
+        console.warn("No lead selected for testimonial.");
+        return;
+      }
+
+
+      await testimonialsApi.createTestimonials(
+        data.companyName,
+        data.designation,
+        data.notes,
+        selectedLeadId,
+        data.starRating
+      );
+
+      toast({
+        title: "Testimonial Submitted",
+        description: "Thank you for the feedback!",
+      });
+
+      setShowSecondModal(false);
+      setSelectedLeadId(null); 
+    } catch (error: any) {
+      console.error("Failed to submit testimonial:", error);
+      toast({
+        title: "Error",
+        description:
+          error?.response?.data?.message || "Could not submit testimonial.",
+        variant: "destructive",
+      });
+
+      throw error;
     }
   };
 

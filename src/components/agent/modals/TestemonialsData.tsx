@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { X } from "lucide-react";
@@ -14,7 +14,7 @@ interface SecondModalData {
   notes: string;
   starRating: number;
   designation: string;
-  companyName: string; 
+  companyName: string;
 }
 
 export const TestemonialsDataModal = ({
@@ -27,15 +27,27 @@ export const TestemonialsDataModal = ({
     notes: "",
     starRating: 0,
     designation: "",
-    companyName: companyName, 
+    companyName: companyName,
   });
-  console.log("Company Name in Modal:", companyName);
-  
+
+  useEffect(() => {
+    if (isOpen && companyName) {
+      setFormData((prev) => ({
+        ...prev,
+        companyName: companyName,
+      }));
+    }
+  }, [isOpen, companyName]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSubmit(formData);
-    onClose(); // Close the modal after submission
+
+    try {
+      await onSubmit(formData);
+      onClose();
+    } catch (error) {
+      console.error("Testimonial submit failed:", error);
+    }
   };
 
   if (!isOpen) return null;
@@ -106,6 +118,7 @@ export const TestemonialsDataModal = ({
               {[1, 2, 3, 4, 5].map((rating) => (
                 <Button
                   key={rating}
+                  type="button"
                   onClick={() =>
                     setFormData({ ...formData, starRating: rating })
                   }
