@@ -13,6 +13,7 @@ import { NotificationCenter } from "./sections/NotificationCenter";
 import CreateProfilePage from "./sections/ProfilePage";
 import { selectUserInfo } from "@/redux/selectors/userSelectors";
 import { useSelector } from "react-redux";
+import ReviewsPage from "./sections/ReviewsPage";
 
 interface UserActionMenuProps {
   userName?: string;
@@ -134,6 +135,8 @@ export function AdminContent() {
         return <SalesReporting />;
       case "subscriptions":
         return <SubscriptionManagement />;
+      case "reviews":
+        return <ReviewsPage />;
       case "profile":
         return <CreateProfilePage />;
       case "notifications":
@@ -152,6 +155,7 @@ export function AdminContent() {
       analytics: "Performance Analytics",
       sales: "Sales Reporting",
       subscriptions: "Subscriptions",
+      reviews: "Reviews",
       profile: "Profile",
       notifications: "Notifications",
     };

@@ -69,6 +69,12 @@ const adminMenuItems = [
     route: "/admin/subscriptions",
   },
   {
+    title: "Reviews Management",
+    icon: BarChart3, 
+    id: "reviews",
+    route: "/admin/reviews",
+  },
+  {
     title: "Profile",
     icon: User,
     id: "profile",
