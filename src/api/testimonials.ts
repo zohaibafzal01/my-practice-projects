@@ -31,6 +31,17 @@ class TestimonialsApi extends BaseApi {
   async getPublicTestimonials() {
     return await this.get(`${this.baseUrl}/public`);
   }
+
+  async approveAndRejectTestimonials(
+    id: string,
+    status: string,
+    rejectionReason?: string
+  ) {
+    return await this.put(`${this.baseUrl}/${id}/approve`, {
+      status,
+      ...(status === "REJECTED" && { rejectionReason }),
+    });
+  }
 }
 
 export const testimonialsApi = new TestimonialsApi();

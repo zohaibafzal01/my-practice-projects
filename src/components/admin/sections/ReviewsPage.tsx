@@ -11,8 +11,16 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { testimonialsApi } from "@/api/testimonials"; 
+import { testimonialsApi } from "@/api/testimonials";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 
 interface Review {
   _id: string;
@@ -30,6 +38,10 @@ export default function ReviewsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const { toast } = useToast();
+
+  const [openRejectModal, setOpenRejectModal] = useState(false);
+  const [selectedReviewId, setSelectedReviewId] = useState<string | null>(null);
+  const [rejectionReason, setRejectionReason] = useState("");
 
   const fetchReviews = async (page = 1, search = "") => {
     try {
@@ -56,6 +68,37 @@ export default function ReviewsPage() {
     }, 400);
     return () => clearTimeout(debounce);
   }, [searchTerm]);
+
+  const handleReviewStatusUpdate = async (
+    id: string,
+    status: "APPROVED" | "REJECTED",
+    reason?: string
+  ) => {
+    try {
+      const payload: any = { status };
+      if (status === "REJECTED" && reason) payload.rejectionReason = reason;
+      await testimonialsApi.approveAndRejectTestimonials(
+        id,
+        payload.status,
+        payload.rejectionReason
+      );
+      setReviews((prev) =>
+        prev.map((review) =>
+          review._id === id ? { ...review, status: payload.status } : review
+        )
+      );
+      toast({
+        title: `Review ${status.toLowerCase()}`,
+        description: `Review has been ${status.toLowerCase()}.`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "Action failed",
+        description: error?.response?.data?.message || error.message,
+        variant: "destructive",
+      });
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -108,6 +151,7 @@ export default function ReviewsPage() {
                   <TableHead className="text-cream-primary">Feedback</TableHead>
                   <TableHead className="text-cream-primary">Status</TableHead>
                   <TableHead className="text-cream-primary">Date</TableHead>
+                  <TableHead className="text-cream-primary">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -132,6 +176,32 @@ export default function ReviewsPage() {
                     </TableCell>
                     <TableCell className="text-secondary-text">
                       {new Date(review.createdAt).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell>
+                      {review.status === "PENDING" && (
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            className="bg-theme-success hover:bg-theme-success text-white"
+                            onClick={() =>
+                              handleReviewStatusUpdate(review._id, "APPROVED")
+                            }
+                          >
+                            Approve
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setSelectedReviewId(review._id);
+                              setOpenRejectModal(true);
+                            }}
+                            className="border-theme-danger/50 text-theme-danger hover:bg-theme-danger/10"
+                          >
+                            Reject
+                          </Button>
+                        </div>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -165,6 +235,54 @@ export default function ReviewsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Rejection Modal */}
+      <Dialog open={openRejectModal} onOpenChange={setOpenRejectModal}>
+        <DialogContent className="border border-gray-600 bg-black/90 text-cream-primary">
+          <DialogHeader>
+            <DialogTitle className="text-cream-primary">
+              Reject Testimonial
+            </DialogTitle>
+          </DialogHeader>
+          <Textarea
+            className="border !border-gray-600 text-white bg-transparent"
+            placeholder="Enter reason for rejection..."
+            value={rejectionReason}
+            onChange={(e) => setRejectionReason(e.target.value)}
+          />
+          <DialogFooter>
+            <Button
+              className=" bg-transparent"
+              variant="outline"
+              onClick={() => {
+                setOpenRejectModal(false);
+                setRejectionReason("");
+                setSelectedReviewId(null);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              className=" bg-gray-600 text-white"
+              onClick={() => {
+                if (selectedReviewId && rejectionReason.trim()) {
+                  handleReviewStatusUpdate(
+                    selectedReviewId,
+                    "REJECTED",
+                    rejectionReason
+                  );
+                }
+                setOpenRejectModal(false);
+                setRejectionReason("");
+                setSelectedReviewId(null);
+              }}
+              disabled={!rejectionReason.trim()}
+            >
+              Submit
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
