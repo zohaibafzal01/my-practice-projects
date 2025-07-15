@@ -44,6 +44,12 @@ export const TestemonialsDataModal = ({
 
     try {
       await onSubmit(formData);
+      setFormData({
+        notes: "",
+        starRating: 0,
+        designation: "",
+        companyName: companyName,
+      });
       onClose();
     } catch (error) {
       console.error("Testimonial submit failed:", error);
@@ -115,22 +121,31 @@ export const TestemonialsDataModal = ({
               Star Rating
             </label>
             <div className="flex space-x-1">
-              {[1, 2, 3, 4, 5].map((rating) => (
-                <Button
-                  key={rating}
-                  type="button"
-                  onClick={() =>
-                    setFormData({ ...formData, starRating: rating })
-                  }
-                  className={`p-2 rounded-full ${
-                    formData.starRating >= rating
-                      ? "bg-yellow-500"
-                      : "bg-gray-700"
-                  }`}
-                >
-                  ★
-                </Button>
-              ))}
+              <div className="flex justify-center items-center space-x-2 w-full">
+                {[1, 2, 3, 4, 5].map((rating) => (
+                  <button
+                    key={rating}
+                    type="button"
+                    onClick={() => setFormData({ ...formData, starRating: rating })}
+                    className="focus:outline-none bg-transparent p-1"
+                    aria-label={`Rate ${rating} star${rating > 1 ? "s" : ""}`}
+                  >
+                    <svg
+                      className={`w-8 h-8 transition-colors duration-150 ${
+                        formData.starRating >= rating ? "text-yellow-400" : "text-gray-500"
+                      }`}
+                      fill={formData.starRating >= rating ? "currentColor" : "none"}
+                      stroke="currentColor"
+                      strokeWidth={formData.starRating >= rating ? 0 : 2}
+                      viewBox="0 0 24 24"
+                    >
+                      <polygon
+                        points="12 17.27 18.18 21 16.54 13.97 22 9.24 14.81 8.63 12 2 9.19 8.63 2 9.24 7.46 13.97 5.82 21 12 17.27"
+                      />
+                    </svg>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 

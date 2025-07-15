@@ -131,7 +131,7 @@ export function AgentDashboard() {
       <header className="sticky top-0 z-40 bg-elevated-bg/90 backdrop-blur-md border-b border-input-border">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center space-x-4">
-            <SidebarTrigger className="text-cream-primary hover:text-primary-text" />
+            {/* <SidebarTrigger className="text-cream-primary hover:text-primary-text" /> */}
             <div>
               <h1 className="text-2xl font-bold text-cream-primary">
                 Agent Dashboard
