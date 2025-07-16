@@ -147,6 +147,18 @@ class AgentApi extends BaseApi {
       throw error;
     }
   }
+
+  async agentImos(searchTerm = "") {
+    try {
+      const response = await this.get(`${this.baseUrl}/search/imos`, {
+        params: { search: searchTerm },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching IMOs:", error);
+      throw error;
+    }
+  }
 }
 
 export const agentApi = new AgentApi();

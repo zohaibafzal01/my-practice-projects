@@ -5,7 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { US_STATES } from "@/constants/states";
 import { login } from "@/redux/slices/userSlice";
+import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
+import debounce from "lodash.debounce";
 import {
   Eye,
   EyeOff,
@@ -17,7 +21,7 @@ import {
   User,
   UserCheck,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -27,7 +31,12 @@ interface AuthProps {
 
 const Auth: React.FC<AuthProps> = ({ loginMode }) => {
   const dispatch = useDispatch();
-
+  const defaultStates = US_STATES;
+  const [stateData, setStateData] = useState({
+    regions: [],
+  });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [imos, setImos] = useState<string[]>([]);
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -42,6 +51,10 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
     lastName: "",
     phoneNumber: "",
     confirmPassword: "",
+    currentIMO: "",
+    directUpline: "",
+    experienceInMortgageProtection: "",
+    mortgageProtectionDuration: "",
   });
 
   const navigate = useNavigate();
@@ -90,12 +103,21 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
     setIsLoading(true);
 
     try {
+      const mortgageProtectionDuration = formData.mortgageProtectionDuration
+        ? parseInt(formData.mortgageProtectionDuration, 10)
+        : 0;
+
       const signupData = {
         firstName: formData.firstName.trim(),
         lastName: formData.lastName.trim(),
         email: formData.email.trim().toLowerCase(),
         phoneNumber: formData.phoneNumber.trim(),
         password: formData.password,
+        currentIMO: formData.currentIMO.trim(),
+        directUpline: formData.directUpline.trim(),
+        experienceInMortgageProtection: formData.experienceInMortgageProtection,
+        mortgageProtectionDuration,
+        regions: stateData.regions,
       };
 
       const response = await agentApi.registerAgent(signupData);
@@ -112,6 +134,10 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
           lastName: "",
           phoneNumber: "",
           confirmPassword: "",
+          currentIMO: "",
+          directUpline: "",
+          experienceInMortgageProtection: "",
+          mortgageProtectionDuration: "",
         });
         // Switch to login tab after successful registration
         setTimeout(() => {
@@ -204,10 +230,8 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
       if (error.response?.status === 401) {
         setError("Invalid credentials");
       } else if (error.response?.status === 403) {
-        // Handle specific forbidden messages for pending/suspended accounts
         const message = error.response?.data?.message;
         if (message) {
-          // Check if it's a pending account message
           if (message.toLowerCase().includes("pending")) {
             setError(
               "Your account is pending approval. Please wait for admin activation."
@@ -221,7 +245,6 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
           setError("Access denied. Please contact support.");
         }
       } else if (error.response?.data?.message) {
-        // Handle other error messages from the server
         const message = error.response.data.message;
         if (Array.isArray(message)) {
           setError(message.join(", "));
@@ -244,10 +267,33 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const fetchImos = async (term: string) => {
+    if (term.length >= 1) {
+      try {
+        const fetchedImos = await agentApi.agentImos(term);
+        setImos(fetchedImos);
+      } catch (error) {
+        console.error("Error fetching IMOs:", error);
+      }
+    }
+  };
+
+  const debouncedFetchImos = debounce((term: string) => {
+    fetchImos(term);
+  }, 500);
+
+  const handleSearchChange = (newValue: string) => {
+    setSearchTerm(newValue);
+    debouncedFetchImos(newValue);
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
     if (error) setError("");
     if (success) setSuccess("");
@@ -257,7 +303,6 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
     setIsLogin(loginTab);
     setError("");
     setSuccess("");
-    // Clear form when switching tabs
     setFormData({
       email: "",
       password: "",
@@ -265,8 +310,31 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
       lastName: "",
       phoneNumber: "",
       confirmPassword: "",
+      currentIMO: "",
+      directUpline: "",
+      experienceInMortgageProtection: "",
+      mortgageProtectionDuration: "",
     });
   };
+
+  const handleSelectChange = (selectedOption: any) => {
+    setFormData({
+      ...formData,
+      currentIMO: selectedOption ? selectedOption.value : "",
+    });
+  };
+
+  const imoOptions = imos.map((imo) => ({
+    label: imo,
+    value: imo,
+  }));
+
+  const stateOptions = defaultStates.map((state) => ({
+    label: state?.name,
+    value: state?.code,
+  }));
+
+  const defaultSelectedStates = stateOptions.slice(0, 5);
 
   return (
     <div className="min-h-screen bg-black via-blue-900 to-indigo-900 flex items-center justify-center p-6">
@@ -368,150 +436,332 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              {!isLogin && (
-                <>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="firstName" className="text-[#E2DCD5]">
-                        First Name
-                      </Label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-3 h-4 w-4 text-[#E2DCD5]" />
-                        <Input
-                          id="firstName"
-                          name="firstName"
-                          type="text"
-                          placeholder="First name"
-                          value={formData.firstName}
-                          onChange={handleInputChange}
-                          className="pl-10 bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545]"
-                          required={!isLogin}
-                          disabled={isLoading}
-                        />
+              <div
+                className={`space-y-4 ${
+                  !isLogin && "h-[400px] overflow-y-auto scrollable"
+                }`}
+              >
+                {!isLogin && (
+                  <>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="firstName" className="text-[#E2DCD5]">
+                          First Name
+                        </Label>
+                        <div className="relative">
+                          <User className="absolute left-3 top-3 h-4 w-4 text-[#E2DCD5]" />
+                          <Input
+                            id="firstName"
+                            name="firstName"
+                            type="text"
+                            placeholder="First name"
+                            value={formData.firstName}
+                            onChange={handleInputChange}
+                            className="pl-10 bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545]"
+                            required={!isLogin}
+                            disabled={isLoading}
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="lastName" className="text-[#E2DCD5]">
+                          Last Name
+                        </Label>
+                        <div className="relative">
+                          <User className="absolute left-3 top-3 h-4 w-4 text-[#E2DCD5]" />
+                          <Input
+                            id="lastName"
+                            name="lastName"
+                            type="text"
+                            placeholder="Last name"
+                            value={formData.lastName}
+                            onChange={handleInputChange}
+                            className="pl-10 bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545]"
+                            required={!isLogin}
+                            disabled={isLoading}
+                          />
+                        </div>
                       </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="lastName" className="text-[#E2DCD5]">
-                        Last Name
-                      </Label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-3 h-4 w-4 text-[#E2DCD5]" />
-                        <Input
-                          id="lastName"
-                          name="lastName"
-                          type="text"
-                          placeholder="Last name"
-                          value={formData.lastName}
-                          onChange={handleInputChange}
-                          className="pl-10 bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545]"
-                          required={!isLogin}
-                          disabled={isLoading}
-                        />
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="phoneNumber" className="text-[#E2DCD5]">
-                      Phone Number
-                    </Label>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-3 h-4 w-4 text-[#E2DCD5]" />
+                    <div className="space-y-2">
+                      <Label htmlFor="phoneNumber" className="text-[#E2DCD5]">
+                        Phone Number
+                      </Label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-3 h-4 w-4 text-[#E2DCD5]" />
+                        <Input
+                          id="phoneNumber"
+                          name="phoneNumber"
+                          type="tel"
+                          placeholder="Enter your phone number"
+                          value={formData.phoneNumber}
+                          onChange={handleInputChange}
+                          className="pl-10 bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545]"
+                          required={!isLogin}
+                          disabled={isLoading}
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-[#E2DCD5]">
+                    Email
+                  </Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-[#E2DCD5]" />
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="pl-10 bg-black/30 border-[#E2DCD5] !text-[#E2DCD5] placeholder:text-[#E2DCD545]"
+                      required
+                      disabled={isLoading}
+                    />
+                  </div>
+                </div>
+
+                {!isLogin && (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="currentIMO" className="text-[#E2DCD5]">
+                        Current IMO
+                      </Label>
+                      <div>
+                        <CreatableSelect
+                          id="currentIMO"
+                          name="currentIMO"
+                          value={
+                            formData.currentIMO
+                              ? {
+                                  label: formData.currentIMO,
+                                  value: formData.currentIMO,
+                                }
+                              : null
+                          }
+                          onChange={handleSelectChange}
+                          onInputChange={handleSearchChange}
+                          options={imoOptions}
+                          isClearable
+                          isSearchable
+                          placeholder="Select or type your IMO"
+                          className="bg-black/30 border-[#E2DCD5] !text-white placeholder:text-[#E2DCD545]"
+                          classNamePrefix="custom-select"
+                          required
+                          isDisabled={false}
+                          isMulti={false}
+                          styles={{
+                            control: (provided) => ({
+                              ...provided,
+                              backgroundColor: "rgb(18 18 18 / 0.3)",
+                              color: "#FFFFFF",
+                              borderRadius: "10px",
+                              padding: "1px 0px",
+                            }),
+                            menu: (provided) => ({
+                              ...provided,
+                              backgroundColor: "#333",
+                              color: "#ffffff",
+                            }),
+                            option: (provided, state) => ({
+                              ...provided,
+                              backgroundColor: state.isSelected
+                                ? "#444"
+                                : "#333",
+                              color: "#ffffff",
+                              cursor: "pointer",
+                            }),
+                            multiValue: (provided) => ({
+                              ...provided,
+                              backgroundColor: "#444",
+                              color: "#ffffff",
+                            }),
+                            multiValueLabel: (provided) => ({
+                              ...provided,
+                              color: "#E2DCD5",
+                            }),
+                            multiValueRemove: (provided) => ({
+                              ...provided,
+                              color: "#ffffff",
+                              ":hover": {
+                                backgroundColor: "#E2DCD5",
+                                color: "#333",
+                              },
+                            }),
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="directUpline" className="text-[#E2DCD5]">
+                        Direct Upline
+                      </Label>
                       <Input
-                        id="phoneNumber"
-                        name="phoneNumber"
-                        type="tel"
-                        placeholder="Enter your phone number"
-                        value={formData.phoneNumber}
+                        id="directUpline"
+                        name="directUpline"
+                        type="text"
+                        placeholder="Enter your direct upline"
+                        value={formData.directUpline}
                         onChange={handleInputChange}
-                        className="pl-10 bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545]"
-                        required={!isLogin}
+                        className="bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545]"
+                        required
                         disabled={isLoading}
                       />
                     </div>
-                  </div>
-                </>
-              )}
 
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-[#E2DCD5]">
-                  Email
-                </Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-[#E2DCD5]" />
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="pl-10 bg-black/30 border-[#E2DCD5] !text-[#E2DCD5] placeholder:text-[#E2DCD545]"
-                    required
-                    disabled={isLoading}
-                  />
-                </div>
-              </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="experienceInMortgageProtection"
+                          className="text-[#E2DCD5]"
+                        >
+                          Mortgage Experience
+                        </Label>
+                        <div className="relative">
+                          <select
+                            id="experienceInMortgageProtection"
+                            name="experienceInMortgageProtection"
+                            value={formData.experienceInMortgageProtection}
+                            onChange={handleInputChange}
+                            className="bg-black/30 border !border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545] p-2 w-full rounded-lg focus:outline-none"
+                            required
+                            disabled={isLoading}
+                          >
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                          </select>
+                        </div>
+                      </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-[#E2DCD5]">
-                  Password
-                </Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-[#E2DCD5]" />
-                  <Input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    className="pl-10 pr-10 bg-black/30 border-[#E2DCD5] !text-[#E2DCD5] placeholder:text-[#E2DCD545]"
-                    required
-                    disabled={isLoading}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3 text-[#E2DCD5] hover:text-cyan-300"
-                    disabled={isLoading}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </button>
-                </div>
-              </div>
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="mortgageProtectionDuration"
+                          className="text-[#E2DCD5]"
+                        >
+                          Mortgage Duration
+                        </Label>
+                        <Input
+                          id="mortgageProtectionDuration"
+                          name="mortgageProtectionDuration"
+                          type="number"
+                          placeholder="Duration in years"
+                          value={formData.mortgageProtectionDuration}
+                          onChange={handleInputChange}
+                          className="bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545]"
+                          required
+                          disabled={isLoading}
+                        />
+                      </div>
+                    </div>
 
-              {!isLogin && (
+                    <div className="space-y-2">
+                      <Label htmlFor="regions" className="text-[#E2DCD5]">
+                        Select Regions
+                      </Label>
+                      <div className="relative">
+                        <Select
+                          id="regions"
+                          name="regions"
+                          value={
+                            stateData.regions.length > 0
+                              ? {
+                                  label: stateData.regions[0],
+                                  value: stateData.regions[0],
+                                }
+                              : null
+                          }
+                          onChange={(selectedOption: any) =>
+                            setStateData({
+                              ...stateData,
+                              regions: selectedOption
+                                ? [selectedOption.value]
+                                : [],
+                            })
+                          }
+                          options={stateOptions}
+                          placeholder="Search and select states"
+                          className="bg-black/30 border-[#E2DCD5] !text-white placeholder:text-[#E2DCD545]"
+                          classNamePrefix="custom-select"
+                          isClearable
+                          required
+                          isDisabled={isLoading}
+                          defaultValue={defaultSelectedStates}
+                          styles={{
+                            control: (provided) => ({
+                              ...provided,
+                              backgroundColor: "rgb(18 18 18 / 0.3)",
+                              color: "#FFFFFF",
+                              borderRadius: "10px",
+                              padding: "1px 0px",
+                            }),
+                            menu: (provided) => ({
+                              ...provided,
+                              backgroundColor: "#333",
+                              color: "#ffffff",
+                            }),
+                            option: (provided, state) => ({
+                              ...provided,
+                              backgroundColor: state.isSelected
+                                ? "#444"
+                                : "#333",
+                              color: "#ffffff",
+                              cursor: "pointer",
+                            }),
+                            multiValue: (provided) => ({
+                              ...provided,
+                              backgroundColor: "#444",
+                              color: "#ffffff",
+                            }),
+                            multiValueLabel: (provided) => ({
+                              ...provided,
+                              color: "#E2DCD5",
+                            }),
+                            multiValueRemove: (provided) => ({
+                              ...provided,
+                              color: "#ffffff",
+                              ":hover": {
+                                backgroundColor: "#E2DCD5",
+                                color: "#333",
+                              },
+                            }),
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword" className="text-[#E2DCD5]">
-                    Confirm Password
+                  <Label htmlFor="password" className="text-[#E2DCD5]">
+                    Password
                   </Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-[#E2DCD5]" />
                     <Input
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      type={showConfirmPassword ? "text" : "password"}
-                      placeholder="Confirm your password"
-                      value={formData.confirmPassword}
+                      id="password"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter your password"
+                      value={formData.password}
                       onChange={handleInputChange}
-                      className="pl-10 pr-10 bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545] focus:outline-none"
-                      required={!isLogin}
+                      className="pl-10 pr-10 bg-black/30 border-[#E2DCD5] !text-[#E2DCD5] placeholder:text-[#E2DCD545]"
+                      required
                       disabled={isLoading}
                     />
                     <button
                       type="button"
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
+                      onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 top-3 text-[#E2DCD5] hover:text-cyan-300"
                       disabled={isLoading}
                     >
-                      {showConfirmPassword ? (
+                      {showPassword ? (
                         <EyeOff className="h-4 w-4" />
                       ) : (
                         <Eye className="h-4 w-4" />
@@ -519,8 +769,43 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
                     </button>
                   </div>
                 </div>
-              )}
 
+                {!isLogin && (
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmPassword" className="text-[#E2DCD5]">
+                      Confirm Password
+                    </Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-3 h-4 w-4 text-[#E2DCD5]" />
+                      <Input
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        type={showConfirmPassword ? "text" : "password"}
+                        placeholder="Confirm your password"
+                        value={formData.confirmPassword}
+                        onChange={handleInputChange}
+                        className="pl-10 pr-10 bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545] focus:outline-none"
+                        required={!isLogin}
+                        disabled={isLoading}
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                        className="absolute right-3 top-3 text-[#E2DCD5] hover:text-cyan-300"
+                        disabled={isLoading}
+                      >
+                        {showConfirmPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
               <Button
                 type="submit"
                 disabled={isLoading}

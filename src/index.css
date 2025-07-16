@@ -133,3 +133,11 @@ input:-webkit-autofill:active {
   caret-color: #e2dcd5;
   transition: background-color 5000s ease-in-out 0s;
 }
+
+.scrollable {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+.scrollable::-webkit-scrollbar {
+  display: none;  /* Safari and Chrome */
+}
