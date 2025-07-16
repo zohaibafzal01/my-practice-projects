@@ -13,6 +13,7 @@ import leadslogo from "@/../public/leadslogo.svg";
 import LiveAgentActivity from "@/components/LiveAgentActivity";
 import LeadsDifferentiator from "@/components/LeadsDifferentiator";
 import FAQ from "@/components/FAQ";
+import Navbar from "@/components/Navbar";
 
 const Index = () => {
   return (
@@ -37,71 +38,9 @@ const Index = () => {
         {/* Optional Dark Overlay */}
         {/* <div className="absolute top-0 left-0 w-full h-full bg-[#0A0A0FE5] z-10" /> */}
 
-        <nav className="fixed top-0 w-full z-50 bg-black/30 backdrop-blur-md ">
-          <div className="container mx-auto px-6 py-4">
-            <div className="flex items-center justify-between">
-              <Link to="/">
-                <img src={leadslogo} alt="Londen Leads" />
-              </Link>
-              <div className="hidden md:flex space-x-8">
-                {/* <Link
-                to="/dashboard"
-                className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
-              >
-                Dashboard
-              </Link> */}
-                <Link
-                  to="/"
-                  className="text-[#E2DCD5] hover:text-cyan-100 transition-colors"
-                >
-                  Home
-                </Link>
-                <a
-                  href="#features"
-                  className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
-                >
-                  Features
-                </a>
-                <a
-                  href="#testimonials"
-                  className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
-                >
-                  Testimonials
-                </a>
-                <a
-                  href="#pricing"
-                  className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
-                >
-                  Pricing
-                </a>
-                <Link
-                  to="/about"
-                  className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
-                >
-                  About Us
-                </Link>
-                <Link
-                  to="/contact"
-                  className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
-                >
-                  Contact Us
-                </Link>
-              </div>
-              <div className="flex items-center space-x-4">
-                <Link to="/login">
-                  <Button className="bg-[#E2DCD5] hover:bg-[#E2DCD5] text-[#0A0A0F] text-[14px] font-semibold ">
-                    Login / Signup
-                  </Button>
-                </Link>
-                {/* <Link to="/lead-capture">
-                <Button className="bg-[#E2DCD5] hover:bg-[#E2DCD5] text-[#0A0A0F] text-[14px] font-semibold ">
-                  Submit Lead
-                </Button>
-              </Link> */}
-              </div>
-            </div>
-          </div>
-        </nav>
+        <div>
+          <Navbar />
+        </div>
 
         {/* Hero Content */}
         <div className="relative z-20 pt-32 pb-16">

@@ -95,7 +95,7 @@ const AgentTestimonials = () => {
                     </blockquote>
 
                     <div className="flex items-center justify-center space-x-4">
-                      <div className="w-16 h-16 bg-gradient-to-r from-electric-blue to-electric-teal rounded-full flex text-white items-center justify-center font-bold text-dark-bg text-xl">
+                      <div className="w-16 h-16 bg-gray-800 rounded-full flex text-white items-center justify-center font-bold text-dark-bg text-xl">
                         {testimonial.companyName?.slice(0, 2).toUpperCase() ||
                           "??"}
                       </div>

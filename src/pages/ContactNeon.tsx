@@ -6,6 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import leadslogo from "@/../public/leadslogo.svg";
+import FAQ from "@/components/FAQ";
+import Navbar from "@/components/Navbar";
 
 const ContactNeon = () => {
   return (
@@ -16,72 +18,9 @@ const ContactNeon = () => {
       </div>
       <div className="relative">
         {/* Navigation */}
-        <nav className="fixed top-0 w-full z-50 bg-black/30 backdrop-blur-md ">
-          <div className="container mx-auto px-6 py-4">
-            <div className="flex items-center justify-between">
-              <Link to="/">
-                <img src={leadslogo} alt="Londen Leads" />
-              </Link>
-              <div className="hidden md:flex space-x-8">
-                {/* <Link
-                  to="/dashboard"
-                  className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
-                >
-                  Dashboard
-                </Link> */}
-                <Link
-                  to="/"
-                  className="text-[#E2DCD5] hover:text-cyan-100 transition-colors"
-                >
-                  Home
-                </Link>
-                <a
-                  href="#features"
-                  className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
-                >
-                  Features
-                </a>
-                <a
-                  href="#testimonials"
-                  className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
-                >
-                  Testimonials
-                </a>
-                <a
-                  href="#pricing"
-                  className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
-                >
-                  Pricing
-                </a>
-                <Link
-                  to="/about
-                  "
-                  className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
-                >
-                  About Us
-                </Link>
-                <Link
-                  to="/contact"
-                  className="text-[#F8FAFC] hover:text-[#F8FAFC] text-[16px] transition-colors"
-                >
-                  Contact Us
-                </Link>
-              </div>
-              <div className="flex items-center space-x-4">
-                <Link to="/login">
-                  <Button className="bg-[#E2DCD5] hover:bg-[#E2DCD5] text-[#0A0A0F] text-[14px] font-semibold ">
-                    Login / Signup
-                  </Button>
-                </Link>
-                {/* <Link to="/lead-capture">
-                  <Button className="bg-[#E2DCD5] hover:bg-[#E2DCD5] text-[#0A0A0F] text-[14px] font-semibold ">
-                    Submit Lead
-                  </Button>
-                </Link> */}
-              </div>
-            </div>
-          </div>
-        </nav>
+        <div>
+          <Navbar />
+        </div>
 
         {/* Hero Section */}
         <section className="pt-32 pb-16">
@@ -275,7 +214,7 @@ const ContactNeon = () => {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-20 bg-[#16213E4D]">
+        {/* <section className="py-20 bg-[#16213E4D]">
           <div className="container mx-auto px-6">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold mb-4 text-[#E2DCD5] bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400">
@@ -336,6 +275,11 @@ const ContactNeon = () => {
                 </CardContent>
               </Card>
             </div>
+          </div>
+        </section> */}
+        <section className="py-20 bg-[#16213E4D]">
+          <div>
+            <FAQ />
           </div>
         </section>
 
