@@ -14,6 +14,7 @@ import CreateProfilePage from "./sections/ProfilePage";
 import { selectUserInfo } from "@/redux/selectors/userSelectors";
 import { useSelector } from "react-redux";
 import ReviewsPage from "./sections/ReviewsPage";
+import SignOut from "../SignOut";
 
 interface UserActionMenuProps {
   userName?: string;
@@ -44,13 +45,6 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
   const handleProfile = () => {
     setIsOpen(false);
     navigate("/admin/profile");
-  };
-
-  const handleLogout = () => {
-    localStorage.clear();
-    console.log("Logout user");
-    setIsOpen(false);
-    navigate("/admin-login");
   };
 
   return (
@@ -98,13 +92,11 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
               <div className="border-t border-input-border my-1"></div>
 
               {/* Logout Option */}
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-center px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors duration-200 focus:outline-none focus:bg-red-500/10"
-              >
-                <LogOut className="w-4 h-4 mr-3" />
-                <span>Sign Out</span>
-              </button>
+              <SignOut
+                className="w-full flex items-center px-4 py-2 text-sm
+             text-red-400 hover:bg-red-500/10 transition-colors duration-200
+             focus:outline-none focus:bg-red-500/10"
+              />
             </div>
           </div>
         </>

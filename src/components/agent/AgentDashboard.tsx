@@ -10,6 +10,7 @@ import CreateProfilePage from "../admin/sections/ProfilePage";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUserInfo } from "@/redux/selectors/userSelectors";
+import SignOut from "../SignOut";
 
 interface UserActionMenuProps {
   userName?: string;
@@ -39,12 +40,6 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
   const handleProfile = () => {
     setIsOpen(false);
     navigate("/dashboard?tab=profile");
-  };
-
-  const handleLogout = () => {
-    localStorage.clear();
-    setIsOpen(false);
-    navigate("/login");
   };
 
   return (
@@ -83,13 +78,11 @@ const UserActionMenu: React.FC<UserActionMenuProps> = ({
                 <span>View Profile</span>
               </button>
               <div className="border-t border-input-border my-1"></div>
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-center px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors duration-200 focus:outline-none focus:bg-red-500/10"
-              >
-                <LogOut className="w-4 h-4 mr-3" />
-                <span>Sign Out</span>
-              </button>
+              <SignOut
+                className="w-full flex items-center px-4 py-2 text-sm
+             text-red-400 hover:bg-red-500/10 transition-colors duration-200
+             focus:outline-none focus:bg-red-500/10"
+              />
             </div>
           </div>
         </>
