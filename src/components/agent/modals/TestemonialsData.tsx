@@ -63,11 +63,9 @@ export const TestemonialsDataModal = ({
       <div className="bg-black border border-gray-700/50 rounded-lg w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b border-gray-700/50">
           <div>
-            <h2 className="text-xl font-bold text-white">
-              Complete Sale Details
-            </h2>
+            <h2 className="text-xl font-bold text-white">Review Details</h2>
             <p className="text-gray-400 text-sm mt-1">
-              Enter additional details for the sale
+              Enter additional details for the review
             </p>
           </div>
           <Button
@@ -126,22 +124,26 @@ export const TestemonialsDataModal = ({
                   <button
                     key={rating}
                     type="button"
-                    onClick={() => setFormData({ ...formData, starRating: rating })}
+                    onClick={() =>
+                      setFormData({ ...formData, starRating: rating })
+                    }
                     className="focus:outline-none bg-transparent p-1"
                     aria-label={`Rate ${rating} star${rating > 1 ? "s" : ""}`}
                   >
                     <svg
                       className={`w-8 h-8 transition-colors duration-150 ${
-                        formData.starRating >= rating ? "text-yellow-400" : "text-gray-500"
+                        formData.starRating >= rating
+                          ? "text-yellow-400"
+                          : "text-gray-500"
                       }`}
-                      fill={formData.starRating >= rating ? "currentColor" : "none"}
+                      fill={
+                        formData.starRating >= rating ? "currentColor" : "none"
+                      }
                       stroke="currentColor"
                       strokeWidth={formData.starRating >= rating ? 0 : 2}
                       viewBox="0 0 24 24"
                     >
-                      <polygon
-                        points="12 17.27 18.18 21 16.54 13.97 22 9.24 14.81 8.63 12 2 9.19 8.63 2 9.24 7.46 13.97 5.82 21 12 17.27"
-                      />
+                      <polygon points="12 17.27 18.18 21 16.54 13.97 22 9.24 14.81 8.63 12 2 9.19 8.63 2 9.24 7.46 13.97 5.82 21 12 17.27" />
                     </svg>
                   </button>
                 ))}
@@ -181,7 +183,7 @@ export const TestemonialsDataModal = ({
               type="submit"
               className="flex-1 bg-green-600 hover:bg-green-700 text-white"
             >
-              Submit Sale Details
+              Submit Review
             </Button>
           </div>
         </form>

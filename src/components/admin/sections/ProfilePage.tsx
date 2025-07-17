@@ -25,6 +25,8 @@ const CreateProfilePage = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const userInfo = useSelector(selectUserInfo);
+  console.log("jjjjjjjjj",userInfo);
+  
   const dispatch = useDispatch();
 
   const handleChange = (field: string, value: string) => {
