@@ -1,7 +1,13 @@
-
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { TrendingUp, Users, CheckCircle, RotateCcw, DollarSign, MapPin } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  TrendingUp,
+  Users,
+  CheckCircle,
+  RotateCcw,
+  DollarSign,
+  MapPin,
+} from "lucide-react";
 
 // Mock data for agent overview
 const mockStats = {
@@ -11,10 +17,10 @@ const mockStats = {
   conversionRate: 26.7,
   annualSubmitTotal: 89500,
   topPerformingStates: [
-    { state: 'CA', conversions: 8, rate: 35.2 },
-    { state: 'TX', conversions: 6, rate: 28.1 },
-    { state: 'FL', conversions: 4, rate: 22.3 }
-  ]
+    { state: "CA", conversions: 8, rate: 35.2 },
+    { state: "TX", conversions: 6, rate: 28.1 },
+    { state: "FL", conversions: 4, rate: 22.3 },
+  ],
 };
 
 export function AgentOverview() {

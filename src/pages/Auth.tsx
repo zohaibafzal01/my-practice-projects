@@ -10,6 +10,7 @@ import { login } from "@/redux/slices/userSlice";
 import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
 import debounce from "lodash.debounce";
+import { toast } from "sonner";
 import {
   Eye,
   EyeOff,
@@ -21,7 +22,7 @@ import {
   User,
   UserCheck,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -126,6 +127,12 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
         setSuccess(
           "Agent registered successfully! Your account is pending approval. You will be notified once it's activated."
         );
+
+        toast.success("Agent created 🎉", {
+          description:
+            "Your account is pending approval. We’ll email you once it’s activated.",
+        });
+
         // Clear the form
         setFormData({
           email: "",
@@ -267,20 +274,23 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
     }
   };
 
-  const fetchImos = async (term: string) => {
-    if (term.length >= 1) {
-      try {
-        const fetchedImos = await agentApi.agentImos(term);
-        setImos(fetchedImos);
-      } catch (error) {
-        console.error("Error fetching IMOs:", error);
-      }
-    }
-  };
+  const debouncedFetchImos = useMemo(
+    () =>
+      debounce(async (term: string) => {
+        if (term.length < 1) return;
+        try {
+          const fetched = await agentApi.agentImos(term);
+          setImos(fetched);
+        } catch (err) {
+          console.error("Error fetching IMOs:", err);
+        }
+      }, 500),
+    []
+  );
 
-  const debouncedFetchImos = debounce((term: string) => {
-    fetchImos(term);
-  }, 500);
+  useEffect(() => {
+    return () => debouncedFetchImos.cancel();
+  }, [debouncedFetchImos]);
 
   const handleSearchChange = (newValue: string) => {
     setSearchTerm(newValue);
@@ -550,7 +560,7 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
                           isClearable
                           isSearchable
                           placeholder="Select or type your IMO"
-                          className="bg-black/30 border-[#E2DCD5] !text-white placeholder:text-[#E2DCD545]"
+                          className="bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD5]"
                           classNamePrefix="custom-select"
                           required
                           isDisabled={false}
@@ -562,6 +572,14 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
                               color: "#FFFFFF",
                               borderRadius: "10px",
                               padding: "1px 0px",
+                            }),
+                            input: (base) => ({
+                              ...base,
+                              color: "#FFFFFF",
+                            }),
+                            singleValue: (base) => ({
+                              ...base,
+                              color: "#FFFFFF",
                             }),
                             menu: (provided) => ({
                               ...provided,
@@ -687,7 +705,7 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
                           }
                           options={stateOptions}
                           placeholder="Search and select states"
-                          className="bg-black/30 border-[#E2DCD5] !text-white placeholder:text-[#E2DCD545]"
+                          className="bg-black/30 border-[#E2DCD5] !text-white placeholder:!text-white"
                           classNamePrefix="custom-select"
                           isClearable
                           required
@@ -700,6 +718,15 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
                               color: "#FFFFFF",
                               borderRadius: "10px",
                               padding: "1px 0px",
+                            }),
+                            input: (base) => ({
+                              ...base,
+                              color: "#FFFFFF",
+                            }),
+
+                            singleValue: (base) => ({
+                              ...base,
+                              color: "#FFFFFF",
                             }),
                             menu: (provided) => ({
                               ...provided,

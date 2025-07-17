@@ -2,21 +2,32 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import leadslogo from "../../public/leadslogo.svg";
+import { useSelector } from "react-redux";
+import { selectUserInfo } from "@/redux/selectors/userSelectors";
 const Navbar = () => {
   const navigate = useNavigate();
 
-  const handleScrollNavigation = (e, targetId) => {
-    e.preventDefault();
+  const userInfo = useSelector(selectUserInfo);
 
-    if (window.location.pathname !== "/") {
-      navigate("/");
-    }
+  const token =
+    userInfo?.token ||
+    sessionStorage.getItem("authToken") ||
+    localStorage.getItem("authToken");
+
+  const role = (
+    userInfo?.userType ??
+    localStorage.getItem("userRole") ??
+    ""
+  ).toUpperCase();
+
+  const dashPath = role === "ADMIN" ? "/admin/overview" : "/dashboard";
+
+  const handleScrollNavigation = (e: React.MouseEvent, targetId: string) => {
+    e.preventDefault();
+    if (window.location.pathname !== "/") navigate("/");
 
     setTimeout(() => {
-      const targetElement = document.getElementById(targetId);
-      if (targetElement) {
-        targetElement.scrollIntoView({ behavior: "smooth" });
-      }
+      document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth" });
     }, 100);
   };
 
@@ -69,11 +80,19 @@ const Navbar = () => {
             </Link>
           </div>
           <div className="flex items-center space-x-4">
-            <Link to="/login">
-              <Button className="bg-[#E2DCD5] hover:bg-[#E2DCD5] text-[#0A0A0F] text-[14px] font-semibold ">
-                Login / Signup
-              </Button>
-            </Link>
+            {token ? (
+              <Link to={dashPath}>
+                <Button className="bg-[#E2DCD5] hover:bg-[#E2DCD5] text-[#0A0A0F] text-[14px] font-semibold">
+                  {role === "ADMIN" ? "Admin Dashboard" : "Dashboard"}
+                </Button>
+              </Link>
+            ) : (
+              <Link to="/login">
+                <Button className="bg-[#E2DCD5] hover:bg-[#E2DCD5] text-[#0A0A0F] text-[14px] font-semibold ">
+                  Login / Signup
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </div>
