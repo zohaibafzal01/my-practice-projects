@@ -87,17 +87,17 @@ export function LeadManagement() {
       const apiLeads = leadResponse?.items || [];
 
       const formattedLeads = apiLeads.map((lead: any) => {
-        const assignedAgentName = fetchedAgents.find(
-          (agent) => agent.id === lead.agentRef
-        )?.name;
+        const assignedAgentName = lead?.agentRef
+          ? `${lead?.agentRef?.firstName} ${lead?.agentRef?.lastName}`
+          : null;
 
         return {
-          id: lead._id,
-          name: `${lead.firstName} ${lead.lastName}`,
-          email: lead.email,
-          phone: lead.phone,
-          state: lead.region,
-          status: lead.status.toLowerCase(),
+          id: lead?._id,
+          name: `${lead?.firstName} ${lead?.lastName}`,
+          email: lead?.email,
+          phone: lead?.phone,
+          state: lead?.region,
+          status: lead?.status.toLowerCase(),
           assignedTo: assignedAgentName || null,
           type: "Standard",
         };

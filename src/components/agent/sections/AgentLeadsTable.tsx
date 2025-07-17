@@ -348,7 +348,7 @@ export function AgentLeadsTable() {
 
     try {
       if (!selectedLeadId) {
-        console.warn("No lead selected for testimonial.");
+        console.warn("No lead selected for Review.");
         return;
       }
 
@@ -362,18 +362,18 @@ export function AgentLeadsTable() {
       );
 
       toast({
-        title: "Testimonial Submitted",
+        title: "Review Submitted",
         description: "Thank you for the feedback!",
       });
 
       setShowSecondModal(false);
       setSelectedLeadId(null); 
     } catch (error: any) {
-      console.error("Failed to submit testimonial:", error);
+      console.error("Failed to submit Review:", error);
       toast({
         title: "Error",
         description:
-          error?.response?.data?.message || "Could not submit testimonial.",
+          error?.response?.data?.message || "Could not submit Review.",
         variant: "destructive",
       });
 

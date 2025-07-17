@@ -148,6 +148,13 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
         });
         // Switch to login tab after successful registration
         setTimeout(() => {
+          window.open(
+            "https://calendly.com/justins-appointments/onboarding",
+            "_blank"
+          );
+        }, 2000);
+
+        setTimeout(() => {
           setIsLogin(true);
           setSuccess("");
         }, 3000);
