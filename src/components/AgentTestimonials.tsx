@@ -11,6 +11,12 @@ interface Testimonial {
   leadId?: string;
   createdAt?: string;
   updatedAt?: string;
+  agentRef?: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    profilePicture: string | null;
+  };
 }
 
 const AgentTestimonials = () => {
@@ -101,7 +107,9 @@ const AgentTestimonials = () => {
                       </div>
                       <div className="text-left">
                         <div className="font-semibold text-white text-[20px]">
-                          {testimonial.designation || "Anonymous"}
+                          {testimonial?.agentRef
+                            ? `${testimonial?.agentRef?.firstName} ${testimonial?.agentRef?.lastName}`
+                            : "Anonymous"}
                         </div>
                         <div className="text-[#9CA3AF] text-[14px]">
                           {testimonial.companyName}

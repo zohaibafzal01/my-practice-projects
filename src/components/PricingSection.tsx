@@ -1,8 +1,7 @@
-
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 const pricingPlans = [
   {
@@ -14,10 +13,10 @@ const pricingPlans = [
       "Basic Analytics Dashboard",
       "Email Support",
       "Lead Filtering Tools",
-      "Mobile App Access"
+      "Mobile App Access",
     ],
     popular: false,
-    cta: "Start Free Trial"
+    cta: "Start Free Trial",
   },
   {
     name: "Growth",
@@ -29,10 +28,10 @@ const pricingPlans = [
       "Priority Phone Support",
       "CRM Integration",
       "Custom Lead Filters",
-      "Performance Coaching"
+      "Performance Coaching",
     ],
     popular: true,
-    cta: "Most Popular"
+    cta: "Most Popular",
   },
   {
     name: "Elite",
@@ -45,10 +44,10 @@ const pricingPlans = [
       "White-label Solutions",
       "API Access",
       "Custom Integrations",
-      "Team Collaboration Tools"
+      "Team Collaboration Tools",
     ],
     popular: false,
-    cta: "Go Elite"
+    cta: "Go Elite",
   },
   {
     name: "Enterprise",
@@ -61,11 +60,11 @@ const pricingPlans = [
       "Custom Development",
       "Multi-location Management",
       "Advanced Compliance Tools",
-      "Dedicated Infrastructure"
+      "Dedicated Infrastructure",
     ],
     popular: false,
-    cta: "Contact Sales"
-  }
+    cta: "Contact Sales",
+  },
 ];
 
 const PricingSection = () => {
@@ -108,7 +107,7 @@ const PricingSection = () => {
         {pricingPlans.map((plan, index) => (
           <Card
             key={plan.name}
-            className={`card-glass relative transition-all duration-300 hover:scale-105 bg-[#14181F] ${
+            className={`card-glass relative flex flex-col h-full transition-all duration-300 hover:scale-105 bg-[#14181F] ${
               plan.popular ? "ring-2 ring-[#E5E1D6] " : ""
             }`}
           >
@@ -139,12 +138,12 @@ const PricingSection = () => {
               </div>
             </CardHeader>
 
-            <CardContent>
+            <CardContent className="flex flex-col justify-between flex-grow">
               <ul className="space-y-3 mb-6">
                 {plan.features.map((feature, featureIndex) => (
                   <li key={featureIndex} className="flex items-center text-sm">
                     <div className="w-3 h-3 bg-white rounded-full mr-3 border border-white flex-shrink-0"></div>
-                    <span className="text-gray-300">{feature}</span>
+                    <span className="text-gray-300 text-start">{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -156,7 +155,7 @@ const PricingSection = () => {
                     : "bg-gray-700 hover:bg-gray-600 text-white"
                 } font-semibold`}
               >
-                {plan.cta}
+                {plan?.cta}
               </Button>
             </CardContent>
           </Card>

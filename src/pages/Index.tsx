@@ -36,7 +36,7 @@ const Index = () => {
         </video>
 
         {/* Optional Dark Overlay */}
-        {/* <div className="absolute top-0 left-0 w-full h-full bg-[#0A0A0FE5] z-10" /> */}
+        <div className="absolute top-0 left-0 w-full h-full bg-black/50 z-10" />
 
         <div>
           <Navbar />
@@ -109,7 +109,7 @@ const Index = () => {
       </section>
 
       {/* Performance Analytics */}
-      <section id="features" className="py-20 bg-[#000000]">
+      {/* <section id="features" className="py-20 bg-[#000000]">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4 text-[#F5F5DC]">
@@ -122,18 +122,18 @@ const Index = () => {
           </div>
 
           <div className="grid lg:grid-cols-1 gap-12 items-center">
-            {/* <div>
+            <div>
               <StatePerformanceChart />
-            </div> */}
+            </div>
             <div>
               <USHeatMap />
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Agent Testimonials */}
-      <section id="testimonials" className="py-20 bg-[#16213E4D]">
+      <section id="testimonials" className="py-20 bg-[#313d5f4d]">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-[36px] font-bold mb-4 text-[#F5F5DC]">

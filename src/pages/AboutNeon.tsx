@@ -135,7 +135,7 @@ const AboutNeon = () => {
       </section>
 
       {/* Team Section */}
-      <section className="py-20 bg-[#16213E4D]">
+      {/* <section className="py-20 bg-[#16213E4D]">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4 text-[#E2DCD5] ">
@@ -190,7 +190,7 @@ const AboutNeon = () => {
             </Card>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Footer */}
       <footer className="py-12 border-t border-[#1F2937] bg-[#000000]">

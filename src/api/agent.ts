@@ -32,16 +32,8 @@ class AgentApi extends BaseApi {
     return await this.post(`${this.baseUrl}/register`, agentData);
   }
 
-  async updateAgentProfile(
-    firstName: string,
-    lastName: string,
-    phoneNumber: string
-  ) {
-    await this.put(`${this.baseUrl}/profile`, {
-      firstName,
-      lastName,
-      phoneNumber,
-    });
+  async updateAgentProfile(payload: any) {
+    await this.put(`${this.baseUrl}/profile`, payload);
   }
 
   async getPerformanceAnalytics(params?: {
