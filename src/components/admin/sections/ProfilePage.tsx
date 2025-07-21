@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { User, Phone, Lock, Eye, EyeOff } from "lucide-react";
 import agentApi from "@/api/agent";
 import { useSelector } from "react-redux";
@@ -8,6 +8,10 @@ import { toast } from "sonner";
 import userApi from "@/api/user";
 import { useDispatch } from "react-redux";
 import { login } from "@/redux/slices/userSlice";
+import CreatableSelect from "react-select/creatable";
+import Select from "react-select";
+import debounce from "lodash.debounce";
+import { US_STATES } from "@/constants/states";
 
 const CreateProfilePage = () => {
   const [form, setForm] = useState({
@@ -17,19 +21,48 @@ const CreateProfilePage = () => {
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
+    currentIMO: "",
+    directUpline: "",
+    experienceInMortgageProtection: "",
+    mortgageProtectionDuration: "",
+    regions: [] as string[],
   });
-
+  const defaultStates = US_STATES;
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const userInfo = useSelector(selectUserInfo);
-  console.log("jjjjjjjjj",userInfo);
-  
+  const [imos, setImos] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
   const dispatch = useDispatch();
 
-  const handleChange = (field: string, value: string) => {
+  const debouncedFetchImos = useMemo(
+    () =>
+      debounce(async (term: string) => {
+        if (term.length < 1) return;
+        try {
+          const fetched = await agentApi.agentImos(term);
+          setImos(fetched);
+        } catch (err) {
+          console.error("Error fetching IMOs:", err);
+        }
+      }, 500),
+    []
+  );
+
+  useEffect(() => {
+    return () => debouncedFetchImos.cancel();
+  }, [debouncedFetchImos]);
+
+  const handleImoInputChange = (newValue: string) => {
+    setSearchTerm(newValue);
+    debouncedFetchImos(newValue);
+  };
+
+  const handleChange = (field: string, value: string | string[]) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -59,7 +92,16 @@ const CreateProfilePage = () => {
           },
         };
       } else {
-        await agentApi.updateAgentProfile(firstName, lastName, phone);
+        await agentApi.updateAgentProfile({
+          firstName: form.firstName,
+          lastName: form.lastName,
+          phoneNumber: form.phone,
+          currentIMO: form.currentIMO,
+          directUpline: form.directUpline,
+          experienceInMortgageProtection: form.experienceInMortgageProtection,
+          mortgageProtectionDuration: form.mortgageProtectionDuration,
+          regions: form.regions,
+        });
 
         updatedUser = {
           ...userInfo,
@@ -71,6 +113,11 @@ const CreateProfilePage = () => {
             firstName,
             lastName,
             phoneNumber: phone,
+            currentIMO: form.currentIMO,
+            directUpline: form.directUpline,
+            experienceInMortgageProtection: form.experienceInMortgageProtection,
+            mortgageProtectionDuration: form.mortgageProtectionDuration,
+            regions: form.regions,
           },
         };
       }
@@ -154,9 +201,23 @@ const CreateProfilePage = () => {
         firstName: userInfo.agentRef?.firstName || userInfo.firstName || "",
         lastName: userInfo.agentRef?.lastName || userInfo.lastName || "",
         phone: userInfo.agentRef?.phoneNumber || userInfo.phoneNumber || "",
+        currentIMO: userInfo.agentRef?.currentIMO || "",
+        directUpline: userInfo.agentRef?.directUpline || "",
+        experienceInMortgageProtection:
+          userInfo.agentRef?.experienceInMortgageProtection || "",
+        mortgageProtectionDuration:
+          userInfo.agentRef?.mortgageProtectionDuration || "",
+        regions: userInfo.agentRef?.regions || [],
       }));
     }
   }, [userInfo]);
+
+  const stateOptions = defaultStates.map((state) => ({
+    label: state?.name,
+    value: state?.code,
+  }));
+
+  const defaultSelectedStates = stateOptions.slice(0, 5);
 
   return (
     <main className="flex-1 p-6">
@@ -168,37 +229,43 @@ const CreateProfilePage = () => {
               Profile Information
             </h2>
 
-            {/* First Name */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-white mb-2">
-                First Name <span className="text-red-400">*</span>
-              </label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="text"
-                  value={form.firstName}
-                  onChange={(e) => handleChange("firstName", e.target.value)}
-                  placeholder="Enter first name"
-                  className="w-full pl-10 pr-4 py-3 bg-elevated-bg border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
-                />
+            <div
+              className={`${
+                userInfo?.userType === "AGENT" ? "grid grid-cols-2 gap-4" : ""
+              } `}
+            >
+              {/* First Name */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-white mb-2">
+                  First Name <span className="text-red-400">*</span>
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type="text"
+                    value={form.firstName}
+                    onChange={(e) => handleChange("firstName", e.target.value)}
+                    placeholder="Enter first name"
+                    className="w-full pl-10 pr-4 py-3 bg-elevated-bg border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                  />
+                </div>
               </div>
-            </div>
 
-            {/* Last Name */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-white mb-2">
-                Last Name <span className="text-red-400">*</span>
-              </label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="text"
-                  value={form.lastName}
-                  onChange={(e) => handleChange("lastName", e.target.value)}
-                  placeholder="Enter last name"
-                  className="w-full pl-10 pr-4 py-3 bg-elevated-bg border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
-                />
+              {/* Last Name */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-white mb-2">
+                  Last Name <span className="text-red-400">*</span>
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type="text"
+                    value={form.lastName}
+                    onChange={(e) => handleChange("lastName", e.target.value)}
+                    placeholder="Enter last name"
+                    className="w-full pl-10 pr-4 py-3 bg-elevated-bg border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                  />
+                </div>
               </div>
             </div>
 
@@ -223,6 +290,239 @@ const CreateProfilePage = () => {
                 />
               </div>
             </div>
+
+            {userInfo?.userType === "AGENT" && (
+              <>
+                <div className="space-y-2 mb-6">
+                  <label className="block text-sm font-medium text-white mb-2">
+                    Current IMO <span className="text-red-400">*</span>
+                  </label>
+                  <div>
+                    <CreatableSelect
+                      id="currentIMO"
+                      name="currentIMO"
+                      value={
+                        form.currentIMO
+                          ? {
+                              label: form.currentIMO,
+                              value: form.currentIMO,
+                            }
+                          : null
+                      }
+                      onChange={(selectedOption: any) =>
+                        handleChange(
+                          "currentIMO",
+                          selectedOption ? selectedOption.value : ""
+                        )
+                      }
+                      onInputChange={handleImoInputChange}
+                      options={imos.map((imo) => ({ label: imo, value: imo }))}
+                      isClearable
+                      isSearchable
+                      placeholder="Select or type your IMO"
+                      className="bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD5]"
+                      classNamePrefix="custom-select"
+                      required
+                      isDisabled={false}
+                      isMulti={false}
+                      styles={{
+                        control: (provided) => ({
+                          ...provided,
+                          backgroundColor: "#1E1E1E",
+                          color: "#FFFFFF",
+                          borderRadius: "10px",
+                          padding: "6px 2px",
+                          borderColor: "#4B5563",
+                        }),
+                        input: (base) => ({
+                          ...base,
+                          color: "#FFFFFF",
+                        }),
+                        singleValue: (base) => ({
+                          ...base,
+                          color: "#FFFFFF",
+                        }),
+                        menu: (provided) => ({
+                          ...provided,
+                          backgroundColor: "#333",
+                          color: "#ffffff",
+                        }),
+                        option: (provided, state) => ({
+                          ...provided,
+                          backgroundColor: state.isSelected ? "#444" : "#333",
+                          color: "#ffffff",
+                          cursor: "pointer",
+                        }),
+                        multiValue: (provided) => ({
+                          ...provided,
+                          backgroundColor: "#444",
+                          color: "#ffffff",
+                        }),
+                        multiValueLabel: (provided) => ({
+                          ...provided,
+                          color: "#E2DCD5",
+                        }),
+                        multiValueRemove: (provided) => ({
+                          ...provided,
+                          color: "#ffffff",
+                          ":hover": {
+                            backgroundColor: "#E2DCD5",
+                            color: "#333",
+                          },
+                        }),
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2 mb-6">
+                  <label className="block text-sm font-medium text-white ">
+                    Direct Upline's Name & Agency Name{" "}
+                    <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    id="directUpline"
+                    name="directUpline"
+                    type="text"
+                    placeholder="Enter your Direct Upline's Name & Agency Name"
+                    value={form.directUpline}
+                    onChange={(e) =>
+                      handleChange("directUpline", e.target.value)
+                    }
+                    className="w-full pl-4 pr-4 py-3 bg-elevated-bg border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="space-y-2 mb-6">
+                  <label className="block text-sm font-medium text-white mb-2">
+                    Do you have experience in running mortgage protection?{" "}
+                    <span className="text-red-400">*</span>
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="experienceInMortgageProtection"
+                      name="experienceInMortgageProtection"
+                      value={form.experienceInMortgageProtection}
+                      onChange={(e) =>
+                        handleChange(
+                          "experienceInMortgageProtection",
+                          e.target.value
+                        )
+                      }
+                      className="w-full pl-4 pr-4 py-[13px] bg-elevated-bg border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                      required
+                      // disabled={isLoading}
+                    >
+                      <option value="">Select</option>
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="space-y-2 mb-6">
+                  <label className="block text-sm font-medium text-white ">
+                    How long have you been running mortgage protection?{" "}
+                    <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    id="mortgageProtectionDuration"
+                    name="mortgageProtectionDuration"
+                    type="number"
+                    placeholder="Duration in years"
+                    value={form.mortgageProtectionDuration}
+                    onChange={(e) =>
+                      handleChange("mortgageProtectionDuration", e.target.value)
+                    }
+                    className="w-full pl-4 pr-4 py-3 bg-elevated-bg border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="space-y-2 mb-6">
+                  <label className="block text-sm font-medium text-white mb-2">
+                    Select Regions <span className="text-red-400">*</span>
+                  </label>
+                  <div className="relative">
+                    <Select
+                      id="regions"
+                      name="regions"
+                      value={
+                        form.regions.length > 0
+                          ? {
+                              label:
+                                US_STATES.find(
+                                  (s) => s.code === form.regions[0]
+                                )?.name || form.regions[0],
+                              value: form.regions[0],
+                            }
+                          : null
+                      }
+                      onChange={(selectedOption: any) =>
+                        handleChange(
+                          "regions",
+                          selectedOption ? [selectedOption.value] : []
+                        )
+                      }
+                      options={stateOptions}
+                      placeholder="Search and select states"
+                      className="bg-black/30 border-[#E2DCD5] !text-white placeholder:!text-white"
+                      classNamePrefix="custom-select"
+                      isClearable
+                      required
+                      // isDisabled={isLoading}
+                      // defaultValue={defaultSelectedStates}
+                      styles={{
+                        control: (provided) => ({
+                          ...provided,
+                          backgroundColor: "#1E1E1E",
+                          color: "#FFFFFF",
+                          borderRadius: "10px",
+                          padding: "6px 2px",
+                          borderColor: "#4B5563",
+                        }),
+                        input: (base) => ({
+                          ...base,
+                          color: "#FFFFFF",
+                        }),
+
+                        singleValue: (base) => ({
+                          ...base,
+                          color: "#FFFFFF",
+                        }),
+                        menu: (provided) => ({
+                          ...provided,
+                          backgroundColor: "#333",
+                          color: "#ffffff",
+                        }),
+                        option: (provided, state) => ({
+                          ...provided,
+                          backgroundColor: state.isSelected ? "#444" : "#333",
+                          color: "#ffffff",
+                          cursor: "pointer",
+                        }),
+                        multiValue: (provided) => ({
+                          ...provided,
+                          backgroundColor: "#444",
+                          color: "#ffffff",
+                        }),
+                        multiValueLabel: (provided) => ({
+                          ...provided,
+                          color: "#E2DCD5",
+                        }),
+                        multiValueRemove: (provided) => ({
+                          ...provided,
+                          color: "#ffffff",
+                          ":hover": {
+                            backgroundColor: "#E2DCD5",
+                            color: "#333",
+                          },
+                        }),
+                      }}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
 
             {/* Update Profile Button */}
             <div className="pt-4 flex justify-end">

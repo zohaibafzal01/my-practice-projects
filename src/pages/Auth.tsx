@@ -625,13 +625,13 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
 
                     <div className="space-y-2">
                       <Label htmlFor="directUpline" className="text-[#E2DCD5]">
-                        Direct Upline
+                        Direct Upline's Name & Agency Name
                       </Label>
                       <Input
                         id="directUpline"
                         name="directUpline"
                         type="text"
-                        placeholder="Enter your direct upline"
+                        placeholder="Enter your Direct Upline's Name & Agency Name"
                         value={formData.directUpline}
                         onChange={handleInputChange}
                         className="bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545]"
@@ -640,51 +640,52 @@ const Auth: React.FC<AuthProps> = ({ loginMode }) => {
                       />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="space-y-2">
-                        <Label
-                          htmlFor="experienceInMortgageProtection"
-                          className="text-[#E2DCD5]"
-                        >
-                          Mortgage Experience
-                        </Label>
-                        <div className="relative">
-                          <select
-                            id="experienceInMortgageProtection"
-                            name="experienceInMortgageProtection"
-                            value={formData.experienceInMortgageProtection}
-                            onChange={handleInputChange}
-                            className="bg-black/30 border !border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545] p-2 w-full rounded-lg focus:outline-none"
-                            required
-                            disabled={isLoading}
-                          >
-                            <option value="">Select</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label
-                          htmlFor="mortgageProtectionDuration"
-                          className="text-[#E2DCD5]"
-                        >
-                          Mortgage Duration
-                        </Label>
-                        <Input
-                          id="mortgageProtectionDuration"
-                          name="mortgageProtectionDuration"
-                          type="number"
-                          placeholder="Duration in years"
-                          value={formData.mortgageProtectionDuration}
+                    {/* <div className="grid grid-cols-2 gap-2"> */}
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="experienceInMortgageProtection"
+                        className="text-[#E2DCD5]"
+                      >
+                        Do you have experience in running mortgage protection?
+                      </Label>
+                      <div className="relative">
+                        <select
+                          id="experienceInMortgageProtection"
+                          name="experienceInMortgageProtection"
+                          value={formData.experienceInMortgageProtection}
                           onChange={handleInputChange}
-                          className="bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545]"
+                          className="bg-black/30 border !border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545] p-2 w-full rounded-lg focus:outline-none"
                           required
                           disabled={isLoading}
-                        />
+                        >
+                          <option value="">Select</option>
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                        </select>
                       </div>
                     </div>
+
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="mortgageProtectionDuration"
+                        className="text-[#E2DCD5]"
+                      >
+                        How long have you been running mortgage protection?
+                      </Label>
+                      <Input
+                        id="mortgageProtectionDuration"
+                        name="mortgageProtectionDuration"
+                        type="number"
+                        min="0"
+                        placeholder="Years of experience"
+                        value={formData.mortgageProtectionDuration}
+                        onChange={handleInputChange}
+                        className="bg-black/30 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545]"
+                        required
+                        disabled={isLoading}
+                      />
+                    </div>
+                    {/* </div> */}
 
                     <div className="space-y-2">
                       <Label htmlFor="regions" className="text-[#E2DCD5]">
