@@ -2,40 +2,32 @@ import React, { useState } from "react";
 import { ChevronDown, ChevronUp, Plus, Minus } from "lucide-react";
 
 const FAQ = () => {
-  const [openItems, setOpenItems] = useState({
-    0: true,
-    1: false,
-    2: false,
-    3: false,
-  });
+  const [openItem, setOpenItem] = useState(0); 
 
   const toggleItem = (index) => {
-    setOpenItems((prev) => ({
-      ...prev,
-      [index]: !prev[index],
-    }));
+    setOpenItem(openItem === index ? null : index);
   };
 
   const faqItems = [
     {
       question: "What are your prices?",
       answer:
-        "Our prices are based on market need and costs to acquire high quality data and turn that into high converting leads",
+        "Our pricing reflects both the market demand and the investment required to acquire premium-quality data and transform it into high-converting leads. We’re not the cheapest option — and we don’t aim to be. We serve top producers who recognize the value of paying for performance and understand that quality delivers results.",
     },
     {
-      question: "What is your refund / cancel order policy?",
+      question: "What is your cancellation policy?",
       answer:
-        "We offer a 30-day money-back guarantee for all our services. You can cancel your order within 30 days of purchase for a full refund.",
-    },
-    {
-      question: "What is your lead credit policy?",
-      answer:
-        "Lead credits are valid for 12 months from the date of purchase. Unused credits will expire after this period and cannot be refunded.",
+        "Once an order has been fulfilled, we’re unable to offer refunds. If you’d like to cancel your subscription, just let us know at least one week in advance, and we’ll make sure everything is handled smoothly.",
     },
     {
       question: "Are your leads resold?",
       answer:
-        "No, our leads are exclusive to you. Each lead is sold only once to ensure maximum conversion potential and value for your business.",
+        "Any lead that hasn’t been marked as “sold” may be resold as a Second Chance or “aged” lead. It is the agent’s responsibility to follow up and resolve their leads. Fresh leads that remain unresolved will be eligible for resale after 91 days.",
+    },
+    {
+      question: "What is your lead credit policy?",
+      answer:
+        "We’re happy to replace any invalid numbers for leads that aren’t Second Chance or OTP-verified. We do not offer refunds or replacements for any other reason",
     },
   ];
 
@@ -64,10 +56,10 @@ const FAQ = () => {
                 className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-700/30 transition-colors duration-200"
               >
                 <span className="text-lg font-medium text-white pr-4">
-                  {item.question}
+                  {item?.question}
                 </span>
                 <div className="flex-shrink-0 transition-transform duration-300 ease-in-out">
-                  {openItems[index] ? (
+                  {openItem === index ? (
                     <Minus className="w-5 h-5 text-gray-400 transform rotate-0" />
                   ) : (
                     <Plus className="w-5 h-5 text-gray-400 transform rotate-0" />
@@ -77,7 +69,7 @@ const FAQ = () => {
 
               <div
                 className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                  openItems[index]
+                  openItem === index
                     ? "max-h-96 opacity-100"
                     : "max-h-0 opacity-0"
                 }`}
@@ -85,7 +77,7 @@ const FAQ = () => {
                 <div className="px-6 pb-6">
                   <div className="border-t border-gray-700 pt-4">
                     <p className="text-gray-300 leading-relaxed">
-                      {item.answer}
+                      {item?.answer}
                     </p>
                   </div>
                 </div>
