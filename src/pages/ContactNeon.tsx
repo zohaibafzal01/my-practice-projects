@@ -14,7 +14,7 @@ const ContactNeon = () => {
     <div className="min-h-screen bg-black via-blue-900 to-indigo-900">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-0 left-0 w-80 h-80 bg-[#06B6D433] rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-0 w-80 h-80 bg-[#A855F733] rounded-full blur-3xl"></div>
+        {/* <div className="absolute bottom-0 right-0 w-80 h-80 bg-[#A855F733] rounded-full blur-3xl"></div> */}
       </div>
       <div className="relative">
         {/* Navigation */}
@@ -96,7 +96,7 @@ const ContactNeon = () => {
                     />
                   </div>
 
-                  <div>
+                  {/* <div>
                     <label className="block text-sm font-medium text-[#E2DCD5] mb-2">
                       Subject
                     </label>
@@ -105,7 +105,7 @@ const ContactNeon = () => {
                       placeholder="Enter Subject"
                       className="bg-black/50 border-[#E2DCD5] text-[#E2DCD5] placeholder:text-[#E2DCD545] focus:border-[#E2DCD5]"
                     />
-                  </div>
+                  </div> */}
 
                   <div>
                     <label className="block text-sm font-medium text-[#E2DCD5] mb-2">
@@ -118,7 +118,7 @@ const ContactNeon = () => {
                     />
                   </div>
 
-                  <Button className="w-full bg-[#E2DCD5] to-purple-500 hover:bg-[#E2DCD5] hover:to-purple-400 text-black font-semibold shadow-lg shadow-cyan-500/25">
+                  <Button className="w-full bg-[#E2DCD5] to-purple-500 hover:bg-[#E2DCD5] hover:to-purple-400 text-black font-semibold ">
                     Send Message
                   </Button>
                 </CardContent>
@@ -126,7 +126,7 @@ const ContactNeon = () => {
 
               {/* Contact Information */}
               <div className="space-y-8">
-                <Card className="bg-black/40 backdrop-blur-md border border-[#E2DCD533] ">
+                {/* <Card className="bg-black/40 backdrop-blur-md border border-[#E2DCD533]">
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-4">
                       <Mail className="w-6 h-6 text-[#E2DCD5] mt-1" />
@@ -135,13 +135,13 @@ const ContactNeon = () => {
                           Email Us
                         </h3>
                         <p className="text-[#D1D5DB] mb-1">
-                          General Inquiries: info@insuranceelite.com
+                          General Inquiries: info@londenleads.com
                         </p>
                         <p className="text-[#D1D5DB] mb-1">
-                          Support: support@insuranceelite.com
+                          Support: support@londenleads.com
                         </p>
                         <p className="text-[#D1D5DB]">
-                          Sales: sales@insuranceelite.com
+                          Sales: sales@londenleads.com
                         </p>
                       </div>
                     </div>
@@ -166,9 +166,9 @@ const ContactNeon = () => {
                       </div>
                     </div>
                   </CardContent>
-                </Card>
+                </Card> */}
 
-                <Card className="bg-black/40 backdrop-blur-md border border-[#E2DCD533] ">
+                <Card className="bg-black/40 backdrop-blur-md border border-[#E2DCD533]">
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-4">
                       <MapPin className="w-6 h-6 text-[#E2DCD5] mt-1" />
@@ -177,13 +177,13 @@ const ContactNeon = () => {
                           Visit Us
                         </h3>
                         <p className="text-[#D1D5DB] mb-1">
-                          InsuranceElite Headquarters
+                          Londen Leads Headquarters
                         </p>
-                        <p className="text-[#D1D5DB] mb-1">
-                          123 Business District
+                        <p className="text-[#D1D5DB] mb-1">225 1st Ave N</p>
+                        <p className="text-[#D1D5DB] mb-1">Unit 1610</p>
+                        <p className="text-[#D1D5DB]">
+                          Saint Petersburg, FL 33701
                         </p>
-                        <p className="text-[#D1D5DB] mb-1">Suite 456</p>
-                        <p className="text-[#D1D5DB]">New York, NY 10001</p>
                       </div>
                     </div>
                   </CardContent>
@@ -195,15 +195,10 @@ const ContactNeon = () => {
                       <Clock className="w-6 h-6 text-[#E2DCD5] mt-1" />
                       <div>
                         <h3 className="text-lg font-semibold text-[#E2DCD5] mb-2">
-                          Business Hours
+                          Office Hours
                         </h3>
-                        <p className="text-[#D1D5DB] mb-1">
-                          Monday - Friday: 8:00 AM - 8:00 PM EST
-                        </p>
-                        <p className="text-[#D1D5DB] mb-1">
-                          Saturday: 9:00 AM - 5:00 PM EST
-                        </p>
-                        <p className="text-[#D1D5DB]">Sunday: Closed</p>
+                        <p className="text-[#D1D5DB] mb-1">8AM PST - 8PM PST</p>
+                        <p className="text-[#D1D5DB]">Monday - Friday</p>
                       </div>
                     </div>
                   </CardContent>
